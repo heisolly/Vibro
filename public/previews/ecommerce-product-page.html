@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Product Page Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .img-thumb {
+        transition: all 0.2s ease;
+      }
+      .img-thumb.active {
+        border-color: #6366f1;
+        opacity: 1;
+      }
+      .size-btn.active {
+        background: #6366f1;
+        color: white;
+        border-color: #6366f1;
+      }
+      .color-btn.active {
+        ring: 2px;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
+      }
+      .qty-btn:active {
+        transform: scale(0.92);
+      }
+      .zoom {
+        cursor: zoom-in;
+        overflow: hidden;
+      }
+      .zoom img {
+        transition: transform 0.3s ease;
+      }
+      .zoom:hover img {
+        transform: scale(1.5);
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-900 font-sans">
+    <!-- Breadcrumb -->
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <nav class="flex items-center gap-2 text-sm text-gray-500">
+        <a href="#" class="hover:text-gray-900 transition">Home</a>
+        <span>/</span>
+        <a href="#" class="hover:text-gray-900 transition">Headphones</a>
+        <span>/</span>
+        <span class="text-gray-900">Nova Pro Wireless</span>
+      </nav>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 pb-16">
+      <div class="grid lg:grid-cols-2 gap-12">
+        <!-- Images -->
+        <div>
+          <div
+            class="zoom bg-gray-50 rounded-3xl p-8 mb-4 aspect-square flex items-center justify-center"
+            id="mainImage"
+          >
+            <div
+              class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center"
+            >
+              <svg
+                class="w-48 h-48 text-gray-400"
+                viewBox="0 0 200 200"
+                fill="none"
+              >
+                <rect
+                  x="40"
+                  y="50"
+                  width="120"
+                  height="80"
+                  rx="40"
+                  fill="currentColor"
+                  opacity="0.3"
+                />
+                <rect
+                  x="60"
+                  y="30"
+                  width="10"
+                  height="50"
+                  rx="5"
+                  fill="currentColor"
+                  opacity="0.4"
+                />
+                <rect
+                  x="130"
+                  y="30"
+                  width="10"
+                  height="50"
+                  rx="5"
+                  fill="currentColor"
+                  opacity="0.4"
+                />
+                <circle
+                  cx="100"
+                  cy="90"
+                  r="25"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  opacity="0.4"
+                />
+                <rect
+                  x="50"
+                  y="130"
+                  width="100"
+                  height="6"
+                  rx="3"
+                  fill="currentColor"
+                  opacity="0.2"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button
+              class="img-thumb active w-20 h-20 rounded-xl border-2 border-indigo-500 overflow-hidden bg-gray-50 p-2 opacity-100"
+              onclick="selectThumb(this, 'front')"
+            >
+              <div
+                class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500"
+              >
+                Front
+              </div>
+            </button>
+            <button
+              class="img-thumb w-20 h-20 rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50 p-2 opacity-60"
+              onclick="selectThumb(this, 'side')"
+            >
+              <div
+                class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500"
+              >
+                Side
+              </div>
+            </button>
+            <button
+              class="img-thumb w-20 h-20 rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50 p-2 opacity-60"
+              onclick="selectThumb(this, 'back')"
+            >
+              <div
+                class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500"
+              >
+                Back
+              </div>
+            </button>
+            <button
+              class="img-thumb w-20 h-20 rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50 p-2 opacity-60"
+              onclick="selectThumb(this, 'detail')"
+            >
+              <div
+                class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500"
+              >
+                Detail
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product info -->
+        <div class="lg:py-4">
+          <!-- Badge -->
+          <span
+            class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full mb-4"
+          >
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+            In Stock
+          </span>
+
+          <h1 class="text-3xl font-bold mb-2">Nova Pro Wireless Headphones</h1>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="flex text-amber-400 text-sm">
+              ★★★★<span class="text-gray-300">★</span>
+            </div>
+            <span class="text-sm text-gray-500">4.0 (128 reviews)</span>
+          </div>
+
+          <!-- Price -->
+          <div class="flex items-baseline gap-3 mb-6">
+            <span class="text-3xl font-bold">$249.99</span>
+            <span class="text-lg text-gray-400 line-through">$349.99</span>
+            <span
+              class="bg-red-50 text-red-600 text-sm font-semibold px-2.5 py-1 rounded-lg"
+              >-29%</span
+            >
+          </div>
+
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">
+            Experience premium sound with the Nova Pro Wireless. Featuring 40mm
+            custom drivers, active noise cancellation, and 30-hour battery life.
+            Designed for all-day comfort with memory foam ear cushions.
+          </p>
+
+          <!-- Color selection -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold mb-3"
+              >Color:
+              <span id="colorLabel" class="font-normal text-gray-500"
+                >Midnight Black</span
+              ></label
+            >
+            <div class="flex gap-3">
+              <button
+                class="color-btn active w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-900 shadow-md"
+                onclick="selectColor(this, 'Midnight Black')"
+                style="box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4)"
+              ></button>
+              <button
+                class="color-btn w-10 h-10 rounded-full bg-white border-2 border-gray-200"
+                onclick="selectColor(this, 'Pearl White')"
+              ></button>
+              <button
+                class="color-btn w-10 h-10 rounded-full bg-indigo-600 border-2 border-indigo-600"
+                onclick="selectColor(this, 'Ocean Blue')"
+              ></button>
+              <button
+                class="color-btn w-10 h-10 rounded-full bg-rose-500 border-2 border-rose-500"
+                onclick="selectColor(this, 'Sunset Red')"
+              ></button>
+            </div>
+          </div>
+
+          <!-- Size/edition -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold mb-3">Edition</label>
+            <div class="flex gap-3">
+              <button
+                class="size-btn active px-5 py-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-600 text-white text-sm font-medium transition"
+                onclick="selectSize(this)"
+              >
+                Standard
+              </button>
+              <button
+                class="size-btn px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-gray-300 transition"
+                onclick="selectSize(this)"
+              >
+                Pro
+              </button>
+              <button
+                class="size-btn px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-gray-300 transition"
+                onclick="selectSize(this)"
+              >
+                Max
+              </button>
+            </div>
+          </div>
+
+          <!-- Quantity -->
+          <div class="mb-8">
+            <label class="block text-sm font-semibold mb-3">Quantity</label>
+            <div
+              class="inline-flex items-center border border-gray-200 rounded-xl overflow-hidden"
+            >
+              <button
+                class="qty-btn w-11 h-11 flex items-center justify-center text-lg hover:bg-gray-50 transition"
+                onclick="changeQty(-1)"
+              >
+                −
+              </button>
+              <span
+                id="qty"
+                class="w-12 h-11 flex items-center justify-center font-semibold border-x border-gray-200"
+                >1</span
+              >
+              <button
+                class="qty-btn w-11 h-11 flex items-center justify-center text-lg hover:bg-gray-50 transition"
+                onclick="changeQty(1)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 mb-8">
+            <button
+              id="addToCartBtn"
+              class="flex-1 py-4 rounded-2xl bg-indigo-600 text-white font-semibold hover:bg-indigo-500 transition active:scale-[0.98] shadow-lg shadow-indigo-200"
+              onclick="addToCart()"
+            >
+              Add to Cart — $249.99
+            </button>
+            <button
+              id="wishlistBtn"
+              class="w-14 h-14 rounded-2xl border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:border-red-200 transition group"
+              onclick="toggleWishlist()"
+            >
+              <svg
+                id="heartIcon"
+                class="w-6 h-6 text-gray-400 group-hover:text-red-400 transition"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Cart success -->
+          <div
+            id="cartSuccess"
+            class="hidden mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3"
+          >
+            <div
+              class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0"
+            >
+              <svg
+                class="w-5 h-5 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-emerald-800">
+                Added to cart!
+              </p>
+              <p class="text-xs text-emerald-600">
+                View cart to complete checkout
+              </p>
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+              <svg
+                class="w-5 h-5 text-indigo-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                />
+              </svg>
+              <span class="text-xs text-gray-600">Free Shipping</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+              <svg
+                class="w-5 h-5 text-indigo-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              <span class="text-xs text-gray-600">30-Day Returns</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+              <svg
+                class="w-5 h-5 text-indigo-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+              <span class="text-xs text-gray-600">2-Year Warranty</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+              <svg
+                class="w-5 h-5 text-indigo-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              <span class="text-xs text-gray-600">Secure Checkout</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let qty = 1;
+      let wishlisted = false;
+
+      function selectThumb(el, view) {
+        document.querySelectorAll(".img-thumb").forEach((t) => {
+          t.classList.remove("active");
+          t.style.borderColor = "#e5e7eb";
+          t.style.opacity = "0.6";
+        });
+        el.classList.add("active");
+        el.style.borderColor = "#6366f1";
+        el.style.opacity = "1";
+      }
+
+      function selectColor(el, name) {
+        document.querySelectorAll(".color-btn").forEach((b) => {
+          b.style.boxShadow = "none";
+        });
+        el.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.4)";
+        document.getElementById("colorLabel").textContent = name;
+      }
+
+      function selectSize(el) {
+        document.querySelectorAll(".size-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.style.borderColor = "#e5e7eb";
+          b.style.background = "white";
+          b.style.color = "#374151";
+        });
+        el.classList.add("active");
+        el.style.borderColor = "#6366f1";
+        el.style.background = "#4f46e5";
+        el.style.color = "white";
+      }
+
+      function changeQty(delta) {
+        qty = Math.max(1, Math.min(10, qty + delta));
+        document.getElementById("qty").textContent = qty;
+        document.getElementById("addToCartBtn").textContent =
+          `Add to Cart — $${(249.99 * qty).toFixed(2)}`;
+      }
+
+      function addToCart() {
+        const btn = document.getElementById("addToCartBtn");
+        btn.textContent = "Adding...";
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = `Add to Cart — $${(249.99 * qty).toFixed(2)}`;
+          btn.disabled = false;
+          document.getElementById("cartSuccess").classList.remove("hidden");
+          setTimeout(
+            () =>
+              document.getElementById("cartSuccess").classList.add("hidden"),
+            3000,
+          );
+        }, 800);
+      }
+
+      function toggleWishlist() {
+        wishlisted = !wishlisted;
+        const icon = document.getElementById("heartIcon");
+        if (wishlisted) {
+          icon.setAttribute("fill", "#ef4444");
+          icon.style.color = "#ef4444";
+        } else {
+          icon.setAttribute("fill", "none");
+          icon.style.color = "#9ca3af";
+        }
+      }
+    </script>
+  </body>
+</html>

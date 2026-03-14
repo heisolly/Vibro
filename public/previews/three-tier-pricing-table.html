@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three-Tier Pricing Table Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .glow {
+        box-shadow:
+          0 0 60px rgba(99, 102, 241, 0.15),
+          0 0 120px rgba(99, 102, 241, 0.05);
+      }
+      .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-hover:hover {
+        transform: translateY(-8px);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-950 text-white min-h-screen flex items-center justify-center py-16 px-4"
+  >
+    <div class="max-w-6xl mx-auto w-full">
+      <!-- Header -->
+      <div class="text-center mb-14">
+        <span
+          class="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-400 text-sm font-medium px-4 py-1.5 rounded-full mb-4 border border-indigo-500/20"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Pricing
+        </span>
+        <h1 class="text-4xl font-bold mb-3">Choose your plan</h1>
+        <p class="text-gray-400 max-w-lg mx-auto">
+          Start for free, scale as you grow. All plans include a 14-day trial.
+        </p>
+
+        <!-- Toggle -->
+        <div
+          class="mt-8 inline-flex items-center bg-gray-900 border border-gray-800 rounded-full p-1"
+        >
+          <button
+            id="monthlyBtn"
+            class="px-5 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white transition-all duration-300"
+            onclick="setPricing('monthly')"
+          >
+            Monthly
+          </button>
+          <button
+            id="annualBtn"
+            class="px-5 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-all duration-300"
+            onclick="setPricing('annual')"
+          >
+            Annual <span class="text-emerald-400 text-xs ml-1">-20%</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pricing Cards -->
+      <div class="grid md:grid-cols-3 gap-6 items-stretch">
+        <!-- Starter -->
+        <div
+          class="card-hover bg-gray-900/50 border border-gray-800 rounded-3xl p-8 flex flex-col"
+        >
+          <div class="mb-6">
+            <div
+              class="w-12 h-12 bg-gray-800 rounded-2xl flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold">Starter</h3>
+            <p class="text-sm text-gray-500 mt-1">Perfect for side projects</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-1">
+              <span class="text-5xl font-bold monthly-price">$0</span>
+              <span class="text-5xl font-bold annual-price hidden">$0</span>
+              <span class="text-gray-500 text-sm">/month</span>
+            </div>
+            <p class="text-xs text-gray-600 mt-1">Free forever</p>
+          </div>
+
+          <button
+            class="w-full py-3 px-6 rounded-xl border border-gray-700 text-gray-300 font-medium hover:bg-gray-800 hover:border-gray-600 transition mb-8"
+          >
+            Get Started Free
+          </button>
+
+          <div class="flex-1">
+            <p
+              class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-4"
+            >
+              What's included
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-emerald-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                2 Projects
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-emerald-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                1GB Storage
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-emerald-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Community Support
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-emerald-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Basic Analytics
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-600">
+                <svg
+                  class="w-5 h-5 text-gray-700 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                Custom Domain
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-600">
+                <svg
+                  class="w-5 h-5 text-gray-700 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                Priority Support
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Pro (Featured) -->
+        <div
+          class="card-hover relative bg-gray-900/80 border-2 border-indigo-500/50 rounded-3xl p-8 flex flex-col glow"
+        >
+          <!-- Badge -->
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+            <span
+              class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-indigo-500/30"
+            >
+              Most Popular
+            </span>
+          </div>
+
+          <div class="mb-6">
+            <div
+              class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 border border-indigo-500/20"
+            >
+              <svg
+                class="w-6 h-6 text-indigo-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold">Pro</h3>
+            <p class="text-sm text-gray-500 mt-1">For growing teams</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-1">
+              <span class="text-5xl font-bold monthly-price">$29</span>
+              <span class="text-5xl font-bold annual-price hidden">$23</span>
+              <span class="text-gray-500 text-sm">/month</span>
+            </div>
+            <p class="text-xs text-gray-600 mt-1 monthly-label">
+              Billed monthly
+            </p>
+            <p class="text-xs text-gray-600 mt-1 annual-label hidden">
+              Billed annually ($276/yr)
+            </p>
+          </div>
+
+          <button
+            class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium hover:from-indigo-500 hover:to-purple-500 transition shadow-lg shadow-indigo-500/25 mb-8 active:scale-[0.98]"
+          >
+            Start Free Trial
+          </button>
+
+          <div class="flex-1">
+            <p
+              class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-4"
+            >
+              Everything in Starter, plus
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <strong>Unlimited</strong>&nbsp;Projects
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                50GB Storage
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Priority Email Support
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Advanced Analytics
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Custom Domain
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-300">
+                <svg
+                  class="w-5 h-5 text-indigo-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                API Access
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div
+          class="card-hover bg-gray-900/50 border border-gray-800 rounded-3xl p-8 flex flex-col"
+        >
+          <div class="mb-6">
+            <div
+              class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-4 border border-amber-500/20"
+            >
+              <svg
+                class="w-6 h-6 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold">Enterprise</h3>
+            <p class="text-sm text-gray-500 mt-1">For large organizations</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-1">
+              <span class="text-5xl font-bold monthly-price">$99</span>
+              <span class="text-5xl font-bold annual-price hidden">$79</span>
+              <span class="text-gray-500 text-sm">/month</span>
+            </div>
+            <p class="text-xs text-gray-600 mt-1 monthly-label">
+              Billed monthly
+            </p>
+            <p class="text-xs text-gray-600 mt-1 annual-label hidden">
+              Billed annually ($948/yr)
+            </p>
+          </div>
+
+          <button
+            class="w-full py-3 px-6 rounded-xl bg-white text-gray-900 font-medium hover:bg-gray-100 transition mb-8 active:scale-[0.98]"
+          >
+            Contact Sales
+          </button>
+
+          <div class="flex-1">
+            <p
+              class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-4"
+            >
+              Everything in Pro, plus
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                500GB Storage
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                24/7 Dedicated Support
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                SSO & SAML
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Audit Logs
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Custom SLA
+              </li>
+              <li class="flex items-center gap-3 text-sm text-gray-400">
+                <svg
+                  class="w-5 h-5 text-amber-500 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Dedicated Instance
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom section -->
+      <div class="mt-14 text-center">
+        <p class="text-sm text-gray-500 mb-4">
+          All plans include SSL, 99.9% uptime SLA, and GDPR compliance.
+        </p>
+        <div
+          class="flex items-center justify-center gap-6 text-xs text-gray-600"
+        >
+          <span class="flex items-center gap-1"
+            ><svg
+              class="w-4 h-4 text-emerald-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            SOC 2 Certified</span
+          >
+          <span class="flex items-center gap-1"
+            ><svg
+              class="w-4 h-4 text-emerald-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            256-bit Encryption</span
+          >
+          <span class="flex items-center gap-1"
+            ><svg
+              class="w-4 h-4 text-emerald-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              />
+            </svg>
+            No Credit Card</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function setPricing(type) {
+        const mBtn = document.getElementById("monthlyBtn");
+        const aBtn = document.getElementById("annualBtn");
+        const mPrices = document.querySelectorAll(".monthly-price");
+        const aPrices = document.querySelectorAll(".annual-price");
+        const mLabels = document.querySelectorAll(".monthly-label");
+        const aLabels = document.querySelectorAll(".annual-label");
+        if (type === "monthly") {
+          mBtn.classList.add("bg-indigo-600", "text-white");
+          mBtn.classList.remove("text-gray-400");
+          aBtn.classList.remove("bg-indigo-600", "text-white");
+          aBtn.classList.add("text-gray-400");
+          mPrices.forEach((el) => el.classList.remove("hidden"));
+          aPrices.forEach((el) => el.classList.add("hidden"));
+          mLabels.forEach((el) => el.classList.remove("hidden"));
+          aLabels.forEach((el) => el.classList.add("hidden"));
+        } else {
+          aBtn.classList.add("bg-indigo-600", "text-white");
+          aBtn.classList.remove("text-gray-400");
+          mBtn.classList.remove("bg-indigo-600", "text-white");
+          mBtn.classList.add("text-gray-400");
+          mPrices.forEach((el) => el.classList.add("hidden"));
+          aPrices.forEach((el) => el.classList.remove("hidden"));
+          mLabels.forEach((el) => el.classList.add("hidden"));
+          aLabels.forEach((el) => el.classList.remove("hidden"));
+        }
+      }
+    </script>
+  </body>
+</html>
