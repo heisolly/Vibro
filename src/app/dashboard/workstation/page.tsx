@@ -241,9 +241,9 @@ export default function SynthesizedPage() {
                            <div key={comp.id} className={`p-10 border-b border-zinc-50 group/comp transition-all ${selectedId === comp.id ? 'bg-[#b8f724]/5 ring-1 ring-inset ring-[#b8f724]/20' : 'hover:bg-zinc-50/50'}`} onClick={() => setSelectedId(comp.id)}>
                               {comp.type === 'navbar' && (
                                  <div className="flex items-center justify-between px-8 py-5 rounded-2xl border border-zinc-100 bg-white shadow-sm">
-                                    <h4 className="font-bold text-zinc-900 flex items-center gap-2"><Zap className="w-4 h-4 text-[#b8f724]" /> {comp.content.title || 'Brand'}</h4>
+                                    <h4 className="font-bold text-zinc-900 flex items-center gap-2"><Zap className="w-4 h-4 text-[#b8f724]" /> {(comp.content as any).title || 'Brand'}</h4>
                                     <div className="flex gap-8">
-                                       {(comp.content.items || comp.content.links).map((l: any) => <span key={l} className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">{l}</span>)}
+                                       {((comp.content as any).items || (comp.content as any).links || []).map((l: any) => <span key={l} className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">{l}</span>)}
                                     </div>
                                     <button className="px-6 py-2 bg-zinc-900 text-white rounded-lg text-xs font-bold hover:bg-black transition-all">Action</button>
                                  </div>
@@ -253,11 +253,11 @@ export default function SynthesizedPage() {
                                  <div className={`py-32 space-y-10 text-center max-w-2xl mx-auto ${viewport === 'mobile' ? 'scale-90 origin-top' : ''}`}>
                                     <div className="inline-block px-4 py-1.5 bg-[#b8f724]/10 text-zinc-900 border border-[#b8f724]/30 rounded-full text-[10px] font-bold uppercase tracking-widest">Interface Synthesis v2.4</div>
                                     <h1 className="text-6xl font-black tracking-tighter text-zinc-900 leading-[1] uppercase italic">
-                                       {comp.content.title.split(' ').map((w: string, i: number) => (
+                                       {((comp.content as any).title || '').split(' ').map((w: string, i: number) => (
                                           <span key={i} className={i % 2 === 1 ? 'text-zinc-400' : ''}>{w} </span>
                                        ))}
                                     </h1>
-                                    <p className="text-lg text-zinc-500 font-medium leading-relaxed px-6">{comp.content.sub}</p>
+                                    <p className="text-lg text-zinc-500 font-medium leading-relaxed px-6">{(comp.content as any).sub}</p>
                                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                        <button className="w-full sm:w-auto px-10 py-4 bg-zinc-900 text-white rounded-[20px] font-bold text-sm shadow-2xl hover:bg-black transition-all">Get Synthesis</button>
                                        <button className="w-full sm:w-auto px-10 py-4 bg-white border border-zinc-200 text-zinc-600 rounded-[20px] font-bold text-sm hover:bg-zinc-50 transition-all">Browse Docs</button>
@@ -267,7 +267,7 @@ export default function SynthesizedPage() {
 
                               {comp.type === 'stats' && (
                                  <div className={`grid ${viewport === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'} gap-6 py-12`}>
-                                    {comp.content.stats.map((s: any) => (
+                                    {((comp.content as any).stats || []).map((s: any) => (
                                        <div key={s.label} className="p-10 bg-white rounded-3xl border border-zinc-100 shadow-sm space-y-2 group/stat hover:border-[#b8f724] transition-all">
                                           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{s.label}</p>
                                           <p className="text-4xl font-black text-zinc-950 tracking-tighter italic">{s.val}</p>
@@ -278,7 +278,7 @@ export default function SynthesizedPage() {
 
                               {comp.type === 'pricing' && (
                                  <div className={`grid ${viewport === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'} gap-8 py-20`}>
-                                    {comp.content.plans.map((p: any, i: number) => (
+                                    {((comp.content as any).plans || []).map((p: any, i: number) => (
                                        <div key={p} className={`p-10 rounded-[40px] border border-zinc-100 flex flex-col justify-between h-[500px] transition-all ${i === 1 ? 'shadow-[0_40px_100px_rgba(0,0,0,0.1)] bg-white border-[#b8f724]/30 scale-105 z-10' : 'bg-zinc-50/30'}`}>
                                           <div className="space-y-8">
                                              <div className="flex justify-between items-start">
