@@ -9,8 +9,17 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const categories = await getAllCategories();
-  return categories.map((c) => ({ slug: c.slug }));
+  // Guard for build time
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'undefined') {
+    return [];
+  }
+  
+  try {
+    const categories = await getAllCategories();
+    return categories.map((c) => ({ slug: c.slug }));
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

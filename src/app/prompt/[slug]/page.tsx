@@ -16,8 +16,17 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const prompts = await getAllPrompts();
-  return prompts.map((p) => ({ slug: p.slug }));
+  // Guard for build time
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'undefined') {
+    return [];
+  }
+
+  try {
+    const prompts = await getAllPrompts();
+    return prompts.map((p) => ({ slug: p.slug }));
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
