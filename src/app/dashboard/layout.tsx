@@ -32,14 +32,14 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA] selection:bg-[#b8f724] selection:text-black">
+    <div className="flex min-h-screen bg-white selection:bg-[#b8f724]/30 selection:text-zinc-900">
       {/* Sidebar */}
       <DashboardSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       {/* Main Content Area */}
       <main 
-        className={`flex-1 transition-all duration-300 min-h-screen flex flex-col ${
-          isCollapsed ? "ml-20" : "ml-64"
+        className={`flex-1 transition-all duration-500 min-h-screen flex flex-col ${
+          isCollapsed ? "ml-[72px]" : "ml-64"
         }`}
       >
         {/* Dynamic Page Content */}
@@ -49,14 +49,12 @@ export default function DashboardLayout({
         </div>
         
         {/* Simple Dashboard Footer */}
-        <footer className="p-8 border-t border-[#E5E5E3] text-center bg-white">
+        <footer className="p-10 border-t border-zinc-100 text-center bg-white">
            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300">
-             Vibro Expansion v4.2.0 • Build 2026.03
+             Vibro Studio v4.2.0 • Production Build
            </p>
         </footer>
       </main>
     </div>
   );
 }
-
-
