@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 
+import Image from "next/image";
+
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,8 +43,14 @@ export default function SignUpPage() {
     <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8] bg-dot-pattern px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-12 text-center">
-          <Link href="/" className="inline-block mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border-[3px] border-black bg-white text-2xl shadow-[4px_4px_0_rgba(184,247,36,1)] hover:translate-y-1 hover:shadow-none transition-all">
-            ⚡
+          <Link href="/" className="inline-block mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border-[3px] border-black bg-white text-2xl shadow-[4px_4px_0_rgba(184,247,36,1)] hover:translate-y-1 hover:shadow-none transition-all overflow-hidden p-2">
+            <Image 
+              src="/logo.png" 
+              alt="Vibro Logo" 
+              width={48} 
+              height={48} 
+              className="object-contain"
+            />
           </Link>
           <h1 className="text-4xl font-[1000] tracking-tighter text-black uppercase">Join Vibro</h1>
           <p className="mt-2 text-sm font-bold text-zinc-400 uppercase tracking-widest">Start Shipping Faster</p>

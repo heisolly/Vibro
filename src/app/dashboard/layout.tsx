@@ -5,6 +5,8 @@ import DashboardSidebar from "@/components/DashboardSidebar";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 
+import Image from "next/image";
+
 export default function DashboardLayout({
   children,
 }: {
@@ -49,7 +51,14 @@ export default function DashboardLayout({
         </div>
         
         {/* Simple Dashboard Footer */}
-        <footer className="p-10 border-t border-zinc-100 text-center bg-white">
+        <footer className="p-10 border-t border-zinc-100 flex flex-col items-center gap-4 bg-white">
+           <Image 
+             src="/logo.png" 
+             alt="Vibro Logo" 
+             width={24} 
+             height={24} 
+             className="opacity-40"
+           />
            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300">
              Vibro Studio v4.2.0 • Production Build
            </p>

@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   description:
     "Browse, customize, and install production-ready UI components directly via CLI. The modern workflow for vibe coders.",
   metadataBase: new URL("https://vibro.com"),
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "Vibro — The Website-First Component Workflow",
     description: "Browse, customize, and install production-ready UI components directly via CLI.",

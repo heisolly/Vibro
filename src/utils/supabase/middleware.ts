@@ -6,20 +6,19 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const getSafeEnv = (key: string, fallback: string) => {
-    const val = process.env[key];
-    if (typeof val !== 'string' || !val || val === 'undefined' || val === 'null' || val.trim() === '') {
-      return fallback;
-    }
-    return val.trim();
-  };
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const supabaseUrl = getSafeEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://placeholder.supabase.co');
-  const supabaseKey = getSafeEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'placeholder');
+  if (!supabaseUrl || !supabaseKey || supabaseUrl?.includes('placeholder')) {
+    console.error('❌ [Supabase Middleware] Environment variables are missing or using placeholders!');
+  }
+
+  const finalUrl = (supabaseUrl || 'https://placeholder.supabase.co').trim();
+  const finalKey = (supabaseKey || 'placeholder').trim();
 
   const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
+    finalUrl,
+    finalKey,
     {
       cookies: {
         get(name: string) {

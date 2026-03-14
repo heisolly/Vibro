@@ -5,6 +5,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
+import Image from "next/image";
+
 const navLinks = [
   { href: "/", label: "Core" },
   { href: "/categories", label: "Archive" },
@@ -64,10 +66,14 @@ export default function Navbar() {
         {/* ── Left Section: Logo & Search ── */}
         <div className="flex items-center gap-10">
           <Link href="/" className="group flex items-center gap-3 transition-all">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#b8f724] border-[3px] border-black shadow-[3px_3px_0_rgba(0,0,0,1)] transition-transform group-hover:scale-105 group-hover:rotate-6">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black border-[3px] border-black shadow-[3px_3px_0_rgba(184,247,36,1)] transition-transform group-hover:scale-105 group-hover:rotate-6 overflow-hidden p-1.5">
+              <Image 
+                src="/logo.png" 
+                alt="Vibro Logo" 
+                width={32} 
+                height={32} 
+                className="object-contain"
+              />
             </div>
             <span className="text-[26px] font-[1000] tracking-tighter text-black uppercase">
               VIBRO<span className="text-zinc-300">_</span>

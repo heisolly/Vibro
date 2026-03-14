@@ -22,6 +22,8 @@ import {
   Sparkles
 } from "lucide-react";
 
+import Image from "next/image";
+
 const menuItems = [
   { 
     href: "/dashboard/projects", 
@@ -72,29 +74,37 @@ export default function DashboardSidebar({ isCollapsed, setIsCollapsed }: Sideba
 
   return (
     <aside 
-      className={`fixed left-0 top-0 h-screen bg-white transition-all duration-500 z-[60] flex flex-col border-r border-[#E5E5E3] ${
-        isCollapsed ? "w-[72px]" : "w-64"
+      className={`fixed left-0 top-0 h-screen transition-all duration-500 z-[60] flex flex-col border-r shadow-sm ${
+        isCollapsed ? "w-[76px]" : "w-64"
+      } ${
+        "bg-white dark:bg-[#0A0A0A] border-[#E5E5E3] dark:border-white/5"
       }`}
     >
       {/* ── Logo Section ── */}
-      <div className={`h-20 flex items-center ${isCollapsed ? 'justify-center' : 'px-6 gap-3'}`}>
-        <Link href="/" className="flex items-center gap-3 transition-transform active:scale-95">
-          <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-zinc-900 rounded-lg shadow-sm">
-             <Zap className="w-5 h-5 text-[#b8f724]" />
+      <div className={`h-24 flex items-center ${isCollapsed ? 'justify-center' : 'px-7 gap-3'}`}>
+        <Link href="/" className="flex items-center gap-3 transition-transform active:scale-95 group">
+          <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-white/5 rounded-xl shadow-lg group-hover:rotate-6 transition-transform overflow-hidden p-1.5">
+             <Image 
+                src="/logo.png" 
+                alt="Vibro Logo" 
+                width={28} 
+                height={28} 
+                className="object-contain"
+              />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="text-[15px] font-bold tracking-tight text-zinc-900 leading-none">Vibro</span>
-              <span className="text-[10px] font-medium text-zinc-400 mt-1 uppercase tracking-tight">AI Studio</span>
+              <span className="text-[16px] font-bold tracking-tight text-zinc-900 dark:text-white leading-none">Vibro</span>
+              <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 mt-1.5 uppercase tracking-widest">Architect</span>
             </div>
           )}
         </Link>
       </div>
 
       {/* ── Dashboard Navigation ── */}
-      <nav className={`flex-1 px-3 space-y-1 mt-4`}>
+      <nav className={`flex-1 px-4 space-y-1.5 mt-2`}>
         {!isCollapsed && (
-          <p className="px-3 mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Main Menu</p>
+          <p className="px-3 mb-4 text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.2em]">Platform</p>
         )}
         {menuItems.map((item) => {
           const active = pathname === item.href;
@@ -103,22 +113,22 @@ export default function DashboardSidebar({ isCollapsed, setIsCollapsed }: Sideba
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center rounded-xl transition-all duration-200 group relative ${
-                isCollapsed ? "justify-center w-11 h-11 mx-auto" : "justify-between px-3 py-2.5"
+              className={`flex items-center rounded-xl transition-all duration-300 group relative ${
+                isCollapsed ? "justify-center w-12 h-12 mx-auto" : "justify-between px-3.5 py-3"
               } ${
                 active 
-                  ? "bg-zinc-100 text-zinc-900" 
-                  : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+                  ? "bg-zinc-100 dark:bg-white/10 text-zinc-900 dark:text-white shadow-sm" 
+                  : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-white/5"
               }`}
             >
-              <div className={`flex items-center ${isCollapsed ? '' : 'gap-3'}`}>
-                <Icon className={`w-[18px] h-[18px] transition-colors ${active ? 'text-zinc-900' : 'text-zinc-400 group-hover:text-zinc-600'}`} />
-                {!isCollapsed && <span className="text-[13.5px] font-medium tracking-tight">{item.label}</span>}
+              <div className={`flex items-center ${isCollapsed ? '' : 'gap-3.5'}`}>
+                <Icon className={`w-[18px] h-[18px] transition-colors ${active ? 'text-zinc-900 dark:text-white' : 'text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'}`} />
+                {!isCollapsed && <span className="text-[14px] font-semibold tracking-tight">{item.label}</span>}
               </div>
               {!isCollapsed && (
                 <div className="flex items-center gap-2">
-                  {item.badge && <span className="text-[9px] bg-zinc-900 text-white px-1.5 py-0.5 rounded-md font-bold uppercase tracking-tighter">{item.badge}</span>}
-                  {item.action && <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${active ? 'bg-zinc-200 text-zinc-900' : 'bg-zinc-100 text-zinc-400 group-hover:bg-zinc-200'}`}>{item.action}</div>}
+                  {item.badge && <span className="text-[9px] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-2 py-0.5 rounded-md font-black uppercase tracking-tighter">{item.badge}</span>}
+                  {item.action && <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${active ? 'bg-zinc-200 dark:bg-white/10 text-zinc-900 dark:text-white' : 'bg-zinc-50 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800'}`}>{item.action}</div>}
                 </div>
               )}
             </Link>
@@ -127,30 +137,30 @@ export default function DashboardSidebar({ isCollapsed, setIsCollapsed }: Sideba
       </nav>
 
       {/* ── Bottom Section ── */}
-      <div className={`p-4 border-t border-zinc-100`}>
-         <div className={`flex items-center transition-all bg-zinc-50 rounded-2xl border border-zinc-100 p-2 ${isCollapsed ? 'justify-center h-12 w-12 mx-auto' : 'gap-3 px-3'}`}>
+      <div className={`p-5 border-t border-zinc-100 dark:border-white/5`}>
+         <div className={`flex items-center transition-all bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-white/5 p-2 ${isCollapsed ? 'justify-center h-12 w-12 mx-auto' : 'gap-3 px-3'}`}>
             <div className="relative">
-               <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center overflow-hidden shadow-sm">
+               <div className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 flex items-center justify-center overflow-hidden shadow-sm">
                   {user?.email ? (
-                    <span className="text-xs font-bold text-zinc-950">{user.email.charAt(0).toUpperCase()}</span>
+                    <span className="text-sm font-black text-zinc-950 dark:text-white">{user.email.charAt(0).toUpperCase()}</span>
                   ) : (
                     <User className="w-4 h-4 text-zinc-400" />
                   )}
                </div>
-               <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-[#0A0A0A] rounded-full shadow-sm" />
             </div>
             {!isCollapsed && (
                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-semibold text-zinc-900 truncate leading-none capitalize">{user?.email?.split('@')[0] || "User Agent"}</p>
-                  <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-tight mt-1">Free Tier</p>
+                  <p className="text-[13px] font-bold text-zinc-900 dark:text-white truncate leading-none capitalize">{user?.email?.split('@')[0] || "Architect"}</p>
+                  <p className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1.5">Free Plan</p>
                </div>
             )}
-            {!isCollapsed && <Settings className="w-3.5 h-3.5 text-zinc-300 hover:text-zinc-900 transition-colors cursor-pointer" />}
+            {!isCollapsed && <Settings className="w-3.5 h-3.5 text-zinc-300 dark:text-zinc-700 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer" />}
          </div>
          
          <button 
            onClick={() => setIsCollapsed(!isCollapsed)}
-           className={`mt-4 w-full flex items-center justify-center p-2 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-all ${isCollapsed ? 'rotate-180' : ''}`}
+           className={`mt-5 w-full flex items-center justify-center p-2.5 rounded-xl text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-white/5 transition-all order-first ${isCollapsed ? 'rotate-180' : ''}`}
          >
             <ChevronLeft className="w-4 h-4" />
          </button>

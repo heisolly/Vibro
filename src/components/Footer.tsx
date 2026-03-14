@@ -6,6 +6,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
+import Image from "next/image";
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -39,10 +41,14 @@ export default function Footer() {
           {/* Left: Brand */}
           <div className="footer-item flex items-center gap-6">
             <Link href="/" className="flex items-center gap-4 text-xl font-black text-white uppercase tracking-tighter hover:scale-105 transition-transform">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#b8f724] border-2 border-white shadow-[3px_3px_0_rgba(255,255,255,1)]">
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-black border-2 border-white/20 shadow-[3px_3px_0_rgba(184,247,36,0.5)] overflow-hidden p-1">
+                <Image 
+                  src="/logo.png" 
+                  alt="Vibro Logo" 
+                  width={24} 
+                  height={24} 
+                  className="object-contain"
+                />
               </div>
               <span>VIBRO<span className="text-[#b8f724]">.</span></span>
             </Link>

@@ -261,12 +261,12 @@ export default function HomeClient({ categories: initialCategories, featured: in
     <div ref={containerRef} className="relative w-full bg-[#F3F2EE] text-gray-900 selection:bg-[#b8f724]/40">
 
       {/* ── 1. Hero Section ─────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative z-10 min-h-screen flex flex-col items-center justify-center pt-32 sm:pt-40 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section ref={heroRef} className="relative z-10 min-h-screen flex flex-col items-center justify-center pt-32 sm:pt-40 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white dark:bg-[#0A0A0A]">
         
         {/* PixelBlast + Grid Hybrid Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#FBFBFA]">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
            {/* Reintroduced Lime Green PixelBlast */}
-           <div className="absolute inset-0 opacity-[0.45]">
+           <div className="absolute inset-0 opacity-[0.2] dark:opacity-[0.15]">
             <PixelBlast
               color="#b8f724"
               variant="square"
@@ -284,23 +284,21 @@ export default function HomeClient({ categories: initialCategories, featured: in
           </div>
 
           {/* Static Grid Layer with Elegant Animated Blocks */}
-          <div className="absolute inset-0 opacity-[0.08]" 
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
             style={{ 
-              backgroundImage: `linear-gradient(#000 1.2px, transparent 1.2px), linear-gradient(90deg, #000 1.2px, transparent 1.2px)`,
-              backgroundSize: "60px 60px"
+              backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`,
+              backgroundSize: "64px 64px"
             }} 
           >
-            {/* Array of glowing blocks perfectly snapping to the 60px grid */}
             {[...Array(24)].map((_, i) => (
               <div 
                 key={i}
                 className="grid-reveal-block absolute bg-[#b8f724] opacity-0"
                 style={{
-                  width: "58.8px", 
-                  height: "58.8px",
-                  // Use a predictable pattern instead of Math.random to fix hydration
-                  left: `${((i * 7) % 25) * 60 + 1.2}px`,
-                  top: `${((i * 3) % 15) * 60 + 1.2}px`,
+                  width: "63px", 
+                  height: "63px",
+                  left: `${((i * 7) % 25) * 64 + 1}px`,
+                  top: `${((i * 3) % 15) * 64 + 1}px`,
                   boxShadow: "0 0 20px rgba(184, 247, 36, 0.4)" 
                 }}
               />
@@ -309,114 +307,63 @@ export default function HomeClient({ categories: initialCategories, featured: in
         </div>
 
         {/* Subtle Light Fade */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white via-transparent to-white/40 pointer-events-none" />
-
-        {/* ── Draggable Design Nodes ─────────────────────────────────── */}
-        <div id="node-prompt" className="hero-draggable absolute right-[4%] sm:right-[8%] top-[12%] sm:top-[15%] z-[100] cursor-grab active:cursor-grabbing select-none group">
-          <div className="bg-white border-[3.5px] border-black p-4 sm:p-5 rounded-3xl shadow-[6px_6px_0_rgba(0,0,0,1)] sm:shadow-[8px_8px_0_rgba(0,0,0,1)] w-56 sm:w-72 transform transition-transform group-hover:scale-[1.02] rotate-[2deg]">
-             <div className="flex items-center gap-2 mb-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-400 border-[1.5px] border-black" />
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border-[1.5px] border-black" />
-                <div className="w-2.5 h-2.5 rounded-full bg-green-400 border-[1.5px] border-black" />
-                <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 ml-2 uppercase tracking-widest">Input_Analysis</span>
-             </div>
-             <p className="text-[12px] sm:text-[14px] font-black text-black leading-tight italic">
-               "A <span className="text-[#8fcc00]">luxury</span> dashboard with <span className="bg-blue-50 px-1 rounded text-blue-600">glass</span>... "
-             </p>
-          </div>
-        </div>
-
-        {/* Logic Node */}
-        <div id="node-logic" className="hero-draggable absolute left-[4%] sm:left-[5%] top-[20%] sm:top-[25%] z-[100] cursor-grab active:cursor-grabbing select-none group">
-          <div className="bg-white border-[3.5px] border-black p-4 sm:p-6 rounded-3xl shadow-[8px_8px_0_rgba(0,0,0,1)] sm:shadow-[10px_10px_0_rgba(0,0,0,1)] w-56 sm:w-64 transform transition-transform group-hover:scale-[1.02]">
-            <div className="absolute -left-[12px] top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-[3px] border-black rounded-full z-10 hidden sm:block" />
-            <div className="absolute -right-[12px] top-1/2 -translate-y-1/2 w-6 h-6 bg-black border-[3px] border-white rounded-full z-10 hidden sm:block" />
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-4 h-4 rounded-full bg-blue-500 shadow-inner border border-black" />
-              <span className="text-[12px] sm:text-[13px] font-[1000] uppercase tracking-tighter text-black">TRIGGER_LINK</span>
-            </div>
-            <div className="space-y-2 sm:space-y-3">
-              <div className="flex items-center justify-between border-t border-black/5 pt-2">
-                <span className="text-[10px] sm:text-[11px] font-black text-zinc-400">On_Click</span>
-                <div className="w-3.5 h-3.5 rounded-full border-[2.5px] border-black bg-white" />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] sm:text-[11px] font-black text-zinc-400">Success</span>
-                <div className="w-3.5 h-3.5 rounded-full border-[2.5px] border-black bg-[#b8f724]" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Component Node */}
-        <div id="node-component" className="hero-draggable absolute right-[4%] sm:right-[5%] bottom-[20%] sm:bottom-[25%] z-[100] cursor-grab active:cursor-grabbing select-none group">
-          <div className="bg-[#b8f724] border-[3.5px] border-black p-4 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] shadow-[10px_10px_0_rgba(0,0,0,1)] sm:shadow-[12px_12px_0_rgba(0,0,0,1)] w-48 sm:w-56 text-center transform transition-transform group-hover:scale-[1.02] -rotate-3">
-            <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-[3px] border-black rounded-full shadow-sm hidden sm:block" />
-            <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-black border-[3px] border-white rounded-full shadow-sm hidden sm:block" />
-            <span className="text-black text-[18px] sm:text-[22px] font-[1000] tracking-tighter uppercase italic">Navbar.tsx</span>
-          </div>
-        </div>
-
-        {/* Vector Handle Node */}
-        <div id="node-vector" className="hero-draggable absolute left-[8%] bottom-[12%] z-[50] cursor-grab active:cursor-grabbing select-none">
-           <div className="relative group">
-              <svg width="120" height="120" viewBox="0 0 100 100" className="overflow-visible drop-shadow-xl">
-                <path d="M10 90 L90 10" stroke="black" strokeWidth="5" strokeDasharray="10 8" className="opacity-40" />
-                <rect x="0" y="80" width="24" height="24" fill="white" stroke="black" strokeWidth="4" className="shadow-2xl" />
-                <circle cx="90" cy="10" r="12" fill="#6366f1" stroke="black" strokeWidth="4" />
-              </svg>
-              <div className="absolute top-1/2 left-full ml-6 bg-white border-2 border-black px-3 py-1.5 rounded-xl shadow-[6px_6px_0_rgba(0,0,0,1)] text-[10px] font-black whitespace-nowrap transform -rotate-3">
-                Anchor_Point_A
-              </div>
-           </div>
-        </div>
-
-        {/* Standard Cursor Design Node */}
-        <div className="hero-draggable absolute right-[10%] bottom-[18%] z-[100] cursor-grab active:cursor-grabbing select-none group">
-          <div className="flex flex-col items-start translate-x-4 translate-y-4">
-             <div className="relative">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="black" stroke="white" strokeWidth="3">
-                    <path d="M4 4L20 12L12 14L10 22L4 4Z" />
-                </svg>
-                <div className="absolute inset-0 bg-[#b8f724] rounded-full filter blur-xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
-             </div>
-             <div className="bg-black text-[#b8f724] text-[12px] font-[1000] px-4 py-1.5 rounded-bl-none rounded-3xl shadow-[6px_6px_0_rgba(0,0,0,1)] -mt-1 ml-3 border border-white/10">
-                Design_Bot
-             </div>
-          </div>
-        </div>
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white dark:from-black via-transparent to-white/40 dark:to-transparent pointer-events-none" />
 
         {/* ── Center Content ────────────────────────────────────────────── */}
-        <div className="relative z-[10] flex flex-col items-center text-center max-w-5xl mx-auto px-4">
+        <div className="relative z-[10] flex flex-col items-center text-center max-w-6xl mx-auto px-4">
+          
+          <div className="hero-draggable mb-12 flex items-center gap-2 px-4 py-2 bg-[#b8f724]/10 dark:bg-[#b8f724]/5 rounded-full border border-[#b8f724]/20 dark:border-[#b8f724]/10 animate-fade-in cursor-grab active:cursor-grabbing">
+             <div className="w-2 h-2 rounded-full bg-[#b8f724] animate-pulse" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-900 dark:text-zinc-400">Release v4.2 Protocol</span>
+          </div>
 
-          <h1 className="hero-title text-[58px] sm:text-[88px] lg:text-[104px] font-[1000] text-black tracking-[-0.05em] leading-[0.88] mb-12 max-w-4xl">
-            Flawless Design.<br />
-            <div className="inline-block mt-6">
-              <span className="bg-[#b8f724] px-8 py-5 border-[7px] border-black inline-block rotate-[-1.5deg] shadow-[14px_14px_0_rgba(0,0,0,1)] hover:rotate-0 transition-transform duration-300">
-                Effortless Ship.
-              </span>
-            </div>
+          <h1 className="hero-title text-5xl sm:text-8xl lg:text-[110px] font-bold text-zinc-900 dark:text-white tracking-tight leading-[0.9] mb-12">
+            Build for <span className="text-[#b8f724]">Speed.</span><br />
+            <span className="text-zinc-400 dark:text-zinc-600">Styled by AI.</span>
           </h1>
 
-          <p className="hero-desc max-w-2xl text-base sm:text-[19px] font-bold text-zinc-500/70 leading-relaxed mb-16 px-4">
-            Transform your <span className="text-zinc-900">visual ideas</span> into <span className="text-[#8fcc00] italic">production-grade</span> React components instantly. <br className="hidden md:block" />
-            Optimized for <span className="text-zinc-900 underline decoration-[#b8f724]/60 decoration-2 underline-offset-[8px]">performance</span> and high-velocity shipping.
+          <p className="hero-desc max-w-2xl text-lg sm:text-2xl font-medium text-zinc-500/80 dark:text-zinc-400 leading-relaxed mb-16 px-4">
+            Transform your <span className="text-zinc-900 dark:text-white">visual intent</span> into <span className="text-[#8fcc00] italic font-semibold">production-grade</span> React architectures instantly. Optimized for performance and high-velocity teams.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-6">
             <Link
-              href="/categories"
-              className="hero-btn group relative flex items-center gap-6 rounded-2xl border-[3.5px] border-black bg-[#b8f724] px-10 py-5 text-[22px] font-[1000] text-black shadow-[8px_8px_0_rgba(0,0,0,1)] transition-all hover:-translate-y-1.5 hover:-translate-x-1 hover:shadow-[12px_12px_0_rgba(0,0,0,1)] active:translate-y-0 active:translate-x-0 active:shadow-none"
+              href="/sign-in"
+              className="hero-btn group relative flex items-center gap-6 rounded-[2rem] bg-zinc-900 dark:bg-white px-10 py-6 text-[20px] font-bold text-white dark:text-zinc-900 shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              Start Building
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-[#b8f724] transition-all group-hover:rotate-[15deg] group-hover:scale-110">
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+              Start Synthesis
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#b8f724] text-black transition-all group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-[#b8f724]/20">
+                <ArrowUpRight className="h-6 w-6" />
               </div>
             </Link>
           </div>
         </div>
+
+        {/* Floating Accent Elements (Refined) */}
+        <div className="hero-draggable absolute left-[10%] top-[25%] hidden xl:block animate-float">
+           <div className="p-8 rounded-[40px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-2xl space-y-4 cursor-grab">
+              <div className="flex gap-2">
+                 <div className="h-2 w-2 rounded-full bg-red-400" />
+                 <div className="h-2 w-2 rounded-full bg-yellow-400" />
+                 <div className="h-2 w-2 rounded-full bg-green-400" />
+              </div>
+              <div className="h-1 w-32 bg-zinc-100 dark:bg-white/5 rounded-full" />
+              <div className="h-1 w-24 bg-zinc-100 dark:bg-white/5 rounded-full" />
+           </div>
+        </div>
+
+        <div className="hero-draggable absolute right-[12%] bottom-[30%] hidden xl:block animate-float-delayed">
+           <div className="p-6 rounded-3xl bg-zinc-900 dark:bg-white border border-white/10 dark:border-black/5 shadow-2xl flex items-center gap-4 cursor-grab">
+              <div className="w-10 h-10 rounded-xl bg-[#b8f724] flex items-center justify-center text-black">
+                 <Cpu className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                 <span className="text-[10px] font-black uppercase tracking-widest text-[#b8f724] dark:text-[#8fcc00]">Engine_Stable</span>
+                 <span className="text-sm font-bold text-white dark:text-black">99.9% Uptime</span>
+              </div>
+           </div>
+        </div>
+
       </section>
 
       {/* ── 2. Logo Cloud / Social Proof ────────────────────────────────────── */}

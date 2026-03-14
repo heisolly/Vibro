@@ -1,11 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center bg-[#FAFAF8] bg-grid-pattern">
       <div className="mb-12 relative animate-item" style={{ opacity: 1, transform: 'none' }}>
-        <div className="relative flex h-40 w-40 items-center justify-center rounded-[3rem] border-[4.5px] border-black bg-white text-7xl shadow-[15px_15px_0_rgba(0,0,0,1)]">
-          🛰️
+        <div className="relative flex h-40 w-40 items-center justify-center rounded-[3rem] border-[4.5px] border-black bg-white text-7xl shadow-[15px_15px_0_rgba(0,0,0,1)] overflow-hidden">
+          <Image 
+            src="/logo.png" 
+            alt="Vibro Logo" 
+            width={120} 
+            height={120} 
+            className="object-contain"
+          />
         </div>
         <div className="absolute -right-4 -top-4 rounded-xl border-[2.5px] border-black bg-[#FF5C5C] px-3 py-1.5 text-[10px] font-black text-white uppercase tracking-widest shadow-[4px_4px_0_rgba(0,0,0,1)]">
           FAULT_OFF_GRID
