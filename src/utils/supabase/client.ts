@@ -1,12 +1,16 @@
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Create a supabase client on the browser with project's credentials
+  if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co') {
+    // This happens if env vars are not properly loaded or swapped by Next.js
+    console.warn('Supabase URL is missing or using placeholder! Re-check .env.local and restart dev server.');
+  }
+
   return createBrowserClient(
-    supabaseUrl.trim(),
-    supabaseKey.trim()
+    (supabaseUrl || 'https://placeholder.supabase.co').trim(),
+    (supabaseKey || 'placeholder').trim()
   )
 }
