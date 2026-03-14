@@ -2,15 +2,11 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export async function createClient() {
-  const getSafeEnv = (val: string | undefined, fallback: string) => {
-    if (typeof val !== 'string' || !val || val === 'undefined' || val === 'null' || val.trim() === '') {
-      return fallback;
-    }
-    return val.trim();
-  };
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
 
-  const supabaseUrl = getSafeEnv(process.env.NEXT_PUBLIC_SUPABASE_URL, 'https://placeholder.supabase.co');
-  const supabaseKey = getSafeEnv(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, 'placeholder');
+  const finalUrl = supabaseUrl.trim();
+  const finalKey = supabaseKey.trim();
 
   if (supabaseUrl === 'https://placeholder.supabase.co') {
     console.warn('⚠️ [Vibro] Using placeholder Supabase URL. This is expected during static build if env vars are missing.');
@@ -22,8 +18,8 @@ export async function createClient() {
     cookieStore = await cookies()
   } catch (e) {
     return createServerClient(
-      supabaseUrl,
-      supabaseKey,
+      finalUrl,
+      finalKey,
       {
         cookies: {
           get() { return undefined },
@@ -35,8 +31,8 @@ export async function createClient() {
   }
 
   return createServerClient(
-    supabaseUrl,
-    supabaseKey,
+    finalUrl,
+    finalKey,
     {
       cookies: {
         async get(name: string) {
