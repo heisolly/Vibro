@@ -75,17 +75,20 @@ function WorkstationContent() {
   const components = useMemo(() => {
     if (type === 'app') {
        return [
-          { id: 'h1', name: 'Global Navbar', type: 'navbar', content: { title: 'Vibro Studio', items: ['Dash', 'Assets', 'Logs'] } },
-          { id: 's1', name: 'Metric Overview', type: 'stats', content: { stats: [{ label: 'Total Users', val: '2.4k' }, { label: 'Revenue', val: '$42k' }, { label: 'Growth', val: '+12%' }] } },
-          { id: 'c1', name: 'Activity Feed', type: 'list', content: { items: ['User signed up', 'Payment processed', 'Feedback received'] } },
-          { id: 'f1', name: 'System Console', type: 'terminal', content: { status: 'Connected', region: 'us-east-1' } }
+          { id: 'h1', name: 'Global Navbar', type: 'navbar', content: { title: 'Vibro Engine', items: ['Synthesizer', 'Architect', 'History', 'Quota'] } },
+          { id: 's1', name: 'Architecture Stats', type: 'stats', content: { stats: [{ label: 'Nodes Sync', val: '2.4M' }, { label: 'Syntheses', val: '128' }, { label: 'CPU Load', val: '14%' }] } },
+          { id: 'c1', name: 'Engine Logs', type: 'list', content: { items: ['Structural mapping complete', 'CSS Variables injected', 'Viewport optimized for desktop'] } },
+          { id: 'f1', name: 'Terminal Console', type: 'terminal', content: { status: 'Connected', region: 'Vibro-Flux 4.2 L' } }
        ];
     }
     return [
-       { id: 'n1', name: 'Main Navigation', type: 'navbar', content: { links: ['Features', 'Pricing', 'Docs', 'Login'] } },
-       { id: 'he1', name: 'Hero Section', type: 'hero', content: { title: query.split('|')[0].trim(), sub: 'The industrial standard for interface synthesis.' } },
-       { id: 'g1', name: 'Feature Matrix', type: 'grid', content: { items: ['AI Optimized', 'Global CDN', 'Real-time Sync'] } },
-       { id: 'p1', name: 'Pricing Tiers', type: 'pricing', content: { plans: ['Starter', 'Pro', 'Enterprise'] } }
+       { id: 'n1', name: 'Main Navigation', type: 'navbar', content: { links: ['Architect', 'Marketplace', 'Resources', 'Pricing'] } },
+       { id: 'he1', name: 'Hero Synthesis', type: 'hero', content: { title: query.split('|')[0].trim() || "Interface Synthesis", sub: 'The industrial standard for rapid architectural generation and deployment.' } },
+       { id: 'g1', name: 'Feature Architecture', type: 'grid', content: { items: ['Neural Layout Engine', 'Dynamic Variable Injection', 'Motion Protocol 4.0', 'Zero-Latency Synthesis'] } },
+       { id: 'p1', name: 'Deployment Tiers', type: 'pricing', content: { plans: [
+         { name: 'Core', price: 'Free', features: ['10 Syntheses/mo', 'Basic Templates', 'CLI Export'] },
+         { name: 'Flux', price: '$29', features: ['Unlimited Labs', 'Premium Components', 'Monorepo Export'] }
+       ] } }
     ];
   }, [type, query]);
 
@@ -121,26 +124,102 @@ export default function SynthesizedPage() {
   );
 }`;
 
-  useEffect(() => {
-    let currentStage = 0;
-    const interval = setInterval(() => {
-      if (currentStage < synthesisStages.length - 1) {
-        currentStage++;
-        setStage(synthesisStages[currentStage]);
-        setProgress((currentStage / (synthesisStages.length - 1)) * 100);
-      } else {
-        clearInterval(interval);
-      }
-    }, 900);
-    return () => clearInterval(interval);
-  }, []);
+  const [isSynthesizing, setIsSynthesizing] = useState(true);
+  const [logs, setLogs] = useState<string[]>([]);
 
-  const isComplete = stage === 'Complete';
+  useEffect(() => {
+    if (!isSynthesizing) return;
+
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += Math.random() * 8;
+      if (currentProgress >= 100) {
+        currentProgress = 100;
+        clearInterval(interval);
+        setTimeout(() => setIsSynthesizing(false), 1200);
+      }
+      setProgress(Math.floor(currentProgress));
+      
+      const stageIdx = Math.floor((currentProgress / 100) * (synthesisStages.length - 1));
+      setStage(synthesisStages[stageIdx]);
+
+      const logOptions = [
+        "Analyzing structural intent...",
+        "Validating heuristic patterns...",
+        "Mapping component hierarchy...",
+        "Optimizing viewport parameters...",
+        "Injecting theme variables...",
+        "Synthesizing motion protocols...",
+        "Finalizing architectural draft...",
+        "Compiling production assets...",
+        "Engine peak reached.",
+        "Architecture Ready."
+      ];
+      const logIdx = Math.min(Math.floor((currentProgress / 100) * logOptions.length), logOptions.length - 1);
+      if (!logs.includes(logOptions[logIdx])) {
+        setLogs(prev => [...prev.slice(-4), logOptions[logIdx]]);
+      }
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, [isSynthesizing]);
+
+  const isComplete = !isSynthesizing;
 
   return (
-    <div className="h-screen flex flex-col bg-zinc-50 text-zinc-900 font-sans selection:bg-[#b8f724]/30 selection:text-zinc-900 overflow-hidden">
+    <div className="h-screen flex flex-col bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-zinc-100 font-sans selection:bg-[#b8f724]/30 selection:text-zinc-900 overflow-hidden relative">
       
-      {/* ── Top Editor Hea      <header className="h-16 bg-white/80 dark:bg-black/50 backdrop-blur-xl border-b border-zinc-200 dark:border-white/5 flex items-center justify-between px-6 shrink-0 z-[100]">
+      {/* ── Synthesis Overlay ── */}
+      {isSynthesizing && (
+        <div className="absolute inset-0 z-[1000] bg-zinc-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+          {/* Noise + Glow Background */}
+          <div className="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 contrast-150" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#b8f724]/10 blur-[150px] rounded-full animate-pulse" />
+          
+          <div className="relative z-10 space-y-12 max-w-2xl w-full">
+            <div className="space-y-4">
+              <div className="w-24 h-24 rounded-[32px] bg-white mx-auto flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)] animate-bounce duration-[2000ms]">
+                <Image src="/logo.png" alt="Vibro" width={56} height={56} className="object-contain" />
+              </div>
+              <h2 className="text-4xl font-black tracking-tighter text-white italic">Synthesizing Architecture...</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="h-2 w-full bg-white/5 rounded-full p-0.5 overflow-hidden border border-white/5">
+                <div 
+                  className="h-full bg-[#b8f724] transition-all duration-300 ease-out shadow-[0_0_20px_rgba(184,247,36,0.5)] rounded-full"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              
+              <div className="flex justify-between items-center px-2">
+                <span className="text-[10px] font-black text-[#b8f724] uppercase tracking-[0.3em]">{stage}</span>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] font-mono">{progress}%</span>
+              </div>
+            </div>
+
+            {/* Matrix/Engine Logs */}
+            <div className="bg-black/50 border border-white/5 rounded-3xl p-8 text-left font-mono space-y-3 min-h-[160px] backdrop-blur-md">
+               {logs.map((log, i) => (
+                  <div key={i} className={`text-[11px] flex items-center gap-3 transition-opacity duration-500 ${i === logs.length - 1 ? 'text-[#b8f724]' : 'text-zinc-600'}`}>
+                    <span className="opacity-20">{">"}</span>
+                    <span className="font-bold">{log}</span>
+                  </div>
+               ))}
+               <div className="w-1.5 h-4 bg-[#b8f724] animate-pulse inline-block align-middle ml-1" />
+            </div>
+          </div>
+
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4">
+             <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded-full border border-white/5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#b8f724] animate-pulse" />
+                <span className="text-[10px] font-black uppercase text-white/50 tracking-[0.2em]">{query.length > 30 ? query.substring(0, 30) + "..." : query}</span>
+             </div>
+          </div>
+        </div>
+      )}
+      {/* ── Top Editor Header ── */}
+      <header className="h-16 bg-white/80 dark:bg-black/50 backdrop-blur-xl border-b border-zinc-200 dark:border-white/5 flex items-center justify-between px-6 shrink-0 z-[100]">
          <div className="flex items-center gap-6">
             <Link href="/dashboard" className="flex items-center gap-3 group">
                <div className="w-10 h-10 rounded-xl bg-zinc-900 dark:bg-white flex items-center justify-center p-1.5 shadow-lg group-hover:rotate-6 transition-transform overflow-hidden">
@@ -315,25 +394,6 @@ export default function SynthesizedPage() {
                      borderRadius: `${borderRadius}px`
                   }}
                >
-                  {!isComplete && (
-                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/40 dark:bg-zinc-950/40 backdrop-blur-3xl z-[60]">
-                        <div className="w-24 h-24 bg-zinc-950 dark:bg-white rounded-[40px] flex items-center justify-center text-[#b8f724] mb-10 animate-spin-slow shadow-2xl shadow-[#b8f724]/20 border-[6px] border-[#b8f724]/10">
-                           <Zap className="w-10 h-10" />
-                        </div>
-                        <div className="text-center space-y-6">
-                           <h2 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight leading-none uppercase italic">Synthesizing Architecture...</h2>
-                           <div className="flex items-center justify-center gap-3">
-                              <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-black uppercase tracking-[0.4em]">{stage} Protocol</span>
-                              <div className="w-1 h-1 rounded-full bg-[#b8f724]" />
-                              <span className="text-[10px] text-zinc-900 dark:text-zinc-100 font-bold">{Math.round(progress)}%</span>
-                           </div>
-                           <div className="w-72 h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mx-auto p-0.5 border border-zinc-200 dark:border-white/5">
-                              <div className="h-full bg-[#b8f724] rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(184,247,36,0.5)]" style={{ width: `${progress}%` }} />
-                           </div>
-                        </div>
-                     </div>
-                  )}
-
                   {activeTab === 'code' ? (
                      <div className="flex-1 w-full p-16 bg-[#09090B] text-zinc-400 font-mono text-[14px] leading-relaxed selection:bg-[#b8f724]/30 overflow-auto">
                         <pre className="custom-scrollbar">{mockCode}</pre>
@@ -385,27 +445,26 @@ export default function SynthesizedPage() {
                               )}
 
                               {comp.type === 'pricing' && (
-                                 <div className={`grid ${viewport === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'} gap-10 py-32`}>
+                                 <div className={`grid ${viewport === 'mobile' ? 'grid-cols-1' : 'grid-cols-2'} gap-10 px-10 py-24`}>
                                     {((comp.content as any).plans || []).map((p: any, i: number) => (
-                                       <div key={p} className={`p-12 rounded-[48px] border border-zinc-100 dark:border-white/5 flex flex-col justify-between h-[560px] transition-all ${i === 1 ? 'shadow-[0_60px_120px_rgba(0,0,0,0.1)] dark:shadow-none bg-white dark:bg-zinc-900 border-[#b8f724]/30 dark:border-[#b8f724]/20 scale-105 z-10' : 'bg-zinc-50/40 dark:bg-zinc-900/40'}`}>
-                                          <div className="space-y-10 text-center sm:text-left">
+                                       <div key={i} className={`p-10 rounded-[48px] border border-zinc-100 dark:border-white/5 flex flex-col justify-between h-full transition-all ${i === 1 ? 'shadow-[0_60px_120px_rgba(0,0,0,0.1)] dark:shadow-none bg-white dark:bg-[#0A0A0A] border-[#b8f724]/30 dark:border-[#b8f724]/20 scale-105 z-10' : 'bg-zinc-50/40 dark:bg-zinc-900/40'}`}>
+                                          <div className="space-y-8">
                                              <div className="flex justify-between items-start">
-                                                <h4 className="text-[10px] font-black text-[#b8f724] uppercase tracking-[0.4em]">{p} Build</h4>
+                                                <div className="space-y-1">
+                                                   <h4 className="text-[10px] font-black text-[#b8f724] uppercase tracking-[0.4em] leading-none mb-2">{p.name} Build</h4>
+                                                   <p className="text-5xl font-black tracking-tighter text-zinc-950 dark:text-white italic leading-none">{p.price}<span className="text-[14px] font-bold text-zinc-300 dark:text-zinc-700 ml-2 tracking-normal not-italic">/node</span></p>
+                                                </div>
                                                 {i === 1 && <Sparkles className="w-6 h-6 text-[#b8f724]" />}
                                              </div>
-                                             <div className="space-y-2">
-                                                <p className="text-xs font-black text-zinc-400 dark:text-zinc-600 uppercase tracking-widest">Pricing Matrix</p>
-                                                <p className="text-6xl font-black tracking-tighter text-zinc-950 dark:text-white italic">${i * 49}<span className="text-[15px] font-bold text-zinc-300 dark:text-zinc-700 ml-2 tracking-normal not-italic">/mo</span></p>
-                                             </div>
-                                             <div className="space-y-6 pt-6">
-                                                {['Synthesized UI Node', 'Vibro Engine Sync', 'Pro Extraction'].map(f => (
-                                                   <div key={f} className="flex items-center gap-4 text-[12px] font-bold text-zinc-500 dark:text-zinc-400 italic">
+                                             <div className="space-y-4 pt-4">
+                                                {(p.features || []).map((f: string) => (
+                                                   <div key={f} className="flex items-center gap-4 text-[13px] font-bold text-zinc-500 dark:text-zinc-400 italic">
                                                       <div className="w-2 h-2 rounded-full bg-[#b8f724] shadow-[0_0_10px_rgba(184,247,36,0.5)]" /> {f}
                                                    </div>
                                                 ))}
                                              </div>
                                           </div>
-                                          <button className={`w-full py-5 rounded-[24px] font-black text-[11px] uppercase tracking-[0.2em] transition-all ${i === 1 ? 'bg-zinc-900 dark:bg-[#b8f724] text-white dark:text-zinc-950 shadow-2xl hover:bg-black dark:hover:bg-white' : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700'}`}>Select Architecture</button>
+                                          <button className={`w-full py-5 rounded-[24px] font-black text-[11px] uppercase tracking-[0.2em] transition-all mt-10 ${i === 1 ? 'bg-zinc-950 dark:bg-[#b8f724] text-white dark:text-zinc-900 shadow-2xl hover:bg-black dark:hover:bg-white' : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700'}`}>Select Protocol</button>
                                        </div>
                                     ))}
                                  </div>

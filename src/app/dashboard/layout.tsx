@@ -40,12 +40,20 @@ export default function DashboardLayout({
 
       {/* Main Content Area */}
       <main 
-        className={`flex-1 transition-all duration-500 min-h-screen flex flex-col ${
-          isCollapsed ? "ml-[72px]" : "ml-64"
+        className={`flex-1 transition-all duration-500 min-h-screen flex flex-col relative ${
+          isCollapsed ? "pl-[88px]" : "pl-[280px]"
         }`}
       >
+        {/* Production-Ready Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+           <div className="absolute inset-0 architect-grid opacity-60 dark:opacity-40" />
+           <div className="absolute inset-0 bg-gradient-to-tr from-[#b8f724]/5 via-transparent to-transparent opacity-30 dark:opacity-20" />
+           <div className="absolute inset-0 dashboard-mask" />
+           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-white/10 to-transparent" />
+        </div>
+
         {/* Dynamic Page Content */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative z-10">
           <div className="noise-overlay" />
           {children}
         </div>

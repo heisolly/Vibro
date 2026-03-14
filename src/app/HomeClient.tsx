@@ -10,6 +10,7 @@ import { useGSAP } from "@gsap/react";
 import CategoryCard from "@/components/CategoryCard";
 import PromptCard from "@/components/PromptCard";
 import type { Category, Prompt } from "@/lib/types";
+import { ArrowUpRight, Cpu } from "lucide-react";
 
 const PixelBlast = dynamic(() => import("@/components/PixelBlast"), { ssr: false });
 const DesignBot = dynamic(() => import("@/components/DesignBot"), { ssr: false });
