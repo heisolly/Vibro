@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-
-import Image from "next/image";
+import { Search, Bell } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -14,6 +13,7 @@ export default function DashboardLayout({
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -23,6 +23,7 @@ export default function DashboardLayout({
       if (!user) {
         router.push("/sign-in");
       } else {
+        setUser(user);
         setLoading(false);
       }
     }
@@ -30,47 +31,50 @@ export default function DashboardLayout({
   }, [router, supabase]);
 
   if (loading) {
-    return <div className="min-h-screen bg-white" />;
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-zinc-200 border-t-zinc-900 rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen bg-white selection:bg-[#b8f724]/30 selection:text-zinc-900">
+    <div className="flex min-h-screen bg-[#FAFAFA] text-zinc-900 font-sans selection:bg-[#b8f724]/30">
       {/* Sidebar */}
       <DashboardSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       {/* Main Content Area */}
       <main 
-        className={`flex-1 transition-all duration-500 min-h-screen flex flex-col relative ${
-          isCollapsed ? "pl-[88px]" : "pl-[280px]"
+        className={`flex-1 transition-all duration-300 min-h-screen relative flex flex-col ${
+          isCollapsed ? "pl-20" : "pl-64"
         }`}
       >
-        {/* Production-Ready Background */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-           <div className="absolute inset-0 architect-grid opacity-60 dark:opacity-40" />
-           <div className="absolute inset-0 bg-gradient-to-tr from-[#b8f724]/5 via-transparent to-transparent opacity-30 dark:opacity-20" />
-           <div className="absolute inset-0 dashboard-mask" />
-           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-white/10 to-transparent" />
-        </div>
+        {/* Top Bar */}
+        <header className="h-14 bg-white/80 backdrop-blur-md border-b border-zinc-200 px-8 flex items-center justify-between sticky top-0 z-40">
+           <div className="flex items-center gap-4 bg-zinc-100/50 px-3 py-1.5 rounded-lg border border-zinc-200/50 w-72 transition-all focus-within:w-96 focus-within:bg-zinc-100 focus-within:border-zinc-300 group">
+              <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Search projects..." 
+                className="bg-transparent border-none outline-none text-xs font-medium text-zinc-900 placeholder:text-zinc-400 w-full"
+              />
+           </div>
 
-        {/* Dynamic Page Content */}
-        <div className="flex-1 relative z-10">
-          <div className="noise-overlay" />
+           <div className="flex items-center gap-4">
+              <button className="p-2 hover:bg-zinc-100 rounded-lg transition-colors text-zinc-500 hover:text-zinc-900 relative">
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border-2 border-white" />
+              </button>
+              <div className="w-7 h-7 rounded-full bg-zinc-900 flex items-center justify-center text-[10px] font-bold text-white shadow-sm ring-2 ring-zinc-50 border border-white">
+                 {user?.email?.[0].toUpperCase() || "V"}
+              </div>
+           </div>
+        </header>
+
+        {/* Page Content */}
+        <div className="flex-1">
           {children}
         </div>
-        
-        {/* Simple Dashboard Footer */}
-        <footer className="p-10 border-t border-zinc-100 flex flex-col items-center gap-4 bg-white">
-           <Image 
-             src="/logo.png" 
-             alt="Vibro Logo" 
-             width={24} 
-             height={24} 
-             className="opacity-40"
-           />
-           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300">
-             Vibro Studio v4.2.0 • Production Build
-           </p>
-        </footer>
       </main>
     </div>
   );

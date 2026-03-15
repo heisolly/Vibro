@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+
 import { Prompt } from "@/lib/types";
 import LazyPreview from "@/components/LazyPreview";
 import { Eye, Heart, ArrowUpRight } from "lucide-react";
@@ -10,9 +12,18 @@ interface PromptCardProps {
 }
 
 export default function PromptCard({ prompt }: PromptCardProps) {
-  // Use mock meta data for the premium look
-  const views = Math.floor(Math.random() * 90) + 10;
-  const saves = Math.floor(Math.random() * 12);
+  // Use state for values that depend on random to avoid hydration mismatch
+  const [stats, setStats] = useState({ views: 0, saves: 0 });
+
+  useEffect(() => {
+    setStats({
+      views: Math.floor(Math.random() * 90) + 10,
+      saves: Math.floor(Math.random() * 12)
+    });
+  }, []);
+
+  const { views, saves } = stats;
+
 
   return (
     <Link

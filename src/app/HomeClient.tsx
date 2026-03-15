@@ -10,7 +10,15 @@ import { useGSAP } from "@gsap/react";
 import CategoryCard from "@/components/CategoryCard";
 import PromptCard from "@/components/PromptCard";
 import type { Category, Prompt } from "@/lib/types";
-import { ArrowUpRight, Cpu } from "lucide-react";
+import { ArrowUpRight, Cpu, Search } from "lucide-react";
+import GridBackground from "@/components/GridBackground";
+import HeroLayout from "@/components/HeroLayout";
+import Subheadline from "@/components/Subheadline";
+import OverlayCard from "@/components/OverlayCard";
+import CompilingBadge from "@/components/CompilingBadge";
+import Navbar from "@/components/Navbar";
+
+
 
 const PixelBlast = dynamic(() => import("@/components/PixelBlast"), { ssr: false });
 const DesignBot = dynamic(() => import("@/components/DesignBot"), { ssr: false });
@@ -262,110 +270,81 @@ export default function HomeClient({ categories: initialCategories, featured: in
     <div ref={containerRef} className="relative w-full bg-[#F3F2EE] text-gray-900 selection:bg-[#b8f724]/40">
 
       {/* ── 1. Hero Section ─────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative z-10 min-h-screen flex flex-col items-center justify-center pt-32 sm:pt-40 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white dark:bg-[#0A0A0A]">
+      <section ref={heroRef} className="relative z-10 min-h-screen flex flex-col items-center justify-center overflow-visible">
         
-        {/* PixelBlast + Grid Hybrid Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-           {/* Reintroduced Lime Green PixelBlast */}
-           <div className="absolute inset-0 opacity-[0.2] dark:opacity-[0.15]">
-            <PixelBlast
-              color="#b8f724"
-              variant="square"
-              pixelSize={4} 
-              patternScale={12}
-              patternDensity={0.25}
-              enableRipples={true}
-              rippleSpeed={0.08}
-              rippleThickness={0.15}
-              rippleIntensityScale={0.6}
-              edgeFade={0.3}
-              speed={0.12}
-              transparent={true}
-            />
+        <Navbar />
+        <GridBackground />
+
+
+        {/* ── Floating Overlays ────────────────────────────────────────── */}
+        
+        {/* Top Left: WORKFLOW_TRIGGER */}
+        <OverlayCard initialX={-450} initialY={-250} className="w-[320px]">
+          <div className="flex items-center gap-2 mb-4 border-b pb-2">
+            <div className="w-4 h-4 rounded-full bg-[var(--color-dash-blue)]" />
+            <span className="text-[14px] font-[900] font-inter uppercase tracking-tighter">WORKFLOW_TRIGGER</span>
           </div>
-
-          {/* Static Grid Layer with Elegant Animated Blocks */}
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
-            style={{ 
-              backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`,
-              backgroundSize: "64px 64px"
-            }} 
-          >
-            {[...Array(24)].map((_, i) => (
-              <div 
-                key={i}
-                className="grid-reveal-block absolute bg-[#b8f724] opacity-0"
-                style={{
-                  width: "63px", 
-                  height: "63px",
-                  left: `${((i * 7) % 25) * 64 + 1}px`,
-                  top: `${((i * 3) % 15) * 64 + 1}px`,
-                  boxShadow: "0 0 20px rgba(184, 247, 36, 0.4)" 
-                }}
-              />
-            ))}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-bold text-gray-500">On_Click</span>
+              <div className="w-3 h-3 rounded-full border-2 border-black" />
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-bold text-gray-500">Success_Out</span>
+              <div className="w-3 h-3 rounded-full bg-[var(--color-dash-neon)] border-2 border-black" />
+            </div>
           </div>
-        </div>
+          {/* Connector dots on sides */}
+          <div className="absolute left-[-12px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white border-[3px] border-black" />
+          <div className="absolute right-[-12px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black border-[3px] border-black" />
+        </OverlayCard>
 
-        {/* Subtle Light Fade */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white dark:from-black via-transparent to-white/40 dark:to-transparent pointer-events-none" />
-
-        {/* ── Center Content ────────────────────────────────────────────── */}
-        <div className="relative z-[10] flex flex-col items-center text-center max-w-6xl mx-auto px-4">
-          
-          <div className="hero-draggable mb-12 flex items-center gap-2 px-4 py-2 bg-[#b8f724]/10 dark:bg-[#b8f724]/5 rounded-full border border-[#b8f724]/20 dark:border-[#b8f724]/10 animate-fade-in cursor-grab active:cursor-grabbing">
-             <div className="w-2 h-2 rounded-full bg-[#b8f724] animate-pulse" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-900 dark:text-zinc-400">Release v4.2 Protocol</span>
+        {/* Top Right: INPUT_ANALYSIS */}
+        <OverlayCard initialX={400} initialY={-300} rotation={2} className="w-[380px]">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
+            </div>
+            <span className="ml-4 text-[12px] font-black font-inter text-gray-300 uppercase tracking-widest">INPUT_ANALYSIS</span>
           </div>
-
-          <h1 className="hero-title text-5xl sm:text-8xl lg:text-[110px] font-bold text-zinc-900 dark:text-white tracking-tight leading-[0.9] mb-12">
-            Build for <span className="text-[#b8f724]">Speed.</span><br />
-            <span className="text-zinc-400 dark:text-zinc-600">Styled by AI.</span>
-          </h1>
-
-          <p className="hero-desc max-w-2xl text-lg sm:text-2xl font-medium text-zinc-500/80 dark:text-zinc-400 leading-relaxed mb-16 px-4">
-            Transform your <span className="text-zinc-900 dark:text-white">visual intent</span> into <span className="text-[#8fcc00] italic font-semibold">production-grade</span> React architectures instantly. Optimized for performance and high-velocity teams.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link
-              href="/sign-in"
-              className="hero-btn group relative flex items-center gap-6 rounded-[2rem] bg-zinc-900 dark:bg-white px-10 py-6 text-[20px] font-bold text-white dark:text-zinc-900 shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Start Synthesis
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#b8f724] text-black transition-all group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-[#b8f724]/20">
-                <ArrowUpRight className="h-6 w-6" />
-              </div>
-            </Link>
+          <div className="font-mono text-[14px] leading-relaxed">
+            <span className="text-black font-bold">" A </span>
+            <span className="text-[var(--color-dash-neon)] font-black italic bg-black px-1">luxury</span>
+            <span className="text-black font-bold"> dashboard with </span>
+            <span className="text-[var(--color-dash-blue)] font-bold">glassmorphism ... </span>
+            <span className="text-black font-bold"> "</span>
           </div>
-        </div>
+          <div className="mt-6 flex items-center justify-between border-t pt-4">
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">IDEATING...</span>
+            <div className="flex gap-1">
+              <div className="w-1 h-1 rounded-full bg-[var(--color-dash-neon)]" />
+              <div className="w-1 h-1 rounded-full bg-[var(--color-dash-neon)]" />
+              <div className="w-1 h-1 rounded-full bg-[var(--color-dash-neon)]" />
+            </div>
+          </div>
+        </OverlayCard>
 
-        {/* Floating Accent Elements (Refined) */}
-        <div className="hero-draggable absolute left-[10%] top-[25%] hidden xl:block animate-float">
-           <div className="p-8 rounded-[40px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-2xl space-y-4 cursor-grab">
-              <div className="flex gap-2">
-                 <div className="h-2 w-2 rounded-full bg-red-400" />
-                 <div className="h-2 w-2 rounded-full bg-yellow-400" />
-                 <div className="h-2 w-2 rounded-full bg-green-400" />
-              </div>
-              <div className="h-1 w-32 bg-zinc-100 dark:bg-white/5 rounded-full" />
-              <div className="h-1 w-24 bg-zinc-100 dark:bg-white/5 rounded-full" />
-           </div>
-        </div>
+        {/* Bottom Right: Navbar.tsx pill */}
+        <OverlayCard initialX={350} initialY={150} className="w-[180px] rounded-full px-6 py-3 bg-[var(--color-dash-neon)] text-black">
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-[16px] font-black font-inter">Navbar.tsx</span>
+          </div>
+          {/* Connector dots on sides */}
+          <div className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-[3px] border-black" />
+          <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-black border-[3px] border-black" />
+        </OverlayCard>
 
-        <div className="hero-draggable absolute right-[12%] bottom-[30%] hidden xl:block animate-float-delayed">
-           <div className="p-6 rounded-3xl bg-zinc-900 dark:bg-white border border-white/10 dark:border-black/5 shadow-2xl flex items-center gap-4 cursor-grab">
-              <div className="w-10 h-10 rounded-xl bg-[#b8f724] flex items-center justify-center text-black">
-                 <Cpu className="w-6 h-6" />
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-[10px] font-black uppercase tracking-widest text-[#b8f724] dark:text-[#8fcc00]">Engine_Stable</span>
-                 <span className="text-sm font-bold text-white dark:text-black">99.9% Uptime</span>
-              </div>
-           </div>
-        </div>
+        {/* Bottom Left: Compiling Badge */}
+        <CompilingBadge />
+
+        {/* ── Main Hero Content ── */}
+        <HeroLayout />
+        <Subheadline />
 
       </section>
+
 
       {/* ── 2. Logo Cloud / Social Proof ────────────────────────────────────── */}
       <section className="scroll-section border-y-[3px] border-black bg-white py-0 relative z-0 overflow-hidden">

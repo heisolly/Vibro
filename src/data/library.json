@@ -1,0 +1,66 @@
+[
+  {
+    "id": "nav-1",
+    "name": "Modern Glass Navbar",
+    "category": "Navigation",
+    "tags": ["Glassmorphism", "Sticky", "Responsive"],
+    "framework": ["React", "Next.js"],
+    "previewColor": "bg-indigo-500/10"
+  },
+  {
+    "id": "hero-1",
+    "name": "Gradient Hero Section",
+    "category": "Hero Sections",
+    "tags": ["High-Conversion", "Animated", "3D"],
+    "framework": ["Next.js", "Tailwind"],
+    "previewColor": "bg-blue-500/10"
+  },
+  {
+    "id": "card-1",
+    "name": "Fintech Analytics Card",
+    "category": "Cards",
+    "tags": ["Dashboard", "Charts", "Interactive"],
+    "framework": ["React"],
+    "previewColor": "bg-emerald-500/10"
+  },
+  {
+    "id": "table-1",
+    "name": "Pro Pricing Table",
+    "category": "Pricing Tables",
+    "tags": ["SaaS", "Subscription", "Toggled"],
+    "framework": ["Next.js"],
+    "previewColor": "bg-orange-500/10"
+  },
+  {
+    "id": "form-1",
+    "name": "Multi-step Auth Form",
+    "category": "Forms",
+    "tags": ["Validation", "Secure", "Minimal"],
+    "framework": ["React"],
+    "previewColor": "bg-purple-500/10"
+  },
+  {
+    "id": "sidebar-1",
+    "name": "Linear Sidebar",
+    "category": "Sidebars",
+    "tags": ["Collapsible", "Icons", "SaaS"],
+    "framework": ["Next.js"],
+    "previewColor": "bg-zinc-500/10"
+  },
+  {
+    "id": "chart-1",
+    "name": "Real-time Line Chart",
+    "category": "Charts",
+    "tags": ["D3.js", "Analytics", "Dark Mode"],
+    "framework": ["React"],
+    "previewColor": "bg-red-500/10"
+  },
+  {
+    "id": "modal-1",
+    "name": "Project Settings Modal",
+    "category": "Modals",
+    "tags": ["Overlays", "Forms", "Accessible"],
+    "framework": ["Next.js"],
+    "previewColor": "bg-cyan-500/10"
+  }
+]
