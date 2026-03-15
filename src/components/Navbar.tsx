@@ -1,69 +1,67 @@
 "use client";
 
-import Link from "next/link";
-import { Search } from "lucide-react";
 import { motion } from "framer-motion";
+import { Search, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="absolute top-0 left-0 right-0 z-[100] px-12 py-10 flex items-center justify-between pointer-events-none">
-
-      {/* Container to handle events while the nav itself is transparent */}
-      <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between pointer-events-auto">
+    <nav className="fixed top-0 left-0 w-full z-[100] px-6 py-6 pointer-events-none">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between pointer-events-auto">
         
-        {/* Left: Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[var(--color-dash-neon)] border-[3px] border-black rounded-xl flex items-center justify-center overflow-hidden">
-            <div className="flex flex-col gap-1 w-6">
-              <div className="h-1 bg-black rounded-full" />
-              <div className="h-1 bg-black rounded-full" />
-              <div className="h-1 bg-black rounded-full" />
-            </div>
+        {/* Left: Logo Box */}
+        <div className="flex items-center gap-6 bg-white/80 backdrop-blur-md border-[3px] border-black rounded-3xl px-6 py-3 shadow-[6px_6px_0_rgba(0,0,0,1)]">
+          <div className="relative w-8 h-8 flex items-center justify-center">
+            {/* Stacked Hexagons */}
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 12L32 19V31L20 38L8 31V19L20 12Z" fill="#000000" />
+              <path d="M20 7L32 14V26L20 33L8 26V14L20 7Z" fill="#C6FF3D" stroke="#000000" strokeWidth="2.5" />
+              <path d="M20 2L32 9V21L20 28L8 21V9L20 2Z" fill="#C6FF3D" stroke="#000000" strokeWidth="2.5" />
+            </svg>
           </div>
-          <span className="text-[28px] font-black font-poppins tracking-tighter text-black">Vibro.</span>
+          <div className="flex flex-col">
+            <span className="text-[22px] font-[900] font-poppins text-black leading-none tracking-tight">Vibro</span>
+            <div className="h-1 w-full bg-[#C6FF3D] mt-0.5 rounded-full" />
+          </div>
         </div>
 
-        {/* Center: Search & Nav Links */}
-        <div className="flex items-center gap-12">
-          {/* Search Bar */}
-          <div className="relative group">
-            <div className="flex items-center gap-2 bg-[var(--color-dash-light-gray)] border-[3px] border-transparent focus-within:border-black rounded-full px-5 py-2.5 w-64 shadow-[0_4px_10px_rgba(0,0,0,0.05)] transition-all">
-              <Search className="w-4 h-4 text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Ask Vibro: 'A sleek portfolio...'" 
-                className="bg-transparent border-none outline-none text-[14px] font-inter font-semibold w-full placeholder:text-gray-400"
-              />
-              <div className="w-4 h-4 rounded bg-gray-200" /> {/* Command/Icon indicator */}
-            </div>
+        {/* Center: Search & Nav Cluster */}
+        <div className="hidden lg:flex items-center gap-4 bg-white/80 backdrop-blur-md border-[3px] border-black rounded-[2.5rem] px-4 py-2 shadow-[8px_8px_0_rgba(0,0,0,1)]">
+          <div className="flex items-center gap-2 bg-[#F3F3F3] rounded-full px-5 py-2.5 border-[2px] border-black/5 hover:border-black/10 transition-all">
+            <Search className="w-4 h-4 text-[#888888]" />
+            <input 
+              type="text" 
+              placeholder="A sleek portfolio..." 
+              className="bg-transparent border-none outline-none text-[15px] font-poppins font-[600] w-[180px] placeholder:text-[#888888]"
+            />
+            <div className="bg-black/5 rounded px-1.5 py-0.5 text-[10px] font-black text-[#888888]">/</div>
           </div>
 
-          {/* Nav Links */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="px-6 py-2.5 rounded-full border-[3.5px] border-black bg-black text-white font-bold font-inter text-[16px] shadow-[4px_4px_0_rgba(0,0,0,1)] hover:scale-105 transition-transform">
+          <div className="flex items-center gap-4 px-2">
+            <Link 
+              href="/" 
+              className="bg-black text-[#C6FF3D] px-6 py-2 rounded-full font-[800] text-[15px] font-poppins"
+            >
               Home
             </Link>
-            <Link href="/browse" className="text-[var(--color-dash-gray)] font-bold font-inter text-[16px] hover:text-black transition-colors">
-              Browse
-            </Link>
-            <Link href="/generator" className="text-[var(--color-dash-gray)] font-bold font-inter text-[16px] hover:text-black transition-colors">
-              Generator
-            </Link>
-            <Link href="/console" className="text-[var(--color-dash-gray)] font-bold font-inter text-[16px] hover:text-black transition-colors">
-              Console
-            </Link>
+            <Link href="/dashboard" className="text-[#888888] font-[700] hover:text-black transition-colors text-[15px]">Engine</Link>
+            <Link href="/archives" className="text-[#888888] font-[700] hover:text-black transition-colors text-[15px]">Archives</Link>
           </div>
         </div>
 
 
-        {/* Right: Sign Up */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-[var(--color-dash-neon)] border-[3px] border-black rounded-full px-8 py-4 font-black font-inter text-[16px] uppercase tracking-wide shadow-[6px_6px_0_rgba(0,0,0,1)]"
-        >
-          Sign up for free
-        </motion.button>
+        {/* Right: CTA */}
+        <Link href="/dashboard">
+          <motion.button
+            whileHover={{ scale: 1.05, x: -5 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#C6FF3D] border-[4px] border-black rounded-full px-8 py-3.5 font-[900] font-poppins text-[18px] text-black shadow-[6px_6px_0_rgba(0,0,0,1)] hover:shadow-[10px_10px_0_rgba(0,0,0,1)] transition-all flex items-center gap-2 pointer-events-auto"
+          >
+            Get Started
+            <ChevronRight className="w-5 h-5 stroke-[3]" />
+          </motion.button>
+        </Link>
+
       </div>
     </nav>
   );

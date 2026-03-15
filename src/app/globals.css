@@ -1,16 +1,22 @@
 @import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme inline {
-  /* ── Dashboard Theme ───────────────────────────────── */
+:root {
+  /* ── Dashboard Theme Variables ── */
   --color-dash-bg: #FCFCFC;
-  --color-dash-black: #1a1c1e;
-  --color-dash-gray: #818a91;
-  --color-dash-light-gray: #f8f9fa;
-  --color-dash-border: #f1f3f5;
+  --color-dash-black: #000000;
+  --color-dash-neon: #C6FF3D;
+  --color-dash-blue: #3B5FFF;
+  --color-dash-gray: #888888;
+  --color-dash-light-gray: #F3F3F3;
+  --color-dash-grid: #F3F3F3;
+  --color-dash-dot: #E6FFB3;
+  --color-dash-border: #000000;
+}
 
-  /* ── Fonts ────────────────────────────────────────────── */
+@theme inline {
+  /* ── Fonts ── */
   --font-satoshi: "Satoshi", sans-serif;
   --font-poppins: "Poppins", sans-serif;
   --font-inter: "Inter", sans-serif;
@@ -42,22 +48,39 @@ html {
   height: 100%;
 }
 
-
 body {
-  background: #ffffff;
-  color: #1a1c1e;
-  font-family: var(--font-sans);
+  background: white;
+  color: #000000;
+  font-family: var(--font-poppins);
   font-size: 1rem;
   line-height: 1.5;
-  letter-spacing: -0.1px;
-  font-variant-ligatures: no-common-ligatures;
-  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  print-color-adjust: exact;
   height: 100%;
-  position: relative;
-  z-index: 1;
+  overflow-x: hidden;
+}
+
+/* Container width enforcement */
+.main-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+@media (max-width: 1024px) {
+  .main-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* ── Utility ────────────────────────────────────────────── */

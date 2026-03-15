@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import VibroBackground from "@/components/VibroBackground";
 import LayoutContent from "@/components/LayoutContent";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = { variable: "--font-geist-sans" };
+const interMono = { variable: "--font-geist-mono" };
 
 export const metadata: Metadata = {
   title: "Vibro — The Website-First Component Workflow",
@@ -39,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-vibro-primary/30 selection:text-vibro-primary-light`}
+        className={`${inter.variable} ${interMono.variable} antialiased selection:bg-vibro-primary/30 selection:text-vibro-primary-light`}
       >
           <VibroBackground />
           <LayoutContent>{children}</LayoutContent>
