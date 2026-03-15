@@ -32,7 +32,8 @@ import {
   Type,
   Maximize,
   Layout as LayoutIcon,
-  Check
+  Check,
+  X
 } from "lucide-react";
 
 /**
