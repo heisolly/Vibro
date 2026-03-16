@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import GridBackground from "@/components/GridBackground";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -24,18 +25,21 @@ const STATS = [
   { label: "Engineers Shipping With Vibro",target: 12000,  suffix: "+" },
 ];
 
+/**
+ * ManifestoSection - Brutalist Sharp Edition
+ * High contrast dark mode with sharp edges.
+ */
 export default function ManifestoSection() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
-    // Scroll-pinned manifesto text — each line reveals as you scroll
     const lines = gsap.utils.toArray<HTMLElement>(".manifesto-line");
 
     lines.forEach((line, i) => {
       gsap.fromTo(line,
-        { opacity: 0.1, y: 40, scale: 0.95 },
+        { opacity: 0.1, y: 40 },
         {
-          opacity: 1, y: 0, scale: 1,
+          opacity: 1, y: 0,
           duration: 0.8,
           ease: "expo.out",
           scrollTrigger: {
@@ -48,7 +52,6 @@ export default function ManifestoSection() {
       );
     });
 
-    // Animated counters
     const counters = gsap.utils.toArray<HTMLElement>(".stat-counter");
     counters.forEach(counter => {
       const target = parseFloat(counter.getAttribute("data-target") || "0");
@@ -67,40 +70,23 @@ export default function ManifestoSection() {
       });
     });
 
-    // Background text float
-    gsap.to(".bg-ghost-text", {
-      y: -80,
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1.5,
-      },
-    });
-
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="scroll-section relative bg-black overflow-hidden z-10">
-      {/* Giant BG ghost text */}
-      <div className="bg-ghost-text absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-        <span className="text-[28vw] font-[1000] text-[#ffffff03] uppercase tracking-tighter whitespace-nowrap">VIBRO</span>
-      </div>
+    <section ref={sectionRef} className="scroll-section relative bg-[#0D0D0D] overflow-hidden z-10 font-space-grotesk border-y-[4px] border-black">
+      
+      {/* ── GHOST GRID ── */}
+      <GridBackground forceTheme="dark" />
 
-      {/* Top border glow */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#C6FF3D]/0 via-[#C6FF3D]/60 to-[#C6FF3D]/0" />
-
-      {/* Main manifesto */}
-      <div className="py-40 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-3 border border-[#ffffff10] text-zinc-600 px-5 py-2 text-[10px] font-black uppercase tracking-[0.4em] mb-16">
-            ∅ CORE_DOCTRINE
+      <div className="py-40 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="mb-24">
+          <div className="inline-flex items-center gap-3 bg-white text-black border-[3px] border-black px-6 py-2 text-[12px] font-[900] uppercase tracking-[0.4em] mb-16 shadow-[6px_6px_0_#C6FF3D]">
+            ◈ CORE_DOCTRINE
           </div>
           {LINES.map((line, i) => (
-            <div key={i} className="manifesto-line overflow-hidden">
-              <span className={`block text-[9vw] sm:text-[8rem] font-[1000] uppercase tracking-tighter leading-[0.88] ${
-                line.accent ? "text-[#C6FF3D]" : "text-white"
+            <div key={i} className="manifesto-line overflow-hidden mb-2">
+              <span className={`block text-[8vw] sm:text-[9.5rem] font-[1000] uppercase tracking-[-0.04em] leading-[0.82] ${
+                line.accent ? "text-black bg-[#C6FF3D] inline-block px-6 border-[4px] border-black shadow-[12px_12px_0_rgba(255,255,255,0.1)]" : "text-white"
               }`}>
                 {line.text}
               </span>
@@ -108,30 +94,29 @@ export default function ManifestoSection() {
           ))}
         </div>
 
-        <div className="mt-20 border-t border-[#ffffff08] pt-16">
-          <p className="text-zinc-600 font-black uppercase tracking-[0.4em] text-[10px] mb-10">// NETWORK_METRICS</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#ffffff08]">
+        <div className="mt-32 pt-24 border-t-[4px] border-white/10">
+          <p className="text-[#C6FF3D] font-[900] uppercase tracking-[0.5em] text-[12px] mb-12 lg:text-center">// NETWORK_SYNTHESIS_METRICS</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {STATS.map((s, i) => (
-              <div key={i} className="bg-black p-10 group hover:bg-[#0d0d0f] transition-colors">
+              <div key={i} className="bg-[#151515] p-10 border-[3px] border-white/5 hover:border-[#C6FF3D] transition-colors relative group shadow-[10px_10px_0_rgba(0,0,0,1)]">
+                <div className="absolute -top-4 -left-4 w-10 h-10 bg-black border-[2px] border-white/10 flex items-center justify-center font-black text-[10px] text-zinc-500">
+                    S_{i+1}
+                </div>
                 <div
-                  className="stat-counter text-5xl sm:text-6xl font-[1000] text-white tracking-tighter mb-3"
+                  className="stat-counter text-6xl sm:text-7xl font-[1000] text-white tracking-tighter mb-4"
                   data-target={s.target}
                   data-suffix={s.suffix}
                 >
                   0{s.suffix}
                 </div>
-                <p className="text-zinc-600 font-black uppercase tracking-widest text-[10px]">{s.label}</p>
-                <div className="mt-4 w-8 h-[2px] bg-[#C6FF3D]/30 group-hover:w-full transition-all duration-700" />
+                <p className="text-zinc-500 font-bold uppercase tracking-widest text-[11px] leading-tight">{s.label}</p>
+                <div className="mt-6 w-full h-[3px] bg-white/5 group-hover:bg-[#C6FF3D] transition-all duration-500" />
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Decorative scan line */}
-      <div className="absolute inset-0 pointer-events-none bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.01)_2px,rgba(255,255,255,0.01)_4px)]" />
-      {/* Bottom border glow */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#C6FF3D]/0 via-[#C6FF3D]/60 to-[#C6FF3D]/0" />
     </section>
   );
 }

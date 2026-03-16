@@ -44,7 +44,7 @@ export default function LazyPreview({
         <iframe
           src={`/api/preview/${slug}`}
           title={slug}
-          className="pointer-events-none origin-top-left"
+          className="pointer-events-none origin-top-left border-none"
           style={{
             width: `${width}px`,
             height: `${height}px`,
@@ -53,10 +53,11 @@ export default function LazyPreview({
           }}
           tabIndex={-1}
           loading="lazy"
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-same-origin"
+          referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center bg-zinc-50">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-400" />
         </div>
       )}

@@ -1,24 +1,22 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import PromptCard from "@/components/PromptCard";
 import type { Category, Prompt } from "@/lib/types";
 import {
   Code2, Zap, Github, Twitter, Linkedin,
-  ShieldCheck, Activity, Box, ArrowUpRight, Check,
+  Cpu, Layout, Terminal, Download, Sliders, ArrowUpRight, Check, ArrowRight,
+  Upload, Palette, FileJson, Box
 } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ManifestoSection from "@/components/ManifestoSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import DashboardPreviewSection from "@/components/DashboardPreviewSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-
-const DesignBot = dynamic(() => import("@/components/DesignBot"), { ssr: false });
+import GridBackground from "@/components/GridBackground";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -63,78 +61,63 @@ export default function HomeClient({ categories: _categories, featured: initialF
   const featured = initialFeatured.length > 0 ? initialFeatured : DUMMY_FEATURED;
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Debug Environment Variables
-  useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
-      console.warn("⚠️ [Vibro Debug] Client-side environment variables missing!");
-      console.log("NEXT_PUBLIC_SUPABASE_URL:", supabaseUrl);
-    } else {
-      console.log("✅ [Vibro Debug] Client-side environment variables loaded.");
-    }
-  }, []);
-
   useGSAP(() => {
-    // Generic scroll reveals
+    // Reveal all elements with sc-reveal class as they scroll into view
     const items = gsap.utils.toArray<HTMLElement>(".sc-reveal");
     items.forEach((el) => {
-      const dir = el.getAttribute("data-dir") || "up";
-      const fromVars: gsap.TweenVars =
-        dir === "left" ? { x: -60, opacity: 0 }
-        : dir === "right" ? { x: 60, opacity: 0 }
-        : dir === "scale" ? { scale: 0.88, opacity: 0 }
-        : { y: 50, opacity: 0 };
-
-      gsap.fromTo(el, fromVars, {
-        x: 0, y: 0, scale: 1, opacity: 1,
-        duration: 1, ease: "expo.out",
-        scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" },
+      gsap.fromTo(el, { y: 40, opacity: 0 }, {
+        y: 0, opacity: 1,
+        duration: 0.8, ease: "power3.out",
+        scrollTrigger: { 
+          trigger: el, 
+          start: "top 90%", 
+          toggleActions: "play none none none" 
+        },
       });
     });
 
-    // Stagger groups
+    // Stagger groupings for list items
     const groups = gsap.utils.toArray<HTMLElement>(".sc-stagger-group");
     groups.forEach((group) => {
       const children = group.querySelectorAll(".sc-stagger-item");
       if (!children.length) return;
       gsap.fromTo(children,
-        { y: 40, opacity: 0 },
+        { y: 30, opacity: 0 },
         {
-          y: 0, opacity: 1, duration: 0.85, stagger: 0.12, ease: "back.out(1.2)",
+          y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out",
           scrollTrigger: { trigger: group, start: "top 85%" },
         }
       );
     });
-
-    setTimeout(() => ScrollTrigger.refresh(), 800);
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-x-hidden bg-white">
+    <div ref={containerRef} className="relative w-full bg-[#FFFCF2] font-space-grotesk min-h-screen">
+      
+      {/* ── GLOBAL BACKGROUND ── */}
+      <GridBackground forceTheme="light" />
 
       {/* ── 1. HERO ───────────────────────────────────────────────────── */}
       <HeroSection />
 
       {/* ── 2. SYSTEM PROTOCOL MARQUEE ────────────────────────────────── */}
-      <section className="border-y border-black/10 bg-white py-0 relative z-10 overflow-hidden">
-        <div className="flex animate-[marquee_40s_linear_infinite] whitespace-nowrap py-8 items-center">
+      <section className="border-y-[4px] border-black bg-white py-0 relative z-10 overflow-hidden">
+        <div className="flex animate-[marquee_40s_linear_infinite] whitespace-nowrap py-10 items-center">
           {[1, 2, 3].map((g) => (
-            <div key={g} className="flex items-center gap-10 px-6">
-              <span className="text-[10px] font-black text-black/10 uppercase tracking-[0.8em]">System_Protocol</span>
+            <div key={g} className="flex items-center gap-12 px-8">
+              <span className="text-[12px] font-[900] text-black/10 uppercase tracking-[1em]">SYSTEM_PROTOCOL</span>
               {[
-                { label: "NEXT.JS 15",  icon: "⚡",   bg: "bg-[#FAFAF8]"        },
-                { label: "TAILWIND V4", icon: null,   bg: "bg-[#e8ff8a]"        },
+                { label: "NEXT.JS 15",  icon: "⚡",   bg: "bg-[#F3F3F3]"        },
+                { label: "TAILWIND V4", icon: null,   bg: "bg-[#C6FF3D]"        },
                 { label: "AI AGENTIC", icon: "❆",     bg: "bg-white"            },
-                { label: "REACT 19",   icon: "⚛",     bg: "bg-[#FAFAF8]"        },
-                { label: "GSAP PRO",   icon: "▶",     bg: "bg-zinc-900"         },
-                { label: "SUPABASE",   icon: "🪄",     bg: "bg-[#FAFAF8]"        },
+                { label: "REACT 19",   icon: "⚛",     bg: "bg-[#F3F3F3]"        },
+                { label: "GSAP PRO",   icon: "▶",     bg: "bg-black", dark: true },
+                { label: "SUPABASE",   icon: "🪄",     bg: "bg-white"            },
               ].map((item, i) => (
-                <div key={i} className={`flex items-center gap-3 ${item.bg} border border-black/15 px-5 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.07)]`}>
+                <div key={i} className={`flex items-center gap-4 ${item.bg} border-[2px] border-black px-6 py-3 shadow-[4px_4px_0_rgba(0,0,0,1)]`}>
                   {item.icon && <span>{item.icon}</span>}
-                  <span className={`text-sm font-bold uppercase tracking-widest ${
-                    item.label === "GSAP PRO" ? "text-[#C6FF3D]" : "text-black/65"
+                  <span className={`text-[13px] font-[900] uppercase tracking-widest ${
+                    item.dark ? "text-[#C6FF3D]" : "text-black"
                   }`}>{item.label}</span>
                 </div>
               ))}
@@ -146,134 +129,258 @@ export default function HomeClient({ categories: _categories, featured: initialF
       {/* ── 3. HOW IT WORKS ─────────────────────────────────────────────── */}
       <HowItWorksSection />
 
-      {/* ── 4. ARCHITECTURE GAP ─────────────────────────────────────────── */}
-      <section className="py-32 sm:py-48 bg-white relative z-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-          <div className="sc-reveal text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-red-50 text-red-500 px-5 py-2 border border-red-100 font-black text-[10px] uppercase tracking-[0.4em] mb-8 shadow-[4px_4px_0_#fee2e2]">
-              ⚠ Efficiency Analysis
+      {/* ── 4. FEATURE 1: AI DESIGN SYSTEM GENERATOR ─────────────────────── */}
+      <section className="py-40 relative z-10 border-b-[4px] border-black overflow-hidden bg-[#FFFCF2]">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="sc-reveal mb-24">
+            <div className="inline-flex items-center gap-3 bg-black text-[#C6FF3D] px-6 py-2 border-[2px] border-black font-[900] text-[11px] uppercase tracking-[0.4em] mb-10 shadow-[6px_6px_0_#C6FF3D]">
+              <Cpu className="w-4 h-4" /> Feature 01 — AI Design System Generator
             </div>
-            <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase">
-              The Death of <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Static Design.</span>
+            <h2 className="text-7xl sm:text-9xl font-[1000] text-black tracking-[-0.05em] leading-[0.82] uppercase mb-8">
+              A System,<br /><span className="text-black bg-[#C6FF3D] inline-block px-4 border-[4px] border-black shadow-[15px_15px_0_rgba(0,0,0,1)] mt-4">Not Just UI.</span>
             </h2>
+            <p className="text-xl font-bold text-zinc-600 max-w-2xl leading-relaxed italic">
+              Describe what you want to build, or upload any UI screenshot. Vibro generates a complete, fully editable design system — not random UI output.
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Legacy */}
-            <div className="sc-reveal bg-[#FBFBFA] border border-black/10 rounded-[2rem] p-10 relative overflow-hidden" data-dir="left">
-              <div className="absolute top-6 right-6 text-[60px] font-black text-black/5 leading-none">01</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter mb-3">Legacy Workflow</h3>
-              <p className="text-zinc-400 italic font-bold mb-8">&ldquo;Manual Figma-to-code translation is a high-latency bottleneck.&rdquo;</p>
-              <div className="space-y-4 opacity-40">
-                {["Copy-pasting hex codes...", "Fixing responsive bugs...", "Adjusting padding manually...", "Re-implementing Figma specs..."].map(s => (
-                  <div key={s} className="h-12 bg-white border-2 border-black/10 flex items-center px-5 text-xs font-bold text-zinc-400 line-through">{s}</div>
-                ))}
-              </div>
-              <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
-                <span className="text-xs font-black text-red-500 uppercase tracking-widest">⏱ Process: ~12 Hours</span>
-                <ShieldCheck className="w-5 h-5 text-red-200" />
-              </div>
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Token output cards */}
+            <div className="sc-stagger-group grid grid-cols-2 gap-6">
+              {[
+                { icon: Palette, label: "Color System", desc: "Primary, secondary, neutral, semantic — all extracted and tokenized", items: ["#C6FF3D", "#0D0D0D", "#1a1a1a", "#fafafa", "#ef4444", "#3b82f6"] },
+                { icon: Layout, label: "Typography", desc: "Font families, sizes, weights, line heights, letter-spacing", textSizes: ["H1: 72px/1000", "H2: 48px/900", "Body: 16px/700", "Caption: 11px/900"] },
+                { icon: Sliders, label: "Spacing Scale", desc: "8-point grid system with tokens for all spacing values", spacings: [4, 8, 16, 24, 32, 48] },
+                { icon: FileJson, label: "Export Tokens", desc: "Export as CSS variables, Tailwind config, or JSON for any AI tool", exports: ["CSS Vars", "Tailwind", "JSON", "CLI"] },
+              ].map((card, i) => (
+                <div key={i} className="sc-stagger-item p-8 border-[3px] border-black bg-white shadow-[8px_8px_0_rgba(0,0,0,1)] hover:shadow-[10px_10px_0_#C6FF3D] hover:-translate-y-1 transition-all group">
+                  <div className="w-12 h-12 bg-black border-[2px] border-black flex items-center justify-center mb-6 shadow-[3px_3px_0_#C6FF3D] group-hover:bg-[#C6FF3D] transition-colors">
+                    <card.icon className="w-6 h-6 text-[#C6FF3D] group-hover:text-black" />
+                  </div>
+                  <h3 className="text-[14px] font-[900] uppercase tracking-widest mb-2">{card.label}</h3>
+                  <p className="text-[12px] font-bold text-zinc-500 italic leading-relaxed mb-4">{card.desc}</p>
+                  {card.items && (
+                    <div className="flex gap-2 flex-wrap">
+                      {card.items.map(c => <div key={c} className="w-7 h-7 border border-black/10" style={{ backgroundColor: c }} />)}
+                    </div>
+                  )}
+                  {card.textSizes && (
+                    <div className="space-y-2">
+                      {card.textSizes.map(t => <div key={t} className="text-[10px] font-mono text-zinc-500 border-l-2 border-[#C6FF3D] pl-2">{t}</div>)}
+                    </div>
+                  )}
+                  {card.spacings && (
+                    <div className="flex flex-col gap-1">
+                      {card.spacings.map(s => (
+                        <div key={s} className="flex items-center gap-2">
+                          <div className="h-1.5 bg-[#C6FF3D]" style={{ width: `${(s / 48) * 100}%` }} />
+                          <span className="text-[9px] font-mono text-zinc-500">{s}px</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {card.exports && (
+                    <div className="flex flex-wrap gap-2">
+                      {card.exports.map(e => <span key={e} className="px-3 py-1 bg-black text-[#C6FF3D] text-[10px] font-[900] uppercase tracking-widest">{e}</span>)}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
-            {/* Vibro */}
-            <div className="sc-reveal bg-white border-[2px] border-black/70 rounded-[2rem] p-10 relative overflow-hidden shadow-[14px_14px_0_rgba(198,255,61,0.2)]" data-dir="right">
-              <div className="absolute top-6 right-6 text-[60px] font-black text-black/5 leading-none">02</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter mb-3">Neural Synthesis</h3>
-              <p className="text-[#8fcc00] italic font-bold mb-8">&ldquo;Direct architectural extraction from human intent to React nodes.&rdquo;</p>
-              <div className="space-y-4">
-                {[
-                  { icon: Zap, text: "Instant Token Mapping", accent: true },
-                  { icon: Zap, text: "Algorithmic Layout Synthesis", accent: false },
-                  { icon: Code2, text: "Direct Terminal Pull", dark: true },
-                ].map(({ icon: Icon, text, accent, dark }) => (
-                  <div key={text} className={`h-12 border-[3px] border-black flex items-center px-5 text-xs font-black gap-3 ${dark ? "bg-black text-white" : "bg-[#FAFAF8] text-black"}`}>
-                    <Icon className={`w-4 h-4 ${accent ? "text-[#C6FF3D]" : dark ? "text-[#C6FF3D]" : "text-[#C6FF3D]"}`} />
-                    {text}
-                  </div>
-                ))}
+            {/* Feature detail right */}
+            <div className="sc-reveal">
+              <div className="bg-black border-[4px] border-black p-10 shadow-[15px_15px_0_#C6FF3D] mb-8">
+                <p className="text-[10px] font-[900] text-[#C6FF3D] uppercase tracking-[0.4em] mb-6">What gets generated:</p>
+                <div className="space-y-4">
+                  {[
+                    "Color tokens — primary, secondary, neutral, semantic",
+                    "Typography system — sizes, weights, families, spacing",
+                    "Spacing scale — 8-point grid, all token values",
+                    "Border radius — from sharp to pill, all variants",
+                    "Shadow system — elevation levels 1–5",
+                    "Component styles — buttons, cards, inputs, badges",
+                    "Light + Dark theme logic — auto-generated",
+                    "Reusable design tokens — ready for production",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      <div className="w-5 h-5 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3 text-black stroke-[3]" />
+                      </div>
+                      <span className="text-[13px] font-bold text-white uppercase tracking-tight">{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
-                <span className="text-xs font-black text-[#8fcc00] uppercase tracking-widest">⚡ Process: ~400ms</span>
-                <Zap className="w-5 h-5 text-[#C6FF3D] animate-pulse fill-[#C6FF3D]" />
-              </div>
+              <Link href="/dashboard" className="flex items-center gap-4 bg-[#C6FF3D] border-[3px] border-black px-10 py-5 font-[900] uppercase tracking-widest shadow-[10px_10px_0_rgba(0,0,0,1)] hover:shadow-[14px_14px_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all group text-lg">
+                Generate My System <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform stroke-[3]" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 5. MANIFESTO + COUNTERS ─────────────────────────────────────── */}
+      {/* ── 5. MANIFESTO ─────────────────────────────────────────────────── */}
       <ManifestoSection />
 
-      {/* ── 6. DESIGN BOT ───────────────────────────────────────────────── */}
-      <section className="py-32 sm:py-48 relative z-10 overflow-hidden bg-[#FAFAF8] border-y-[3.5px] border-black">
+      {/* ── 6. FEATURE 2: COMPONENT LIBRARY + VISUAL EDITOR ──────────────── */}
+      <section className="py-40 relative z-10 overflow-hidden bg-[#F3F3F3] border-b-[4px] border-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="sc-reveal" data-dir="left">
-              <div className="inline-flex items-center gap-3 bg-black px-5 py-2 mb-8 shadow-[6px_6px_0_#C6FF3D]">
-                <Activity className="w-4 h-4 text-[#C6FF3D]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF3D]">Engine_Core_v2.4</span>
+          <div className="sc-reveal mb-20">
+            <div className="inline-flex items-center gap-3 bg-black px-6 py-2 mb-10 shadow-[6px_6px_0_#C6FF3D] border-[2px] border-black">
+              <Layout className="w-5 h-5 text-[#C6FF3D]" />
+              <span className="text-[11px] font-[900] uppercase tracking-[0.4em] text-[#C6FF3D]">Feature 02 — Component Library + Visual Editor</span>
+            </div>
+            <h2 className="text-6xl sm:text-8xl font-[1000] mb-6 text-black tracking-[-0.04em] uppercase leading-[0.9]">
+              Browse. Edit. <br /><span className="text-black bg-[#C6FF3D] inline-block px-4 border-[3px] border-black shadow-[10px_10px_0_rgba(0,0,0,1)] mt-3">Ship.</span>
+            </h2>
+            <p className="text-xl font-bold text-zinc-600 leading-relaxed max-w-2xl italic">
+              A full component library where every UI part is theme-aware. Open any component in the visual editor, customize it to your design system, and export.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-10 mb-16">
+            {/* Library */}
+            <div className="sc-reveal p-10 border-[4px] border-black bg-white shadow-[10px_10px_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_#C6FF3D] hover:-translate-y-1 transition-all">
+              <div className="w-14 h-14 bg-[#C6FF3D] border-[3px] border-black flex items-center justify-center mb-8 shadow-[4px_4px_0_rgba(0,0,0,1)]">
+                <Box className="w-7 h-7 text-black" />
               </div>
-              <h2 className="text-5xl sm:text-7xl font-[1000] mb-8 text-black tracking-[-0.04em] uppercase leading-none">
-                Imagine. <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Synthesized.</span>
-              </h2>
-              <p className="text-xl font-bold text-zinc-500 leading-relaxed mb-12 italic max-w-xl">
-                &ldquo;Vibro translates abstract intent into production-grade React architectures through deep neural mapping.&rdquo;
-              </p>
-              <div className="sc-stagger-group space-y-4">
-                {[
-                  { title: "Neuro-Mapping", text: "Translating words into precise UI components." },
-                  { title: "Sovereign Build", text: "Zero dependencies. Pure, high-performance React." },
-                  { title: "Instant Hydration", text: "Ready for deployment on any modern stack." },
-                ].map((item, i) => (
-                  <div key={i} className="sc-stagger-item flex items-center gap-5 p-6 border-[3px] border-black bg-white shadow-[6px_6px_0_#000] hover:-translate-y-0.5 hover:shadow-[8px_8px_0_#C6FF3D] transition-all group cursor-pointer">
-                    <div className="w-10 h-10 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center shrink-0 font-black text-sm">0{i + 1}</div>
-                    <div>
-                      <h4 className="text-sm font-black text-black uppercase tracking-widest">{item.title}</h4>
-                      <p className="text-zinc-500 text-sm font-bold italic mt-0.5">{item.text}</p>
+              <h3 className="text-[22px] font-[900] uppercase tracking-tighter mb-4">Component Library</h3>
+              <p className="text-zinc-600 font-bold leading-relaxed mb-8 italic">Browse, filter, and preview reusable UI parts — all theme-aware.</p>
+              <div className="flex flex-wrap gap-2">
+                {["Buttons", "Cards", "Navbars", "Sidebars", "Forms", "Tables", "Hero Sections", "Dashboards", "+ more"].map(c => (
+                  <span key={c} className="px-3 py-1.5 bg-[#F3F3F3] border-[2px] border-black text-[10px] font-[900] uppercase tracking-widest hover:bg-[#C6FF3D] transition-colors cursor-pointer">{c}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Editor */}
+            <div className="sc-reveal p-10 border-[4px] border-black bg-black shadow-[10px_10px_0_#C6FF3D] hover:-translate-y-1 transition-all">
+              <div className="w-14 h-14 bg-[#C6FF3D] border-[3px] border-black flex items-center justify-center mb-8 shadow-[4px_4px_0_rgba(0,0,0,1)]">
+                <Sliders className="w-7 h-7 text-black" />
+              </div>
+              <h3 className="text-[22px] font-[900] uppercase tracking-tighter mb-4 text-white">Visual Component Editor</h3>
+              <p className="text-zinc-400 font-bold leading-relaxed mb-8 italic">Customize any component without writing code. Change text, colors, spacing, variants.</p>
+              <div className="space-y-3">
+                {["Change text content", "Swap colors from your system", "Edit spacing and sizing", "Switch variants + states", "Preview responsive layouts"].map(f => (
+                  <div key={f} className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center shrink-0">
+                      <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
                     </div>
+                    <span className="text-[12px] font-bold text-zinc-300 uppercase tracking-tight">{f}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="sc-reveal relative" data-dir="right">
-              <div className="border-[4px] border-black bg-white p-5 shadow-[20px_20px_0_rgba(198,255,61,0.25)] rounded-[2.5rem] overflow-hidden">
-                <DesignBot />
+            {/* Flow */}
+            <div className="sc-reveal p-10 border-[4px] border-black bg-white shadow-[10px_10px_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_#C6FF3D] hover:-translate-y-1 transition-all">
+              <div className="w-14 h-14 bg-black border-[3px] border-black flex items-center justify-center mb-8 shadow-[4px_4px_0_#C6FF3D]">
+                <ArrowRight className="w-7 h-7 text-[#C6FF3D]" />
               </div>
-              <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#C6FF3D]/10 blur-[80px] rounded-full -z-10" />
+              <h3 className="text-[22px] font-[900] uppercase tracking-tighter mb-4">The Library Flow</h3>
+              <p className="text-zinc-600 font-bold leading-relaxed mb-8 italic">Every step is intentional. Find, customize, prepare, export.</p>
+              <div className="space-y-3">
+                {["Library — browse all components", "Editor — customize selected", "Preview — check responsiveness", "Save — store your versions", "Export — prompt / AI / code"].map((step, i) => (
+                  <div key={i} className="flex items-center gap-4 p-3 border-[2px] border-black bg-[#F3F3F3]">
+                    <span className="text-[11px] font-[900] font-mono text-zinc-500">0{i+1}</span>
+                    <span className="text-[12px] font-[900] uppercase tracking-tight">{step}</span>
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
+
+          <div className="text-center">
+            <Link href="/dashboard/library" className="inline-flex items-center gap-4 bg-black text-[#C6FF3D] font-[900] text-xl uppercase tracking-widest px-12 py-5 border-[3px] border-black shadow-[10px_10px_0_#C6FF3D] hover:shadow-[14px_14px_0_#C6FF3D] hover:-translate-y-1 transition-all group">
+              Browse Component Library <ArrowUpRight className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform stroke-[3]" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── 7. DASHBOARD PREVIEW ────────────────────────────────────────── */}
+      {/* ── 7. DASHBOARD PREVIEW ─────────────────────────────────────────── */}
       <DashboardPreviewSection />
 
-      {/* ── 8. COMPONENT LIBRARY ────────────────────────────────────────── */}
-      <section className="py-32 sm:py-48 bg-white relative z-10">
+      {/* ── 8. FEATURE 3: REFERENCE-TO-SYSTEM + EXPORT ENGINE ────────────── */}
+      <section className="py-40 bg-[#FFFCF2] relative z-10 border-b-[4px] border-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-20 sc-reveal">
-            <div>
-              <div className="inline-flex items-center gap-3 bg-black px-5 py-2 mb-6 shadow-[5px_5px_0_#C6FF3D]">
-                <Box className="w-4 h-4 text-[#C6FF3D]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF3D]">Central_Lattice</span>
-              </div>
-              <h2 className="text-6xl sm:text-8xl font-[1000] tracking-[-0.05em] text-black leading-[0.85] uppercase">
-                Verified <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Nodes.</span>
-              </h2>
+          <div className="sc-reveal mb-20">
+            <div className="inline-flex items-center gap-4 bg-black px-6 py-2 mb-8 shadow-[6px_6px_0_#C6FF3D] border-[2px] border-black">
+              <Upload className="w-5 h-5 text-[#C6FF3D]" />
+              <span className="text-[11px] font-[900] uppercase tracking-[0.4em] text-[#C6FF3D]">Feature 03 — Reference-to-System + Export Engine</span>
             </div>
-            <Link href="/dashboard/library" className="mt-8 lg:mt-0 flex items-center gap-4 bg-[#C6FF3D] border-[3px] border-black px-8 py-4 font-black uppercase tracking-widest shadow-[8px_8px_0_#000] hover:shadow-[12px_12px_0_#000] hover:-translate-y-0.5 transition-all group">
-              Explore Library <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </Link>
+            <h2 className="text-7xl sm:text-9xl font-[1000] tracking-[-0.05em] text-black leading-[0.82] uppercase mb-6">
+              Upload. Extract. <br /><span className="text-black bg-[#C6FF3D] inline-block px-4 border-[4px] border-black shadow-[15px_15px_0_rgba(0,0,0,1)] mt-4">Build.</span>
+            </h2>
+            <p className="text-xl font-bold text-zinc-600 max-w-2xl leading-relaxed italic">
+              Upload any UI reference — a screenshot, dashboard, or homepage. Vibro analyzes the layout, extracts the design system, and rebuilds it into a fully editable system you can export anywhere.
+            </p>
           </div>
 
-          <div className="sc-stagger-group grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.slice(0, 4).map((prompt) => (
-              <div key={prompt.id} className="sc-stagger-item">
-                <PromptCard prompt={prompt} />
+          <div className="grid lg:grid-cols-2 gap-20 items-start">
+            {/* Left: What Vibro detects */}
+            <div className="sc-reveal space-y-6">
+              <p className="text-[11px] font-[900] uppercase tracking-[0.5em] text-zinc-400 mb-8">What Vibro Detects from a Reference:</p>
+              {[
+                { num: "01", label: "Layout Analysis", desc: "Detects grid systems, section hierarchy, whitespace rhythm, and page structure.", code: "↳ 12-column grid · 24px gutter · 80px section padding" },
+                { num: "02", label: "Component Detection", desc: "Identifies navbars, cards, buttons, forms, tables, and hero sections.", code: "↳ Nav · HeroCard × 3 · CTA Button · Stat Row · Footer" },
+                { num: "03", label: "Color Extraction", desc: "Builds a full named color palette from the visual reference including semantic values.", code: "↳ #0D0D0D · #C6FF3D · #F3F3F3 · #ef4444 + 12 more" },
+                { num: "04", label: "Typography Style", desc: "Extracts font candidates, size scale, weight distribution, and line height.", code: "↳ Inter Bold 48/1000 · Medium 16/700 · Light 12/400" },
+                { num: "05", label: "Spacing Rhythm", desc: "Reconstructs the spacing scale used throughout the layout.", code: "↳ 4 · 8 · 16 · 24 · 32 · 48 · 64 · 96px" },
+              ].map((item, i) => (
+                <div key={i} className="sc-stagger-item flex gap-6 p-8 border-[3px] border-black bg-white shadow-[6px_6px_0_rgba(0,0,0,0.08)] hover:shadow-[8px_8px_0_#C6FF3D] hover:-translate-y-0.5 transition-all">
+                  <div className="w-10 h-10 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center font-[900] text-[12px] shrink-0">{item.num}</div>
+                  <div>
+                    <h4 className="text-[14px] font-[900] uppercase tracking-widest mb-1">{item.label}</h4>
+                    <p className="text-[12px] font-bold text-zinc-500 italic leading-relaxed mb-3">{item.desc}</p>
+                    <code className="text-[10px] font-mono text-zinc-500 bg-[#F3F3F3] border border-black/10 px-3 py-1.5 block">{item.code}</code>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right: Export options */}
+            <div className="sc-reveal space-y-8">
+              <div className="bg-black border-[4px] border-black p-10 shadow-[15px_15px_0_#C6FF3D]">
+                <p className="text-[10px] font-[900] text-[#C6FF3D] uppercase tracking-[0.5em] mb-8">Then Export As:</p>
+                <div className="space-y-5">
+                  {[
+                    { icon: Zap, label: "Detailed Build Prompt", desc: "A structured, AI-ready prompt with all design system specs for Cursor, ChatGPT, or any other tool." },
+                    { icon: Code2, label: "AI Context Package", desc: "Export your system as structured context to inject into any AI coding workflow." },
+                    { icon: Terminal, label: "CLI Install", desc: "Install components directly into your Next.js, React, or Vite project with one command." },
+                    { icon: Download, label: "JSON Tokens", desc: "Standard design token JSON (W3C format) compatible with Style Dictionary, Theo, and more." },
+                  ].map(({ icon: Icon, label, desc }, i) => (
+                    <div key={i} className="flex items-start gap-5 p-6 border-[2px] border-zinc-800 bg-zinc-900 hover:border-[#C6FF3D]/40 hover:bg-zinc-800 transition-all group cursor-pointer">
+                      <div className="w-10 h-10 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center shrink-0">
+                        <Icon className="w-5 h-5 text-black" />
+                      </div>
+                      <div>
+                        <h4 className="text-[13px] font-[900] text-white uppercase tracking-widest mb-1">{label}</h4>
+                        <p className="text-[12px] font-bold text-zinc-500 italic leading-relaxed">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+
+              <div className="bg-[#C6FF3D] border-[4px] border-black p-8 shadow-[10px_10px_0_rgba(0,0,0,1)]">
+                <p className="text-[11px] font-[900] uppercase tracking-[0.4em] mb-3">CLI Example</p>
+                <code className="font-mono text-[13px] block">
+                  npx vibro-cli install \
+                </code>
+                <code className="font-mono text-[13px] block">
+                  &nbsp;&nbsp;--system fintech-dark \
+                </code>
+                <code className="font-mono text-[13px] block">
+                  &nbsp;&nbsp;--format css-vars,tailwind
+                </code>
+              </div>
+
+              <Link href="/dashboard" className="flex items-center justify-center gap-4 bg-black border-[3px] border-black px-10 py-5 font-[900] uppercase tracking-widest shadow-[10px_10px_0_rgba(0,0,0,1)] hover:shadow-[14px_14px_0_#C6FF3D] hover:-translate-y-1 transition-all group text-[#C6FF3D] text-lg">
+                Try Reference Upload <Upload className="w-6 h-6" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -282,21 +389,18 @@ export default function HomeClient({ categories: _categories, featured: initialF
       <TestimonialsSection />
 
       {/* ── 10. INTEGRATIONS ────────────────────────────────────────────── */}
-      <section className="py-32 bg-black relative z-10 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#C6FF3D]/3 blur-[200px] rounded-full" />
-        </div>
+      <section className="py-40 bg-black relative z-10 overflow-hidden border-b-[4px] border-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="sc-reveal text-center mb-20">
-            <h2 className="text-6xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-6 italic">
-              Universal <br /><span className="text-[#C6FF3D]" style={{ WebkitTextStroke: "2px white" }}>Protocol.</span>
+          <div className="sc-reveal text-center mb-24">
+            <h2 className="text-7xl sm:text-9xl font-[1000] text-white uppercase tracking-[-0.04em] leading-none italic mb-8">
+              Universal <br /><span className="text-black bg-[#C6FF3D] inline-block px-6 border-[3px] border-black shadow-[12px_12px_0_rgba(255,255,255,0.1)] not-italic mt-3">Protocol.</span>
             </h2>
-            <p className="text-zinc-500 font-bold max-w-lg mx-auto text-lg italic">
+            <p className="text-zinc-500 font-[700] max-w-lg mx-auto text-xl italic uppercase tracking-tighter">
               &ldquo;Vibro connects natively to any modern IDE and deployment target.&rdquo;
             </p>
           </div>
 
-          <div className="sc-stagger-group grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+          <div className="sc-stagger-group grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
             {[
               { name: "Cursor", icon: "🤖", desc: "AI IDE" },
               { name: "VS Code", icon: "💻", desc: "Editor" },
@@ -305,10 +409,10 @@ export default function HomeClient({ categories: _categories, featured: initialF
               { name: "Next.js", icon: "N", desc: "Framework" },
               { name: "CLI", icon: "❯_", desc: "Terminal", accent: true },
             ].map((item) => (
-              <div key={item.name} className={`sc-stagger-item flex flex-col items-center justify-center p-8 border-[2px] group hover:-translate-y-2 transition-all duration-300 ${item.accent ? "bg-[#C6FF3D] border-black shadow-[6px_6px_0_#fff]" : "bg-[#0d0d0f] border-[#ffffff08] hover:border-[#C6FF3D]/30"}`}>
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{item.icon}</div>
-                <span className={`text-[11px] font-black uppercase tracking-widest ${item.accent ? "text-black" : "text-zinc-500 group-hover:text-white"}`}>{item.name}</span>
-                <span className={`text-[8px] font-black uppercase tracking-widest mt-1 ${item.accent ? "text-black/60" : "text-zinc-700"}`}>{item.desc}</span>
+              <div key={item.name} className={`sc-stagger-item flex flex-col items-center justify-center p-10 border-[3px] group hover:-translate-y-2 transition-all duration-300 shadow-[8px_8px_0_rgba(255,255,255,0.05)] ${item.accent ? "bg-[#C6FF3D] border-black shadow-[10px_10px_0_#fff]" : "bg-[#0d0d0f] border-zinc-900 shadow-none hover:border-[#C6FF3D] hover:shadow-[10px_10px_0_rgba(198,255,61,0.2)]"}`}>
+                <div className="text-5xl mb-6 group-hover:scale-110 transition-transform">{item.icon}</div>
+                <span className={`text-[13px] font-[900] uppercase tracking-widest ${item.accent ? "text-black" : "text-zinc-500 group-hover:text-white"}`}>{item.name}</span>
+                <span className={`text-[9px] font-black uppercase tracking-[0.2em] mt-2 ${item.accent ? "text-black/60" : "text-zinc-800"}`}>{item.desc}</span>
               </div>
             ))}
           </div>
@@ -316,43 +420,43 @@ export default function HomeClient({ categories: _categories, featured: initialF
       </section>
 
       {/* ── 11. PRICING ─────────────────────────────────────────────────── */}
-      <section className="py-32 sm:py-48 bg-white relative z-10">
+      <section className="py-40 bg-[#FFFCF2] relative z-10 border-b-[4px] border-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="sc-reveal text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-black px-5 py-2 mb-8 shadow-[5px_5px_0_#C6FF3D]">
-              <Zap className="w-4 h-4 text-[#C6FF3D] fill-[#C6FF3D]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF3D]">Pricing_Matrix</span>
+          <div className="sc-reveal text-center mb-28">
+            <div className="inline-flex items-center gap-3 bg-black text-[#C6FF3D] px-6 py-2 mb-10 shadow-[6px_6px_0_rgba(0,0,0,1)] border-[2px] border-black">
+              <Zap className="w-5 h-5 text-[#C6FF3D] fill-[#C6FF3D]" />
+              <span className="text-[11px] font-[900] uppercase tracking-[0.4em] text-[#C6FF3D]">Pricing_Matrix</span>
             </div>
-            <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase">
-              Ship the <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Unfair.</span>
+            <h2 className="text-7xl sm:text-9xl font-[1000] text-black tracking-[-0.05em] leading-[0.82] uppercase mb-4">
+              Ship the <br /><span className="text-black bg-[#C6FF3D] inline-block px-4 border-[4px] border-black shadow-[15px_15px_0_rgba(0,0,0,1)] mt-4">Unfair.</span>
             </h2>
           </div>
 
-          <div className="sc-stagger-group grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div className="sc-stagger-group grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
             {PRICING_TIERS.map((tier) => (
               <div
                 key={tier.name}
-                className={`sc-stagger-item relative flex flex-col border-[3px] border-black transition-all ${tier.highlight ? "bg-white shadow-[12px_12px_0_#C6FF3D] scale-[1.02] z-10" : "bg-[#FAFAF8] hover:shadow-[8px_8px_0_#000] hover:-translate-y-1"}`}
+                className={`sc-stagger-item relative flex flex-col border-[4px] border-black transition-all rounded-none ${tier.highlight ? "bg-white shadow-[20px_20px_0_#C6FF3D] z-10 scale-[1.04]" : "bg-white shadow-[12px_12px_0_rgba(0,0,0,1)] hover:shadow-[16px_16px_0_rgba(0,0,0,1)] hover:-translate-y-1"}`}
               >
                 {tier.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#C6FF3D] border-[2px] border-black px-4 py-1 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-[3px_3px_0_#000]">
-                    <Zap className="w-3 h-3" /> Most Popular
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#C6FF3D] border-[3px] border-black px-6 py-1.5 text-[10px] font-[1000] uppercase tracking-[0.3em] flex items-center gap-2 shadow-[4px_4px_0_rgba(0,0,0,1)] z-20">
+                    <Zap className="w-4 h-4 fill-black" /> Signal: Optimal
                   </div>
                 )}
-                <div className="p-8 border-b border-black/5">
-                  <h3 className="text-xl font-black text-black uppercase tracking-tighter mb-3">{tier.name}</h3>
-                  <div className="flex items-baseline gap-1 mb-3">
-                    <span className="text-5xl font-[1000] tracking-tighter">{tier.price}</span>
-                    {tier.period && <span className="text-zinc-400 font-bold">{tier.period}</span>}
+                <div className="p-10 border-b-[3px] border-black">
+                  <h3 className="text-2xl font-[1000] text-black uppercase tracking-tighter mb-4">{tier.name}</h3>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="text-6xl font-[1000] tracking-tighter">{tier.price}</span>
+                    {tier.period && <span className="text-zinc-400 font-black text-xl">{tier.period}</span>}
                   </div>
-                  <p className="text-zinc-500 text-sm font-bold italic">{tier.desc}</p>
+                  <p className="text-zinc-500 text-sm font-bold italic uppercase tracking-tight">{tier.desc}</p>
                 </div>
-                <div className="p-8 flex-1">
-                  <ul className="space-y-4 mb-8">
+                <div className="p-10 flex-1 flex flex-col">
+                  <ul className="space-y-5 mb-12 flex-1">
                     {tier.features.map((f) => (
-                      <li key={f} className="flex items-center gap-3 text-sm font-bold text-zinc-700">
-                        <div className={`w-5 h-5 rounded-sm flex items-center justify-center shrink-0 ${tier.highlight ? "bg-[#C6FF3D] border border-black" : "bg-black/5 border border-black/10"}`}>
-                          <Check className="w-3 h-3 text-black" />
+                      <li key={f} className="flex items-center gap-4 text-[13px] font-[900] text-black uppercase tracking-tight">
+                        <div className={`w-6 h-6 border-[2px] border-black flex items-center justify-center shrink-0 ${tier.highlight ? "bg-[#C6FF3D]" : "bg-[#F3F3F3]"}`}>
+                          <Check className="w-3.5 h-3.5 text-black stroke-[4]" />
                         </div>
                         {f}
                       </li>
@@ -360,7 +464,7 @@ export default function HomeClient({ categories: _categories, featured: initialF
                   </ul>
                   <Link
                     href="/dashboard"
-                    className={`block w-full py-4 text-center font-black text-sm uppercase tracking-widest border-[2px] border-black transition-all ${tier.highlight ? "bg-black text-[#C6FF3D] shadow-[4px_4px_0_#C6FF3D] hover:shadow-[6px_6px_0_#C6FF3D] hover:-translate-y-0.5" : "bg-white text-black hover:bg-[#C6FF3D] hover:shadow-[4px_4px_0_#000]"}`}
+                    className={`block w-full py-5 text-center font-[900] text-[15px] uppercase tracking-widest border-[3px] border-black transition-all ${tier.highlight ? "bg-black text-[#C6FF3D] shadow-[6px_6px_0_#C6FF3D] hover:shadow-[10px_10px_0_#C6FF3D] hover:-translate-y-1" : "bg-white text-black hover:bg-[#C6FF3D] hover:shadow-[6px_6px_0_rgba(0,0,0,1)]"}`}
                   >
                     {tier.cta}
                   </Link>
@@ -372,57 +476,48 @@ export default function HomeClient({ categories: _categories, featured: initialF
       </section>
 
       {/* ── 12. FINAL CTA ───────────────────────────────────────────────── */}
-      <section className="py-40 bg-black relative z-10 overflow-hidden border-t-4 border-black">
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.012)_2px,rgba(255,255,255,0.012)_4px)] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[#C6FF3D]/5 blur-[200px] rounded-full pointer-events-none" />
-
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative text-center z-10">
-          <div className="sc-reveal mb-14">
-            <div className="inline-flex items-center gap-2 border border-[#ffffff10] text-zinc-600 px-5 py-2 text-[10px] font-black uppercase tracking-[0.4em] mb-10">
-              ◈ FINAL_SYNTHESIS
+      <section className="py-56 bg-black relative z-10 border-b-[8px] border-black overflow-hidden">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative text-center z-10">
+          <div className="sc-reveal mb-20">
+            <div className="inline-flex items-center gap-3 border-[2px] border-[#ffffff20] text-zinc-500 px-6 py-2 text-[11px] font-[900] uppercase tracking-[0.5em] mb-14 bg-white/5">
+              ◈ FINAL_SYNTHESIS_REQUEST
             </div>
-            <h2 className="text-7xl sm:text-[10rem] font-[1000] text-white uppercase tracking-[-0.06em] leading-[0.82] italic mb-10">
-              Ship <br /><span className="text-[#C6FF3D]" style={{ WebkitTextStroke: "2px white" }}>Beyond.</span>
+            <h2 className="text-7xl sm:text-[11rem] font-[1000] text-white uppercase tracking-[-0.05em] leading-[0.8] italic mb-14">
+              Ship <br /><span className="text-black bg-[#C6FF3D] inline-block px-8 border-[4px] border-black shadow-[20px_20px_0_rgba(255,255,255,0.1)] not-italic mt-4">Beyond.</span>
             </h2>
-            <p className="text-zinc-500 font-bold italic text-xl max-w-xl mx-auto leading-relaxed">
+            <p className="text-zinc-500 font-[700] italic text-2xl max-w-xl mx-auto leading-relaxed uppercase tracking-tighter">
               &ldquo;Join 12,000+ engineers building the future of interfaces with Vibro.&rdquo;
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-10">
             <Link
               href="/dashboard"
-              className="bg-[#C6FF3D] border-[3px] border-black text-black font-black text-lg px-12 py-5 shadow-[8px_8px_0_#fff] hover:shadow-[12px_12px_0_#fff] hover:-translate-y-1 transition-all uppercase tracking-widest"
+              className="bg-[#C6FF3D] border-[4px] border-black text-black font-[1000] text-2xl px-16 py-6 shadow-[12px_12px_0_#fff] hover:shadow-[18px_18px_0_#fff] hover:-translate-y-2 transition-all uppercase tracking-[0.1em]"
             >
               Enter Synthesis
-            </Link>
-            <Link
-              href="/dashboard/library"
-              className="border-[3px] border-white bg-transparent text-white font-black text-lg px-12 py-5 hover:bg-white hover:text-black transition-all uppercase tracking-widest"
-            >
-              Explore Archive
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── 13. FOOTER ──────────────────────────────────────────────────── */}
-      <footer className="bg-white border-t-[4px] border-black pt-24 pb-12 relative z-20">
+      <footer className="bg-white pt-32 pb-16 relative z-20 font-space-grotesk">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20 mb-32">
             <div className="col-span-1 md:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-10 h-10 bg-black border-[2px] border-black flex items-center justify-center shadow-[4px_4px_0_#C6FF3D] overflow-hidden p-1.5">
+              <div className="flex items-center gap-5 mb-10">
+                <div className="w-12 h-12 bg-black border-[3px] border-black flex items-center justify-center shadow-[5px_5px_0_#C6FF3D] p-2">
                   <img src="/logo.png" alt="Vibro Logo" className="w-full h-full object-contain" />
                 </div>
-                <span className="text-3xl font-[1000] text-black uppercase tracking-tighter">Vibro</span>
+                <span className="text-4xl font-[1000] text-black uppercase tracking-tighter">Vibro</span>
               </div>
-              <p className="text-zinc-400 font-bold italic leading-relaxed mb-8 max-w-xs">
-                &ldquo;The unified protocol for architectural synthesis. Design once, ship instantly to any modern stack.&rdquo;
+              <p className="text-zinc-500 font-bold italic leading-relaxed mb-10 max-w-xs uppercase tracking-tight opacity-70">
+                &ldquo;The unified protocol for architectural synthesis. Design once, ship instantly.&rdquo;
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-5">
                 {[Twitter, Github, Linkedin].map((Icon, i) => (
-                  <Link key={i} href="#" className="w-10 h-10 bg-[#FAFAF8] border-[2px] border-black flex items-center justify-center hover:bg-[#C6FF3D] transition-colors shadow-[3px_3px_0_#000]">
-                    <Icon className="w-4 h-4 text-black" />
+                  <Link key={i} href="#" className="w-12 h-12 bg-white border-[3px] border-black flex items-center justify-center hover:bg-[#C6FF3D] transition-colors shadow-[4px_4px_0_rgba(0,0,0,1)]">
+                    <Icon className="w-5 h-5 text-black" />
                   </Link>
                 ))}
               </div>
@@ -434,11 +529,14 @@ export default function HomeClient({ categories: _categories, featured: initialF
               { title: "Company", links: [["Pricing", "/dashboard/pricing"], ["Settings", "/dashboard/settings"], ["Privacy", "#"], ["Terms", "#"]] },
             ].map((group) => (
               <div key={group.title}>
-                <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-black mb-8"># {group.title}</h4>
-                <ul className="space-y-4">
+                <h4 className="text-[12px] font-[1000] uppercase tracking-[0.5em] text-black mb-10"># {group.title}</h4>
+                <ul className="space-y-5">
                   {group.links.map(([label, href]) => (
                     <li key={label}>
-                      <Link href={href} className="text-zinc-500 font-bold hover:text-black transition-colors text-sm italic hover:underline decoration-[#C6FF3D] underline-offset-4">&ldquo;{label}&rdquo;</Link>
+                      <Link href={href} className="text-zinc-600 font-[800] hover:text-black transition-all text-[15px] uppercase tracking-tight flex items-center gap-2 group">
+                        <div className="w-2 h-2 bg-black opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -446,16 +544,16 @@ export default function HomeClient({ categories: _categories, featured: initialF
             ))}
           </div>
 
-          <div className="pt-10 border-t-[3px] border-black flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#C6FF3D] animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#8fcc00]">System: Nominal</span>
+          <div className="pt-16 border-t-[4px] border-black flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex items-center gap-10">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-[#C6FF3D] border-[2px] border-black animate-pulse" />
+                <span className="text-[11px] font-[1000] uppercase tracking-widest text-[#8fcc00]">System: Nominal</span>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Ver: 4.2.0-stable</span>
+              <span className="text-[11px] font-[1000] uppercase tracking-widest text-zinc-400">Ver: 4.2.0-stable</span>
             </div>
-            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-              © 2026 VIBRO_SYNTHESIS_CORP. ALL RIGHTS RESERVED.
+            <span className="text-[11px] font-[1000] text-zinc-400 uppercase tracking-widest bg-black text-white px-4 py-1 border-[2px] border-black">
+              © 2026 VIBRO_SYNTHESIS_CORP.
             </span>
           </div>
         </div>
