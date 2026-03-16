@@ -36,7 +36,8 @@ export default function DesignBot() {
         setResponse((prev) => prev + text);
       }, { model: "openrouter/free", max_tokens: 400 });
     } catch (error) {
-      setResponse(`Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please verify your API configuration.`);
+      console.error("DesignBot Synthesis Error:", error);
+      setResponse(`Sorry, I encountered a synthesis error. This usually indicates a network issue or missing API keys. Check your console for details.`);
     } finally {
       setIsStreaming(false);
     }

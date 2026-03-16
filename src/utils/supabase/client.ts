@@ -4,15 +4,22 @@ export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
-    console.error('❌ [Supabase Client] Environment variables are missing or using placeholders!');
-    console.log('URL:', supabaseUrl);
-    // Do not log the full key for security, just its presence
-    console.log('Key defined:', !!supabaseKey);
+  if (!supabaseUrl || !supabaseKey) {
+    if (typeof window !== 'undefined') {
+      console.warn('⚠️ [Vibro Supabase] Environment variables missing. Supabase functionality will be disabled.');
+    }
+    // Return a dummy client that doesn't trigger network calls immediately
+    return createBrowserClient(
+      'https://INVALID_SUPABASE_URL.supabase.co',
+      'INVALID_KEY'
+    );
   }
 
-  return createBrowserClient(
-    (supabaseUrl || 'https://placeholder.supabase.co').trim(),
-    (supabaseKey || 'placeholder').trim()
-  )
+  // Ensure URL is valid protocol
+  let sanitizedUrl = supabaseUrl.trim();
+  if (!sanitizedUrl.startsWith('http')) {
+    sanitizedUrl = `https://${sanitizedUrl}`;
+  }
+
+  return createBrowserClient(sanitizedUrl, supabaseKey.trim());
 }

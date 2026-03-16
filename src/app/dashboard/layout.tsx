@@ -16,11 +16,17 @@ export default function DashboardLayout({
 
   useEffect(() => {
     async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+          router.push("/sign-in");
+        } else {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Auth check synthesis failed:", err);
+        // Fallback: redirects to sign-in on fatal network error
         router.push("/sign-in");
-      } else {
-        setLoading(false);
       }
     }
     checkAuth();

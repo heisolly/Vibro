@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import gsap from "gsap";
@@ -62,6 +62,19 @@ const PRICING_TIERS = [
 export default function HomeClient({ categories: _categories, featured: initialFeatured }: { categories: Category[], featured: Prompt[] }) {
   const featured = initialFeatured.length > 0 ? initialFeatured : DUMMY_FEATURED;
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Debug Environment Variables
+  useEffect(() => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+      console.warn("⚠️ [Vibro Debug] Client-side environment variables missing!");
+      console.log("NEXT_PUBLIC_SUPABASE_URL:", supabaseUrl);
+    } else {
+      console.log("✅ [Vibro Debug] Client-side environment variables loaded.");
+    }
+  }, []);
 
   useGSAP(() => {
     // Generic scroll reveals
