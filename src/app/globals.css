@@ -15,6 +15,63 @@
   --color-dash-border: #000000;
 }
 
+/* ── Dashboard Dark Theme ── */
+[data-theme="dark"] {
+  --vb-bg:          #050506;
+  --vb-bg-2:        #080809;
+  --vb-bg-3:        #0d0d0f;
+  --vb-surface:     #0d0d0f;
+  --vb-border:      rgba(255,255,255,0.06);
+  --vb-border-md:   rgba(255,255,255,0.10);
+  --vb-border-str:  rgba(255,255,255,0.15);
+  --vb-text:        #ffffff;
+  --vb-text-2:      #a1a1aa;
+  --vb-text-3:      #52525b;
+  --vb-text-4:      #3f3f46;
+  --vb-accent:      #C6FF3D;
+  --vb-accent-text: #000000;
+  --vb-grid-color:  rgba(128,128,128,0.07);
+  --vb-glow:        rgba(198,255,61,0.08);
+  --vb-sidebar-bg:  #050506;
+  --vb-card-bg:     #080809;
+  --vb-input-bg:    rgba(5,5,6,0.8);
+  --vb-shadow:      0 20px 60px rgba(0,0,0,0.8);
+  --vb-ambient-1:   rgba(198,255,61,0.05);
+  --vb-ambient-2:   rgba(198,255,61,0.05);
+}
+
+/* ── Dashboard Light Theme ── */
+[data-theme="light"] {
+  --vb-bg:          #f7f7f2;
+  --vb-bg-2:        #f0f0eb;
+  --vb-bg-3:        #e8e8e2;
+  --vb-surface:     #ffffff;
+  --vb-border:      rgba(0,0,0,0.06);
+  --vb-border-md:   rgba(0,0,0,0.10);
+  --vb-border-str:  rgba(0,0,0,0.18);
+  --vb-text:        #0f0f0f;
+  --vb-text-2:      #44403c;
+  --vb-text-3:      #a8a29e;
+  --vb-text-4:      #d6d3d1;
+  --vb-accent:      #C6FF3D;
+  --vb-accent-text: #000000;
+  --vb-grid-color:  rgba(0,0,0,0.05);
+  --vb-glow:        rgba(198,255,61,0.12);
+  --vb-sidebar-bg:  #f0f0eb;
+  --vb-card-bg:     #ffffff;
+  --vb-input-bg:    rgba(255,255,255,0.9);
+  --vb-shadow:      0 4px 24px rgba(0,0,0,0.08);
+  --vb-ambient-1:   rgba(198,255,61,0.20);
+  --vb-ambient-2:   rgba(168,85,247,0.08);
+}
+
+/* ── Dashboard Theme-Aware Utility Classes ── */
+[data-theme] .vb-bg          { background-color: var(--vb-bg); }
+[data-theme] .vb-card        { background-color: var(--vb-card-bg); }
+[data-theme] .vb-text        { color: var(--vb-text); }
+[data-theme] .vb-text-muted  { color: var(--vb-text-3); }
+[data-theme] .vb-border      { border-color: var(--vb-border); }
+
 @theme inline {
   /* ── Fonts ── */
   --font-satoshi: "Satoshi", sans-serif;
@@ -103,6 +160,31 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes bgFlow {
+  from { background-position: 0 0; }
+  to   { background-position: 0 40px; }
+}
 
-.animate-fade-in   { animation: fade-in   0.4s ease-out both; }
-.animate-slide-up  { animation: slide-up  0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+
+@keyframes marquee-slow {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-fade-in    { animation: fade-in    0.4s ease-out both; }
+.animate-slide-up   { animation: slide-up   0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-grid-flow  { animation: bgFlow     4s linear infinite; }
+.animate-marquee    { animation: marquee     30s linear infinite; }
+.animate-marquee-slow { animation: marquee-slow 30s linear infinite; }
+
+/* ── Utility ─────────────── */
+::selection { background: #C6FF3D; color: #000; }
+
+/* ── Theme transition ─────── */
+[data-theme] * {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}

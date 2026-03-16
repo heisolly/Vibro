@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { ThemeProvider } from "./ThemeProvider";
 
 export default function DashboardLayout({
   children,
@@ -27,15 +28,16 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-zinc-200 border-t-zinc-900 rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#050506] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#ffffff10] border-t-[#C6FF3D] rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-zinc-900 font-sans selection:bg-[#C6FF3D]/30">
+    <ThemeProvider>
       {children}
-    </div>
+    </ThemeProvider>
   );
 }
+

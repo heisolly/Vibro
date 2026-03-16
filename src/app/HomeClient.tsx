@@ -1,75 +1,28 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { Draggable } from "gsap/dist/Draggable";
 import { useGSAP } from "@gsap/react";
-import CategoryCard from "@/components/CategoryCard";
 import PromptCard from "@/components/PromptCard";
 import type { Category, Prompt } from "@/lib/types";
 import {
-  ArrowUpRight,
-  Cpu,
-  Search,
-  Layers,
-  Sparkles,
-  Code2,
-  Zap,
-  Globe,
-  Github,
-  Twitter,
-  Linkedin,
-  ShieldCheck,
-  Terminal,
-  Activity,
-  Box
+  Code2, Zap, Github, Twitter, Linkedin,
+  ShieldCheck, Activity, Box, ArrowUpRight, Check,
 } from "lucide-react";
-import GridBackground from "@/components/GridBackground";
-import HeroLayout from "@/components/HeroLayout";
-import Subheadline from "@/components/Subheadline";
-import OverlayCard from "@/components/OverlayCard";
-import CompilingBadge from "@/components/CompilingBadge";
-import Navbar from "@/components/Navbar";
-import { motion } from "framer-motion";
+import HeroSection from "@/components/HeroSection";
+import ManifestoSection from "@/components/ManifestoSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import DashboardPreviewSection from "@/components/DashboardPreviewSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 
-const PixelBlast = dynamic(() => import("@/components/PixelBlast"), { ssr: false });
 const DesignBot = dynamic(() => import("@/components/DesignBot"), { ssr: false });
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, Draggable);
+  gsap.registerPlugin(ScrollTrigger);
 }
-
-const testimonials = [
-  {
-    name: "Alex Rivera",
-    role: "Frontend Engineer",
-    image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&auto=format&fit=crop",
-    text: "Vibro completely changed how we build UI. The visual tweaking combined with instant CLI access is a game-changer for speed.",
-  },
-  {
-    name: "Sarah Chen",
-    role: "Design Technologist",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&auto=format&fit=crop",
-    text: "No more manually copying and pasting messy CSS. You design it in the browser, generate a key, and pull the exact code you need.",
-  },
-  {
-    name: "Marcus Johnson",
-    role: "Startup Founder",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&auto=format&fit=crop",
-    text: "The glassmorphic components offered out-of-the-box are premium. It instantly elevated our MVP to look like a high-budget app.",
-  },
-];
-
-const DUMMY_CATEGORIES: Category[] = [
-  { id: "1", name: "Interfaces", slug: "interfaces", icon: "📊", description: "Analytical interfaces", count: 12 },
-  { id: "2", name: "Marketing", slug: "marketing", icon: "🚀", description: "Landing pages", count: 8 },
-  { id: "3", name: "Components", slug: "components", icon: "🧩", description: "Modular UI bits", count: 24 },
-  { id: "4", name: "Mobile", slug: "mobile", icon: "📱", description: "Handheld logic", count: 15 },
-  { id: "5", name: "Protocols", slug: "protocols", icon: "🔐", description: "System logic", count: 9 },
-];
 
 const DUMMY_FEATURED: Prompt[] = [
   { id: "1", title: "Glassmorphic Pro", slug: "glass", categoryId: "1", categorySlug: "interfaces", description: "Premium glass interface", promptText: "Create a glassmorphic interface with neural activity charts", previewImage: "https://images.unsplash.com/photo-1551288049-bbbda536639a?w=600&h=400&auto=format&fit=crop", tags: ["glass", "ui"], featured: true, createdAt: new Date().toISOString() },
@@ -78,357 +31,233 @@ const DUMMY_FEATURED: Prompt[] = [
   { id: "4", title: "Vanguard Auth", slug: "auth", categoryId: "5", categorySlug: "protocols", description: "Secure entry node", promptText: "Implement a secure biometric-style authentication protocol UI", previewImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&auto=format&fit=crop", tags: ["security", "ux"], featured: true, createdAt: new Date().toISOString() },
 ];
 
-export default function HomeClient({ categories: initialCategories, featured: initialFeatured }: { categories: Category[], featured: Prompt[] }) {
-  const categories = initialCategories.length > 0 ? initialCategories : DUMMY_CATEGORIES;
+const PRICING_TIERS = [
+  {
+    name: "Starter",
+    price: "$0",
+    desc: "For individuals exploring AI design generation.",
+    features: ["5 AI Syntheses/month", "Public component library", "Basic token export", "Community support"],
+    cta: "Get Started Free",
+    highlight: false,
+  },
+  {
+    name: "Pro",
+    price: "$29",
+    period: "/mo",
+    desc: "For professionals building scalable design systems.",
+    features: ["Unlimited AI Syntheses", "Private component library", "Advanced JSON/CLI export", "Theme customization", "Priority API access"],
+    cta: "Upgrade to Pro",
+    highlight: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    desc: "For teams requiring advanced control and security.",
+    features: ["Custom model training", "SSO integration", "Dedicated success manager", "White-label exports", "24/7 Support"],
+    cta: "Contact Sales",
+    highlight: false,
+  },
+];
+
+export default function HomeClient({ categories: _categories, featured: initialFeatured }: { categories: Category[], featured: Prompt[] }) {
   const featured = initialFeatured.length > 0 ? initialFeatured : DUMMY_FEATURED;
   const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   useGSAP(() => {
-    // Hero Entrance
-    const tl = gsap.timeline();
-    tl.from(".hero-title", { y: 60, opacity: 0, duration: 0.9, ease: "power4.out" })
-      .from(".hero-desc", { y: 20, opacity: 0, duration: 0.7 }, "-=0.5")
-      .from(".hero-btn", { scale: 0.5, opacity: 0, duration: 0.6, ease: "back.out(2)" }, "-=0.4")
-      .from(".hero-draggable", { scale: 0, opacity: 0, duration: 0.8, stagger: 0.1, ease: "back.out(1.7)" }, "-=0.5");
+    // Generic scroll reveals
+    const items = gsap.utils.toArray<HTMLElement>(".sc-reveal");
+    items.forEach((el) => {
+      const dir = el.getAttribute("data-dir") || "up";
+      const fromVars: gsap.TweenVars =
+        dir === "left" ? { x: -60, opacity: 0 }
+        : dir === "right" ? { x: 60, opacity: 0 }
+        : dir === "scale" ? { scale: 0.88, opacity: 0 }
+        : { y: 50, opacity: 0 };
 
-    // Draggable Elements logic
-    if (typeof window !== "undefined") {
-      const dragTargets = gsap.utils.toArray(".hero-draggable") as HTMLElement[];
-      Draggable.create(dragTargets, {
-        bounds: heroRef.current || undefined,
-        inertia: true,
-        type: "x,y",
-        dragClickables: true,
-        onDragStart: function () {
-          gsap.to(this.target, { scale: 1.05, boxShadow: "15px 15px 40px rgba(0,0,0,0.15)", zIndex: 200, duration: 0.2 });
-        },
-        onDragEnd: function () {
-          gsap.to(this.target, { scale: 1, boxShadow: "10px 10px 0 rgba(0,0,0,1)", zIndex: 100, duration: 0.2 });
-        }
+      gsap.fromTo(el, fromVars, {
+        x: 0, y: 0, scale: 1, opacity: 1,
+        duration: 1, ease: "expo.out",
+        scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" },
       });
-    }
-
-    // Floating animation
-    gsap.to(".hero-draggable", {
-      y: "random(-10, 10)",
-      x: "random(-8, 8)",
-      duration: "random(4, 6)",
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
     });
 
-    // Scroll Staggers
-    const animContainers = gsap.utils.toArray<HTMLElement>(".animate-container");
-    animContainers.forEach((container) => {
-      const children = container.querySelectorAll(".animate-item");
-      if (children.length > 0) {
-        gsap.fromTo(children,
-          { y: 30, opacity: 0, scale: 0.95 },
-          {
-            y: 0, opacity: 1, scale: 1,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "back.out(1.2)",
-            scrollTrigger: {
-              trigger: container,
-              start: "top 85%",
-              toggleActions: "play none none none"
-            }
-          }
-        );
-      }
-    });
-
-    // Individual Item Reveals
-    const individualItems = gsap.utils.toArray<HTMLElement>(".animate-item:not(.animate-container .animate-item)");
-    individualItems.forEach((item) => {
-      const type = item.getAttribute("data-animation") || "fade-up";
-      let fromVars: gsap.TweenVars = { opacity: 0 };
-
-      switch (type) {
-        case "fade-left": fromVars = { ...fromVars, x: -60 }; break;
-        case "fade-right": fromVars = { ...fromVars, x: 60 }; break;
-        case "scale-in": fromVars = { ...fromVars, scale: 0.8 }; break;
-        case "fade-up":
-        default: fromVars = { ...fromVars, y: 40 }; break;
-      }
-
-      gsap.fromTo(item,
-        fromVars,
+    // Stagger groups
+    const groups = gsap.utils.toArray<HTMLElement>(".sc-stagger-group");
+    groups.forEach((group) => {
+      const children = group.querySelectorAll(".sc-stagger-item");
+      if (!children.length) return;
+      gsap.fromTo(children,
+        { y: 40, opacity: 0 },
         {
-          x: 0, y: 0, scale: 1, opacity: 1,
-          duration: 1.2,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: item,
-            start: "top 95%",
-            toggleActions: "play none none none"
-          }
+          y: 0, opacity: 1, duration: 0.85, stagger: 0.12, ease: "back.out(1.2)",
+          scrollTrigger: { trigger: group, start: "top 85%" },
         }
       );
     });
 
-    // Counters
-    const counters = gsap.utils.toArray<HTMLElement>(".counter-item");
-    counters.forEach(counter => {
-      const targetVal = parseFloat(counter.getAttribute("data-target") || "0");
-      const suffix = counter.getAttribute("data-suffix") || "";
-      const obj = { val: 0 };
-      gsap.to(obj, {
-        val: targetVal,
-        duration: 2.5,
-        ease: "power2.out",
-        scrollTrigger: { trigger: counter, start: "top 95%" },
-        onUpdate: () => { counter.innerText = Math.ceil(obj.val).toLocaleString() + suffix; }
-      });
-    });
-
-    // Parallax
-    const parallaxEl = gsap.utils.toArray<HTMLElement>(".parallax-element");
-    parallaxEl.forEach(el => {
-      const speed = parseFloat(el.getAttribute("data-speed") || "0.1");
-      gsap.to(el, {
-        y: speed * 300,
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true }
-      });
-    });
-
-    setTimeout(() => ScrollTrigger.refresh(), 1000);
+    setTimeout(() => ScrollTrigger.refresh(), 800);
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full bg-[var(--color-dash-bg)] text-gray-900 selection:bg-[var(--color-dash-neon)]/40 overflow-x-hidden">
+    <div ref={containerRef} className="relative w-full overflow-x-hidden bg-white">
 
-      {/* ── 1. Hero Section ─────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative z-10 min-h-screen pt-[180px] pb-[120px] flex flex-col items-center justify-center overflow-visible">
+      {/* ── 1. HERO ───────────────────────────────────────────────────── */}
+      <HeroSection />
 
-        <Navbar />
-        <GridBackground />
-
-        {/* ── Central AI Feed / Generator Engine ── */}
-        <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl pointer-events-none">
-          <svg className="absolute inset-0 w-full h-[600px] opacity-10" viewBox="0 0 1000 600">
-            <path d="M500 300 L200 100" stroke="black" strokeWidth="2" strokeDasharray="8 8" />
-            <path d="M500 300 L800 150" stroke="black" strokeWidth="2" strokeDasharray="8 8" />
-            <path d="M500 300 L850 450" stroke="black" strokeWidth="2" strokeDasharray="8 8" />
-          </svg>
-        </div>
-
-        {/* ── Floating Engine Assets (Draggables) ── */}
-        <OverlayCard initialX={-620} initialY={-220} className="hero-draggable w-[320px] bg-white border-[4px] border-black rounded-[32px] shadow-[12px_12px_0_rgba(0,0,0,1)]">
-          <div className="flex items-center gap-2 mb-6 border-b-[2px] border-[#F3F3F3] pb-4">
-            <div className="w-5 h-5 rounded-full bg-[#C6FF3D] border-[3px] border-black" />
-            <span className="text-[16px] font-[900] font-poppins text-black uppercase tracking-[1.5px]">TOKEN_EXPLORER</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="h-10 bg-[#F3F3F3] rounded-xl border-2 border-black flex items-center justify-center font-black text-[10px]">RAD: 32px</div>
-            <div className="h-10 bg-[#C6FF3D] rounded-xl border-2 border-black flex items-center justify-center font-black text-[10px]">HEX: #C6FF3D</div>
-          </div>
-        </OverlayCard>
-
-        <OverlayCard initialX={580} initialY={-300} rotation={2} className="hero-draggable w-[400px] bg-black border-[4px] border-[#3B5FFF] rounded-[32px] shadow-[12px_12px_0_rgba(59,95,255,0.3)]">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
-              <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-              <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
-            </div>
-            <span className="ml-4 text-[12px] font-[800] font-poppins text-[#3B5FFF] uppercase tracking-widest">GENERATING_BUILD...</span>
-          </div>
-          <div className="font-mono text-[14px] leading-relaxed text-[#3B5FFF] opacity-80">
-            <div className="flex gap-2"><span className="text-gray-600">1</span> <span>export default function <span className="text-white">Hero</span>() {"{"}</span></div>
-            <div className="flex gap-2"><span className="text-gray-600">2</span> <span className="ml-4">return (</span></div>
-            <div className="flex gap-2"><span className="text-gray-600">3</span> <span className="ml-8 text-[#C6FF3D]">&lt;div className="neon-glow" /&gt;</span></div>
-            <div className="flex gap-2"><span className="text-gray-600">4</span> <span className="ml-4">)</span></div>
-          </div>
-        </OverlayCard>
-
-        <OverlayCard initialX={560} initialY={320} className="hero-draggable w-[240px] rounded-3xl p-0 overflow-hidden bg-white border-[4px] border-black shadow-[12px_12px_0_rgba(0,0,0,1)]">
-          <div className="bg-[#F3F3F3] border-b-[4px] border-black px-4 py-2 flex items-center justify-between font-black text-[10px] uppercase">Preview</div>
-          <div className="p-6 flex flex-col items-center gap-4">
-            <div className="w-full h-12 bg-[#C6FF3D] border-[3px] border-black rounded-full flex items-center justify-center font-black text-sm">Button.tsx</div>
-          </div>
-        </OverlayCard>
-
-        <CompilingBadge />
-        <HeroLayout />
-
-        {/* ── Central Prompt Input (The AI Brain) ── */}
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-          className="relative mt-20 z-50 group"
-        >
-          <div className="flex items-center gap-4 bg-white border-[4px] border-black rounded-[2.5rem] px-8 py-5 shadow-[12px_12px_0_#000000] w-[700px] transition-all focus-within:shadow-[16px_16px_0_#C6FF3D]">
-            <div className="w-12 h-12 bg-[#C6FF3D] rounded-2xl border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_#000000]">
-              <Cpu className="w-6 h-6 text-black" />
-            </div>
-            <input
-              type="text"
-              placeholder="Describe: 'Minimalist dashboard with dark glass cards'..."
-              className="bg-transparent border-none outline-none text-[18px] font-poppins font-[700] w-full text-black placeholder:text-gray-400"
-            />
-            <button className="bg-black text-[#C6FF3D] p-3 rounded-2xl hover:scale-110 transition-transform">
-              <Search className="w-6 h-6" />
-            </button>
-          </div>
-
-          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-6">
-            <span className="text-[11px] font-black uppercase text-black/30 tracking-widest flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#3B5FFF]" /> CLI_READY
-            </span>
-            <span className="text-[11px] font-black uppercase text-black/30 tracking-widest flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#C6FF3D]" /> REACT_NODE
-            </span>
-          </div>
-        </motion.div>
-
-        <div className="mt-20">
-          <Subheadline />
-        </div>
-      </section>
-
-      {/* ── 2. The Marquee Registry ─────────────────────────────────────── */}
-      <section className="scroll-section border-y-[3px] border-black bg-white py-0 relative z-10 overflow-hidden">
-        <div className="flex animate-[marquee_40s_linear_infinite] whitespace-nowrap py-12 items-center">
-          {[1, 2, 3].map((group) => (
-            <div key={group} className="flex items-center gap-14 px-7">
-              <span className="text-[12px] font-black text-black/10 uppercase tracking-[0.8em] font-poppins">System_Sync_Protocol</span>
-              <div className="flex items-center gap-4 bg-[#FAFAF8] border-[2.5px] border-black px-7 py-3 rounded-2xl shadow-[6px_6px_0_#000]">
-                <Zap className="w-5 h-5 text-black" /> <span className="text-lg font-black font-poppins text-black uppercase tracking-tighter">NEXT.JS 15</span>
-              </div>
-              <div className="flex items-center gap-4 bg-[#C6FF3D] border-[2.5px] border-black px-7 py-3 rounded-2xl shadow-[6px_6px_0_#000]">
-                <span className="text-lg font-black font-poppins text-black uppercase tracking-tighter">TAILWIND V4</span>
-              </div>
-              <div className="flex items-center gap-4 bg-white border-[2.5px] border-black px-7 py-3 rounded-2xl shadow-[6px_6px_0_#000]">
-                <Sparkles className="w-5 h-5 text-black" /> <span className="text-lg font-black font-poppins text-black uppercase tracking-tighter">AI AGENTIC</span>
-              </div>
+      {/* ── 2. SYSTEM PROTOCOL MARQUEE ────────────────────────────────── */}
+      <section className="border-y border-black/10 bg-white py-0 relative z-10 overflow-hidden">
+        <div className="flex animate-[marquee_40s_linear_infinite] whitespace-nowrap py-8 items-center">
+          {[1, 2, 3].map((g) => (
+            <div key={g} className="flex items-center gap-10 px-6">
+              <span className="text-[10px] font-black text-black/10 uppercase tracking-[0.8em]">System_Protocol</span>
+              {[
+                { label: "NEXT.JS 15",  icon: "⚡",   bg: "bg-[#FAFAF8]"        },
+                { label: "TAILWIND V4", icon: null,   bg: "bg-[#e8ff8a]"        },
+                { label: "AI AGENTIC", icon: "❆",     bg: "bg-white"            },
+                { label: "REACT 19",   icon: "⚛",     bg: "bg-[#FAFAF8]"        },
+                { label: "GSAP PRO",   icon: "▶",     bg: "bg-zinc-900"         },
+                { label: "SUPABASE",   icon: "🪄",     bg: "bg-[#FAFAF8]"        },
+              ].map((item, i) => (
+                <div key={i} className={`flex items-center gap-3 ${item.bg} border border-black/15 px-5 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.07)]`}>
+                  {item.icon && <span>{item.icon}</span>}
+                  <span className={`text-sm font-bold uppercase tracking-widest ${
+                    item.label === "GSAP PRO" ? "text-[#C6FF3D]" : "text-black/65"
+                  }`}>{item.label}</span>
+                </div>
+              ))}
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── 3. The Architecture Gap (Comparison Section) ─────────────────── */}
-      <section className="scroll-section py-32 sm:py-56 bg-white relative z-10">
+      {/* ── 3. HOW IT WORKS ─────────────────────────────────────────────── */}
+      <HowItWorksSection />
+
+      {/* ── 4. ARCHITECTURE GAP ─────────────────────────────────────────── */}
+      <section className="py-32 sm:py-48 bg-white relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="animate-item text-center mb-24">
-            <div className="inline-flex items-center gap-3 bg-red-50 text-red-600 px-6 py-2 rounded-full border-[2px] border-red-100 font-black text-[11px] uppercase tracking-widest mb-6 shadow-[4px_4px_0_#fee2e2]">
-              Efficiency Analysis
+
+          <div className="sc-reveal text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-red-50 text-red-500 px-5 py-2 border border-red-100 font-black text-[10px] uppercase tracking-[0.4em] mb-8 shadow-[4px_4px_0_#fee2e2]">
+              ⚠ Efficiency Analysis
             </div>
-            <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase mb-10">The Death of <br /> <span className="text-white [-webkit-text-stroke:2x_black]">Static Design.</span></h2>
+            <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase">
+              The Death of <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Static Design.</span>
+            </h2>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-10 items-stretch">
-            {/* Legacy Way */}
-            <div className="animate-item bg-[#FBFBFA] border-[3.5px] border-black rounded-[3rem] p-12 relative overflow-hidden group shadow-[15px_15px_0_rgba(0,0,0,0.03)]" data-animation="fade-left">
-              <div className="absolute top-0 right-0 p-6 opacity-10 font-black text-6xl">01</div>
-              <div className="mb-12">
-                <h3 className="text-3xl font-black text-black uppercase mb-4 tracking-tighter">Legacy workflow</h3>
-                <p className="text-zinc-400 font-bold italic leading-relaxed">"Manual translation from Figma to Code is a high-latency bottleneck."</p>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Legacy */}
+            <div className="sc-reveal bg-[#FBFBFA] border border-black/10 rounded-[2rem] p-10 relative overflow-hidden" data-dir="left">
+              <div className="absolute top-6 right-6 text-[60px] font-black text-black/5 leading-none">01</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter mb-3">Legacy Workflow</h3>
+              <p className="text-zinc-400 italic font-bold mb-8">&ldquo;Manual Figma-to-code translation is a high-latency bottleneck.&rdquo;</p>
+              <div className="space-y-4 opacity-40">
+                {["Copy-pasting hex codes...", "Fixing responsive bugs...", "Adjusting padding manually...", "Re-implementing Figma specs..."].map(s => (
+                  <div key={s} className="h-12 bg-white border-2 border-black/10 flex items-center px-5 text-xs font-bold text-zinc-400 line-through">{s}</div>
+                ))}
               </div>
-              <div className="space-y-6 opacity-40 blur-[1px]">
-                <div className="h-14 w-full bg-white border-[2px] border-black/10 rounded-2xl flex items-center px-6 text-xs font-bold text-zinc-400">Copy-pasting Hex Codes...</div>
-                <div className="h-14 w-full bg-white border-[2px] border-black/10 rounded-2xl flex items-center px-6 text-xs font-bold text-zinc-400">Fixing responsive bugs...</div>
-                <div className="h-14 w-full bg-white border-[2px] border-black/10 rounded-2xl flex items-center px-6 text-xs font-bold text-zinc-400">Adjusting padding values...</div>
-              </div>
-              <div className="mt-16 pt-8 border-t border-black/5 flex items-center justify-between">
-                <span className="text-xs font-black text-red-500 uppercase">Process: ~12 Hours</span>
-                <ShieldCheck className="w-6 h-6 text-red-200" />
+              <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
+                <span className="text-xs font-black text-red-500 uppercase tracking-widest">⏱ Process: ~12 Hours</span>
+                <ShieldCheck className="w-5 h-5 text-red-200" />
               </div>
             </div>
 
-            {/* Vibro Way */}
-            <div className="animate-item bg-white border-[4px] border-black rounded-[3rem] p-12 relative overflow-hidden group shadow-[20px_20px_0_#C6FF3D]" data-animation="fade-right">
-              <div className="absolute top-0 right-0 p-6 opacity-20 font-black text-6xl">02</div>
-              <div className="mb-12">
-                <h3 className="text-3xl font-black text-black uppercase mb-4 tracking-tighter">Neural Synthesis</h3>
-                <p className="text-[#8fcc00] font-bold italic leading-relaxed">"Direct architectural extraction from human intent to React nodes."</p>
+            {/* Vibro */}
+            <div className="sc-reveal bg-white border-[2px] border-black/70 rounded-[2rem] p-10 relative overflow-hidden shadow-[14px_14px_0_rgba(198,255,61,0.2)]" data-dir="right">
+              <div className="absolute top-6 right-6 text-[60px] font-black text-black/5 leading-none">02</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter mb-3">Neural Synthesis</h3>
+              <p className="text-[#8fcc00] italic font-bold mb-8">&ldquo;Direct architectural extraction from human intent to React nodes.&rdquo;</p>
+              <div className="space-y-4">
+                {[
+                  { icon: Zap, text: "Instant Token Mapping", accent: true },
+                  { icon: Zap, text: "Algorithmic Layout Synthesis", accent: false },
+                  { icon: Code2, text: "Direct Terminal Pull", dark: true },
+                ].map(({ icon: Icon, text, accent, dark }) => (
+                  <div key={text} className={`h-12 border-[3px] border-black flex items-center px-5 text-xs font-black gap-3 ${dark ? "bg-black text-white" : "bg-[#FAFAF8] text-black"}`}>
+                    <Icon className={`w-4 h-4 ${accent ? "text-[#C6FF3D]" : dark ? "text-[#C6FF3D]" : "text-[#C6FF3D]"}`} />
+                    {text}
+                  </div>
+                ))}
               </div>
-              <div className="space-y-6">
-                <div className="h-14 w-full bg-[#FAFAF8] border-[3px] border-black rounded-2xl flex items-center px-6 text-xs font-black text-black">
-                  <Zap className="w-4 h-4 mr-3 text-[#C6FF3D]" /> Instant Token Mapping
-                </div>
-                <div className="h-14 w-full bg-[#FAFAF8] border-[3px] border-black rounded-2xl flex items-center px-6 text-xs font-black text-black">
-                  <Zap className="w-4 h-4 mr-3 text-[#C6FF3D]" /> Algorithmic Layout Synthesis
-                </div>
-                <div className="h-14 w-full bg-black text-white border-[3px] border-black rounded-2xl flex items-center px-6 text-xs font-black">
-                  <Code2 className="w-4 h-4 mr-3 text-[#C6FF3D]" /> Direct Terminal Pull
-                </div>
-              </div>
-              <div className="mt-16 pt-8 border-t border-black/5 flex items-center justify-between">
-                <span className="text-xs font-black text-[#8fcc00] uppercase">Process: ~400ms</span>
-                <Zap className="w-6 h-6 text-[#C6FF3D] animate-pulse" />
+              <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
+                <span className="text-xs font-black text-[#8fcc00] uppercase tracking-widest">⚡ Process: ~400ms</span>
+                <Zap className="w-5 h-5 text-[#C6FF3D] animate-pulse fill-[#C6FF3D]" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 4. Feature: Ask & Analyze (DesignBot) ───────────────────────── */}
-      <section className="scroll-section py-32 sm:py-56 relative z-10 overflow-hidden bg-[#FAFAF8] border-y-[3.5px] border-black">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="animate-item" data-animation="fade-left">
-              <div className="mb-10 inline-flex items-center gap-4 bg-black px-6 py-2 rounded-2xl shadow-[6px_6px_0_#C6FF3D]">
-                <Activity className="w-5 h-5 text-[#C6FF3D]" />
-                <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#C6FF3D]">Engine_Core_v2.4</span>
-              </div>
-              <h2 className="text-5xl sm:text-7xl font-[1000] mb-10 text-black tracking-[-0.04em] uppercase leading-none">Imagine. <br /><span className="text-white [-webkit-text-stroke:2px_black]">Synthesized.</span></h2>
-              <p className="text-xl font-bold text-zinc-500 leading-relaxed mb-14 italic max-w-xl">"Vibro translates abstract logic into production-grade React architectures through deep neural mapping."</p>
+      {/* ── 5. MANIFESTO + COUNTERS ─────────────────────────────────────── */}
+      <ManifestoSection />
 
-              <div className="animate-container grid gap-6">
+      {/* ── 6. DESIGN BOT ───────────────────────────────────────────────── */}
+      <section className="py-32 sm:py-48 relative z-10 overflow-hidden bg-[#FAFAF8] border-y-[3.5px] border-black">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="sc-reveal" data-dir="left">
+              <div className="inline-flex items-center gap-3 bg-black px-5 py-2 mb-8 shadow-[6px_6px_0_#C6FF3D]">
+                <Activity className="w-4 h-4 text-[#C6FF3D]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF3D]">Engine_Core_v2.4</span>
+              </div>
+              <h2 className="text-5xl sm:text-7xl font-[1000] mb-8 text-black tracking-[-0.04em] uppercase leading-none">
+                Imagine. <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Synthesized.</span>
+              </h2>
+              <p className="text-xl font-bold text-zinc-500 leading-relaxed mb-12 italic max-w-xl">
+                &ldquo;Vibro translates abstract intent into production-grade React architectures through deep neural mapping.&rdquo;
+              </p>
+              <div className="sc-stagger-group space-y-4">
                 {[
-                  { title: "Neuro-Mapping", text: "Translating words into precise UI components.", color: "bg-blue-50/50" },
-                  { title: "Sovereign Build", text: "Zero dependencies. Pure, high-performance React.", color: "bg-zinc-50" },
-                  { title: "Instant Hydration", text: "Ready for deployment on any modern stack.", color: "bg-[#C6FF3D]/5" }
+                  { title: "Neuro-Mapping", text: "Translating words into precise UI components." },
+                  { title: "Sovereign Build", text: "Zero dependencies. Pure, high-performance React." },
+                  { title: "Instant Hydration", text: "Ready for deployment on any modern stack." },
                 ].map((item, i) => (
-                  <div key={i} className={`animate-item flex items-center justify-between p-7 rounded-[2.5rem] border-[3px] border-black ${item.color} shadow-[8px_8px_0_#000] hover:-translate-y-1 transition-all group`}>
-                    <div className="flex-1">
-                      <h4 className="text-xl font-black text-black uppercase tracking-tighter mb-1.5">{item.title}</h4>
-                      <p className="text-sm font-bold text-zinc-400 italic">" {item.text} "</p>
+                  <div key={i} className="sc-stagger-item flex items-center gap-5 p-6 border-[3px] border-black bg-white shadow-[6px_6px_0_#000] hover:-translate-y-0.5 hover:shadow-[8px_8px_0_#C6FF3D] transition-all group cursor-pointer">
+                    <div className="w-10 h-10 bg-[#C6FF3D] border-[2px] border-black flex items-center justify-center shrink-0 font-black text-sm">0{i + 1}</div>
+                    <div>
+                      <h4 className="text-sm font-black text-black uppercase tracking-widest">{item.title}</h4>
+                      <p className="text-zinc-500 text-sm font-bold italic mt-0.5">{item.text}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="animate-item relative" data-animation="fade-right">
-              <div className="relative z-10 rounded-[4rem] border-[4px] border-black bg-white p-6 shadow-[30px_30px_0_rgba(198,255,61,0.2)]">
+
+            <div className="sc-reveal relative" data-dir="right">
+              <div className="border-[4px] border-black bg-white p-5 shadow-[20px_20px_0_rgba(198,255,61,0.25)] rounded-[2.5rem] overflow-hidden">
                 <DesignBot />
               </div>
-              <div className="parallax-element absolute -top-16 -right-16 w-56 h-56 bg-[#C6FF3D]/10 blur-[120px] rounded-full -z-10" data-speed="0.15" />
+              <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#C6FF3D]/10 blur-[80px] rounded-full -z-10" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 5. High-Velocity Grid (Universal Library) ────────────────────── */}
-      <section className="scroll-section py-32 sm:py-56 bg-white relative z-10">
+      {/* ── 7. DASHBOARD PREVIEW ────────────────────────────────────────── */}
+      <DashboardPreviewSection />
+
+      {/* ── 8. COMPONENT LIBRARY ────────────────────────────────────────── */}
+      <section className="py-32 sm:py-48 bg-white relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-24 animate-item">
-            <div className="max-w-3xl">
-              <div className="mb-8 inline-flex items-center gap-3 rounded-xl border-[2.5px] border-black bg-black px-6 py-2 shadow-[6px_6px_0_#C6FF3D]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-20 sc-reveal">
+            <div>
+              <div className="inline-flex items-center gap-3 bg-black px-5 py-2 mb-6 shadow-[5px_5px_0_#C6FF3D]">
                 <Box className="w-4 h-4 text-[#C6FF3D]" />
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF3D]">Central_Lattice</span>
               </div>
-              <h2 className="text-6xl sm:text-8xl font-[1000] tracking-[-0.05em] text-black leading-[0.85] uppercase mb-10">Verified <br /><span className="text-white [-webkit-text-stroke:2px_black]">Nodes.</span></h2>
+              <h2 className="text-6xl sm:text-8xl font-[1000] tracking-[-0.05em] text-black leading-[0.85] uppercase">
+                Verified <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Nodes.</span>
+              </h2>
             </div>
-            <Link href="/dashboard" className="group relative flex items-center gap-5 rounded-3xl border-[3.5px] border-black bg-[#C6FF3D] px-10 py-5 text-lg font-black text-black shadow-[10px_10px_0_#000] transition-all hover:-translate-y-1 hover:shadow-[14px_14px_0_#000] uppercase tracking-widest">
-              Explore The Library
+            <Link href="/dashboard/library" className="mt-8 lg:mt-0 flex items-center gap-4 bg-[#C6FF3D] border-[3px] border-black px-8 py-4 font-black uppercase tracking-widest shadow-[8px_8px_0_#000] hover:shadow-[12px_12px_0_#000] hover:-translate-y-0.5 transition-all group">
+              Explore Library <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </div>
 
-          <div className="animate-container grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.slice(0, 4).map((prompt, idx) => (
-              <div key={prompt.id} className="animate-item" data-animation="zoom-out">
+          <div className="sc-stagger-group grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.slice(0, 4).map((prompt) => (
+              <div key={prompt.id} className="sc-stagger-item">
                 <PromptCard prompt={prompt} />
               </div>
             ))}
@@ -436,125 +265,167 @@ export default function HomeClient({ categories: initialCategories, featured: in
         </div>
       </section>
 
-      {/* ── 6. Global Ecosystem (Integrations) ─────────────────────────── */}
-      <section className="scroll-section py-32 bg-black relative z-10 overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="animate-item text-center mb-24">
-            <h2 className="text-6xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 italic">Universal <br /> <span className="text-[#C6FF3D] [-webkit-text-stroke:2px_white]">Protocol.</span></h2>
-            <p className="text-zinc-500 font-bold max-w-xl mx-auto text-lg italic">"Vibro connects natively to any modern IDE and deployment target."</p>
+      {/* ── 9. TESTIMONIALS ─────────────────────────────────────────────── */}
+      <TestimonialsSection />
+
+      {/* ── 10. INTEGRATIONS ────────────────────────────────────────────── */}
+      <section className="py-32 bg-black relative z-10 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#C6FF3D]/3 blur-[200px] rounded-full" />
+        </div>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="sc-reveal text-center mb-20">
+            <h2 className="text-6xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-6 italic">
+              Universal <br /><span className="text-[#C6FF3D]" style={{ WebkitTextStroke: "2px white" }}>Protocol.</span>
+            </h2>
+            <p className="text-zinc-500 font-bold max-w-lg mx-auto text-lg italic">
+              &ldquo;Vibro connects natively to any modern IDE and deployment target.&rdquo;
+            </p>
           </div>
 
-          <div className="animate-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+          <div className="sc-stagger-group grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
             {[
-              { name: 'Cursor', icon: '🤖', color: 'bg-zinc-900 border-white/5' },
-              { name: 'VS Code', icon: '💻', color: 'bg-zinc-900 border-white/5' },
-              { name: 'Vercel', icon: '▲', color: 'bg-zinc-900 border-white/5' },
-              { name: 'GitHub', icon: '🐙', color: 'bg-zinc-900 border-white/5' },
-              { name: 'Next.js', icon: 'N', color: 'bg-zinc-900 border-white/5' },
-              { name: 'CLI', icon: '❯', color: 'bg-white border-black shadow-[6px_6px_0_#C6FF3D]' }
-            ].map((item, i) => (
-              <div key={i} className={`animate-item flex flex-col items-center justify-center p-8 rounded-[2rem] border-[2px] ${item.color} group hover:-translate-y-2 transition-all`}>
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
-                <span className={`text-[11px] font-black uppercase tracking-widest ${item.name === 'CLI' ? 'text-black' : 'text-zinc-500'}`}>{item.name}</span>
+              { name: "Cursor", icon: "🤖", desc: "AI IDE" },
+              { name: "VS Code", icon: "💻", desc: "Editor" },
+              { name: "Vercel", icon: "▲", desc: "Deploy" },
+              { name: "GitHub", icon: "🐙", desc: "Version" },
+              { name: "Next.js", icon: "N", desc: "Framework" },
+              { name: "CLI", icon: "❯_", desc: "Terminal", accent: true },
+            ].map((item) => (
+              <div key={item.name} className={`sc-stagger-item flex flex-col items-center justify-center p-8 border-[2px] group hover:-translate-y-2 transition-all duration-300 ${item.accent ? "bg-[#C6FF3D] border-black shadow-[6px_6px_0_#fff]" : "bg-[#0d0d0f] border-[#ffffff08] hover:border-[#C6FF3D]/30"}`}>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{item.icon}</div>
+                <span className={`text-[11px] font-black uppercase tracking-widest ${item.accent ? "text-black" : "text-zinc-500 group-hover:text-white"}`}>{item.name}</span>
+                <span className={`text-[8px] font-black uppercase tracking-widest mt-1 ${item.accent ? "text-black/60" : "text-zinc-700"}`}>{item.desc}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 7. Pricing Matrix ───────────────────────────────────────────── */}
-      <section className="scroll-section py-40 sm:py-56 bg-white relative z-10">
+      {/* ── 11. PRICING ─────────────────────────────────────────────────── */}
+      <section className="py-32 sm:py-48 bg-white relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-24 items-center mb-32">
-            <div className="animate-item" data-animation="fade-left">
-              <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase mb-10">Ship the <br /> <span className="text-white [-webkit-text-stroke:2px_black]">Unfair.</span></h2>
-              <p className="text-xl font-bold text-zinc-400 italic max-w-lg leading-relaxed mb-12">"Unlock the entire ecosystem of premium components. Pay once, architect forever."</p>
-              <div className="flex items-center gap-6">
-                <div className="flex -space-x-4">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-12 h-12 rounded-full border-[3px] border-white bg-zinc-100 flex items-center justify-center overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="user" className="w-full h-full object-cover" />
-                    </div>
-                  ))}
-                </div>
-                <span className="text-sm font-black text-black uppercase tracking-widest">+12k SHIPPING NOW</span>
-              </div>
+          <div className="sc-reveal text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-black px-5 py-2 mb-8 shadow-[5px_5px_0_#C6FF3D]">
+              <Zap className="w-4 h-4 text-[#C6FF3D] fill-[#C6FF3D]" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF3D]">Pricing_Matrix</span>
             </div>
-
-            <div className="animate-container grid gap-8">
-              {/* Pro Plan */}
-              <div className="animate-item bg-white text-black border-[4px] border-black rounded-[3rem] p-12 shadow-[15px_15px_0_#C6FF3D] relative overflow-hidden group">
-                <div className="absolute top-0 right-0 bg-black text-[#C6FF3D] px-6 py-2 rounded-bl-3xl text-[10px] font-black uppercase tracking-widest">Lifetime Deal</div>
-                <div className="flex items-end gap-3 mb-10">
-                  <div className="text-6xl font-black tracking-tighter">$149</div>
-                  <div className="text-xl text-zinc-300 font-bold line-through italic mb-2">$499</div>
-                </div>
-                <ul className="space-y-4 mb-12 font-black text-sm uppercase italic">
-                  <li className="flex items-center gap-4"><Zap className="w-5 h-5 text-[#C6FF3D] fill-[#C6FF3D]" /> All Premium Components</li>
-                  <li className="flex items-center gap-4"><Zap className="w-5 h-5 text-[#C6FF3D] fill-[#C6FF3D]" /> Priority Neural Synthesis</li>
-                  <li className="flex items-center gap-4"><Zap className="w-5 h-5 text-[#C6FF3D] fill-[#C6FF3D]" /> Private Discord Hub</li>
-                </ul>
-                <button className="w-full py-6 rounded-2xl bg-black text-[#C6FF3D] font-black text-lg transition-all hover:scale-[1.02] shadow-[8px_8px_0_#C6FF3D]">GET THE VAULT</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 8. Final Synthesis CTA ────────────────────────────────────────── */}
-      <section className="scroll-section py-32 bg-black relative z-10 overflow-hidden border-t-4 border-black">
-        <div className="absolute inset-0 z-0 opacity-20">
-          <div className="parallax-element absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-[#C6FF3D]/10 blur-[200px] rounded-full" data-speed="-0.1" />
-        </div>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative text-center z-10">
-          <div className="animate-item mb-12" data-animation="fade-up">
-            <h2 className="text-6xl sm:text-9xl font-[1000] text-white uppercase tracking-tighter leading-none mb-10 italic">
-              Ship <br /> <span className="text-[#C6FF3D] [-webkit-text-stroke:2px_white]">Beyond.</span>
+            <h2 className="text-6xl sm:text-8xl font-[1000] text-black tracking-[-0.05em] leading-[0.85] uppercase">
+              Ship the <br /><span className="text-white" style={{ WebkitTextStroke: "2px black" }}>Unfair.</span>
             </h2>
-            <div className="flex flex-wrap justify-center gap-8">
-              <button className="bg-[#C6FF3D] border-[4px] border-black text-black font-[900] text-xl px-14 py-7 rounded-[2rem] shadow-[10px_10px_0_#fff] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase tracking-widest">Enter Synthesis</button>
-              <button className="border-[4px] border-white bg-transparent text-white font-[900] text-xl px-14 py-7 rounded-[2rem] hover:bg-white hover:text-black transition-all uppercase tracking-widest">Explore Archive</button>
-            </div>
+          </div>
+
+          <div className="sc-stagger-group grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {PRICING_TIERS.map((tier) => (
+              <div
+                key={tier.name}
+                className={`sc-stagger-item relative flex flex-col border-[3px] border-black transition-all ${tier.highlight ? "bg-white shadow-[12px_12px_0_#C6FF3D] scale-[1.02] z-10" : "bg-[#FAFAF8] hover:shadow-[8px_8px_0_#000] hover:-translate-y-1"}`}
+              >
+                {tier.highlight && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#C6FF3D] border-[2px] border-black px-4 py-1 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-[3px_3px_0_#000]">
+                    <Zap className="w-3 h-3" /> Most Popular
+                  </div>
+                )}
+                <div className="p-8 border-b border-black/5">
+                  <h3 className="text-xl font-black text-black uppercase tracking-tighter mb-3">{tier.name}</h3>
+                  <div className="flex items-baseline gap-1 mb-3">
+                    <span className="text-5xl font-[1000] tracking-tighter">{tier.price}</span>
+                    {tier.period && <span className="text-zinc-400 font-bold">{tier.period}</span>}
+                  </div>
+                  <p className="text-zinc-500 text-sm font-bold italic">{tier.desc}</p>
+                </div>
+                <div className="p-8 flex-1">
+                  <ul className="space-y-4 mb-8">
+                    {tier.features.map((f) => (
+                      <li key={f} className="flex items-center gap-3 text-sm font-bold text-zinc-700">
+                        <div className={`w-5 h-5 rounded-sm flex items-center justify-center shrink-0 ${tier.highlight ? "bg-[#C6FF3D] border border-black" : "bg-black/5 border border-black/10"}`}>
+                          <Check className="w-3 h-3 text-black" />
+                        </div>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/dashboard"
+                    className={`block w-full py-4 text-center font-black text-sm uppercase tracking-widest border-[2px] border-black transition-all ${tier.highlight ? "bg-black text-[#C6FF3D] shadow-[4px_4px_0_#C6FF3D] hover:shadow-[6px_6px_0_#C6FF3D] hover:-translate-y-0.5" : "bg-white text-black hover:bg-[#C6FF3D] hover:shadow-[4px_4px_0_#000]"}`}
+                  >
+                    {tier.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── 9. The Ultra-Footer ───────────────────────────────────────────── */}
-      <footer className="relative bg-white border-t-[5px] border-black pt-24 pb-12 z-20">
+      {/* ── 12. FINAL CTA ───────────────────────────────────────────────── */}
+      <section className="py-40 bg-black relative z-10 overflow-hidden border-t-4 border-black">
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.012)_2px,rgba(255,255,255,0.012)_4px)] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[#C6FF3D]/5 blur-[200px] rounded-full pointer-events-none" />
+
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative text-center z-10">
+          <div className="sc-reveal mb-14">
+            <div className="inline-flex items-center gap-2 border border-[#ffffff10] text-zinc-600 px-5 py-2 text-[10px] font-black uppercase tracking-[0.4em] mb-10">
+              ◈ FINAL_SYNTHESIS
+            </div>
+            <h2 className="text-7xl sm:text-[10rem] font-[1000] text-white uppercase tracking-[-0.06em] leading-[0.82] italic mb-10">
+              Ship <br /><span className="text-[#C6FF3D]" style={{ WebkitTextStroke: "2px white" }}>Beyond.</span>
+            </h2>
+            <p className="text-zinc-500 font-bold italic text-xl max-w-xl mx-auto leading-relaxed">
+              &ldquo;Join 12,000+ engineers building the future of interfaces with Vibro.&rdquo;
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6">
+            <Link
+              href="/dashboard"
+              className="bg-[#C6FF3D] border-[3px] border-black text-black font-black text-lg px-12 py-5 shadow-[8px_8px_0_#fff] hover:shadow-[12px_12px_0_#fff] hover:-translate-y-1 transition-all uppercase tracking-widest"
+            >
+              Enter Synthesis
+            </Link>
+            <Link
+              href="/dashboard/library"
+              className="border-[3px] border-white bg-transparent text-white font-black text-lg px-12 py-5 hover:bg-white hover:text-black transition-all uppercase tracking-widest"
+            >
+              Explore Archive
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 13. FOOTER ──────────────────────────────────────────────────── */}
+      <footer className="bg-white border-t-[4px] border-black pt-24 pb-12 relative z-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-            {/* Brand Slot */}
             <div className="col-span-1 md:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-4 mb-10">
-                <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center border-2 border-black shadow-[4px_4px_0_#C6FF3D]">
-                  <Activity className="w-5 h-5 text-[#C6FF3D]" />
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-10 h-10 bg-black border-[2px] border-black flex items-center justify-center shadow-[4px_4px_0_#C6FF3D] overflow-hidden p-1.5">
+                  <img src="/logo.png" alt="Vibro Logo" className="w-full h-full object-contain" />
                 </div>
-                <span className="text-3xl font-[1000] text-black tracking-tighter uppercase">Vibro</span>
+                <span className="text-3xl font-[1000] text-black uppercase tracking-tighter">Vibro</span>
               </div>
-              <p className="text-zinc-400 font-bold leading-relaxed italic mb-10 max-w-xs">
-                "The unified protocol for architectural synthesis. Design once, ship instantly to any modern stack."
+              <p className="text-zinc-400 font-bold italic leading-relaxed mb-8 max-w-xs">
+                &ldquo;The unified protocol for architectural synthesis. Design once, ship instantly to any modern stack.&rdquo;
               </p>
               <div className="flex gap-4">
                 {[Twitter, Github, Linkedin].map((Icon, i) => (
-                  <Link key={i} href="#" className="w-12 h-12 rounded-xl bg-[#FBFBFA] border-[2.5px] border-black flex items-center justify-center hover:bg-[#C6FF3D] transition-colors shadow-[4px_4px_0_#000]">
-                    <Icon className="w-5 h-5 text-black" />
+                  <Link key={i} href="#" className="w-10 h-10 bg-[#FAFAF8] border-[2px] border-black flex items-center justify-center hover:bg-[#C6FF3D] transition-colors shadow-[3px_3px_0_#000]">
+                    <Icon className="w-4 h-4 text-black" />
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Link Groups */}
             {[
-              { title: 'Engine', links: ['Synthesis', 'Archive', 'Workstation', 'Components'] },
-              { title: 'Ecosystem', links: ['Documentation', 'CLI Tools', 'Integrations', 'GitHub Hub'] },
-              { title: 'Identity', links: ['Privacy Protocol', 'Service TOS', 'Security', 'Company'] }
-            ].map((group, i) => (
-              <div key={i}>
-                <h4 className="text-[12px] font-black uppercase text-black tracking-[0.3em] mb-10 italic"># {group.title}</h4>
+              { title: "Engine", links: [["Synthesis", "/dashboard"], ["Library", "/dashboard/library"], ["Studio", "/dashboard/studio"], ["Editor", "/dashboard/editor"]] },
+              { title: "Ecosystem", links: [["Export Center", "/dashboard/export"], ["CLI Tools", "#"], ["Integrations", "#"], ["GitHub Hub", "#"]] },
+              { title: "Company", links: [["Pricing", "/dashboard/pricing"], ["Settings", "/dashboard/settings"], ["Privacy", "#"], ["Terms", "#"]] },
+            ].map((group) => (
+              <div key={group.title}>
+                <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-black mb-8"># {group.title}</h4>
                 <ul className="space-y-4">
-                  {group.links.map(link => (
-                    <li key={link}>
-                      <Link href="#" className="text-zinc-500 font-bold hover:text-black transition-colors text-[15px] italic">" {link} "</Link>
+                  {group.links.map(([label, href]) => (
+                    <li key={label}>
+                      <Link href={href} className="text-zinc-500 font-bold hover:text-black transition-colors text-sm italic hover:underline decoration-[#C6FF3D] underline-offset-4">&ldquo;{label}&rdquo;</Link>
                     </li>
                   ))}
                 </ul>
@@ -562,19 +433,17 @@ export default function HomeClient({ categories: initialCategories, featured: in
             ))}
           </div>
 
-          {/* System Status / Meta */}
-          <div className="pt-12 border-t-[3px] border-black flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-10">
-              <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#8fcc00] animate-pulse" />
-                <span className="text-[11px] font-black uppercase tracking-widest text-[#8fcc00]">System: Nominal</span>
+          <div className="pt-10 border-t-[3px] border-black flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#C6FF3D] animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#8fcc00]">System: Nominal</span>
               </div>
-              <div className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Ver: 4.2.0-stable</div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Ver: 4.2.0-stable</span>
             </div>
-
-            <div className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
               © 2026 VIBRO_SYNTHESIS_CORP. ALL RIGHTS RESERVED.
-            </div>
+            </span>
           </div>
         </div>
       </footer>

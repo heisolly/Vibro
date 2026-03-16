@@ -12,12 +12,7 @@ export default function Navbar() {
         {/* Left: Logo Box */}
         <div className="flex items-center gap-6 bg-white/80 backdrop-blur-md border-[3px] border-black rounded-3xl px-6 py-3 shadow-[6px_6px_0_rgba(0,0,0,1)]">
           <div className="relative w-8 h-8 flex items-center justify-center">
-            {/* Stacked Hexagons */}
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 12L32 19V31L20 38L8 31V19L20 12Z" fill="#000000" />
-              <path d="M20 7L32 14V26L20 33L8 26V14L20 7Z" fill="#C6FF3D" stroke="#000000" strokeWidth="2.5" />
-              <path d="M20 2L32 9V21L20 28L8 21V9L20 2Z" fill="#C6FF3D" stroke="#000000" strokeWidth="2.5" />
-            </svg>
+            <img src="/logo.png" alt="Vibro Logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-[22px] font-[900] font-poppins text-black leading-none tracking-tight">Vibro</span>
