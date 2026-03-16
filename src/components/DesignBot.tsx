@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { streamAIChat } from "@/lib/ai";
+import { Zap, Send, Command } from "lucide-react";
 
 export default function DesignBot() {
   const [input, setInput] = useState("");
@@ -26,7 +27,7 @@ export default function DesignBot() {
     const messages = [
       { 
         role: "system", 
-        content: "You are the Vibro Design Bot. Help the user with design suggestions, color harmonies, or UI patterns. Keep it concise and formatted with simple HTML/Markdown. Bold important terms. Use a premium, professional yet creative tone." 
+        content: "You are the Vibro Design Engine. You synthesize technical design architectures. Keep replies focused on architectural decisions, tokens, and structural logic. Use sharp, technical tone. Format with bold keywords." 
       },
       { role: "user", content: input }
     ];
@@ -36,72 +37,73 @@ export default function DesignBot() {
         setResponse((prev) => prev + text);
       }, { model: "openrouter/free", max_tokens: 400 });
     } catch (error) {
-      console.error("DesignBot Synthesis Error:", error);
-      setResponse(`Sorry, I encountered a synthesis error. This usually indicates a network issue or missing API keys. Check your console for details.`);
+      console.error("Synthesis Error:", error);
+      setResponse(`[SYNTHESIS_ERROR]: Connection failed. Check network or protocol keys.`);
     } finally {
       setIsStreaming(false);
     }
   };
 
   return (
-    <div className="relative z-10 rounded-[2.5rem] border-[4px] border-black bg-white p-2 shadow-[12px_12px_0_rgba(184,247,36,1)] sm:shadow-[20px_20px_0_rgba(184,247,36,1)] overflow-hidden transition-all duration-500">
-      <div className="bg-zinc-50 rounded-[2.2rem] sm:rounded-[2.5rem] p-6 sm:p-8 flex flex-col min-h-[450px]">
+    <div className="relative z-10 rounded-[3rem] border border-white/5 bg-[#0a0a0b] p-2 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
+      <div className="bg-[#0e0e0f] rounded-[2.8rem] p-10 flex flex-col min-h-[500px]">
         
-        {/* Header - No Manual Model Selection */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-             <div className="w-3 h-3 rounded-full bg-[#b8f724] border-2 border-black animate-pulse" />
-             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Design_Engine_Active</span>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-10 pb-10 border-b border-white/5">
+          <div className="flex items-center gap-4">
+             <div className="w-4 h-4 rounded-lg bg-[#BAFF29] shadow-[0_0_20px_rgba(186,255,41,0.4)] animate-pulse" />
+             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600">Protocol::Synthesis</span>
           </div>
           
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-black bg-white shadow-[3px_3px_0_rgba(0,0,0,1)] text-[10px] font-black uppercase">
-            <span className="text-[#b8f724]">★</span>
-            <span>Vibro Intelligence</span>
+          <div className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-widest text-[#BAFF29]">
+            <Zap className="w-3 h-3 fill-current" />
+            <span>AI CORE V.4</span>
           </div>
         </div>
 
         {/* Chat History */}
         <div 
           ref={scrollRef}
-          className="flex-1 overflow-y-auto mb-6 space-y-4 max-h-[350px] custom-scrollbar pr-2"
+          className="flex-1 overflow-y-auto mb-10 space-y-6 max-h-[400px] custom-scrollbar pr-4"
         >
           {response ? (
-            <div className="p-5 rounded-2xl bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] text-sm font-bold text-zinc-700 leading-relaxed whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 text-lg font-bold text-white leading-relaxed whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <span className="text-zinc-600 font-mono text-xs block mb-4 uppercase tracking-[0.3em]">Result_Synthesis:</span>
               {response}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-zinc-400 italic text-center p-8">
-              <div className="w-16 h-16 rounded-3xl bg-black/5 flex items-center justify-center mb-6 border-2 border-dashed border-black/10">
-                 <svg className="w-8 h-8 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 012 2h-5l-5 5v-5z" /></svg>
+            <div className="flex flex-col items-center justify-center h-full text-zinc-700 italic text-center py-10">
+              <div className="w-20 h-20 rounded-[2rem] bg-white/5 flex items-center justify-center mb-8 border border-white/5">
+                 <Command className="w-8 h-8 opacity-20 text-white" />
               </div>
-              <p className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest mb-2">System Initialized</p>
-              <p className="max-w-[200px]">"Suggest a color palette for a 'Cyberpunk' dashboard."</p>
+              <p className="text-zinc-600 font-black uppercase text-[10px] tracking-[0.5em] mb-4">Neural Buffer Ready</p>
+              <p className="max-w-[240px] text-zinc-500 font-bold overflow-hidden">"Define a high-contrast structural system for a data lab."</p>
             </div>
           )}
           {isStreaming && (
-            <div className="flex gap-2 items-center px-4">
-               <div className="w-2 h-2 bg-[#b8f724] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-               <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-               <div className="w-2 h-2 bg-[#b8f724] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex gap-3 items-center px-6">
+               <div className="w-2.5 h-2.5 bg-[#BAFF29] rounded-full animate-bounce shadow-[0_0_10px_rgba(186,255,41,0.5)]" style={{ animationDelay: '0ms' }} />
+               <div className="w-2.5 h-2.5 bg-white/10 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+               <div className="w-2.5 h-2.5 bg-[#BAFF29] rounded-full animate-bounce shadow-[0_0_10px_rgba(186,255,41,0.5)]" style={{ animationDelay: '300ms' }} />
             </div>
           )}
         </div>
 
         {/* Input Area */}
-        <form onSubmit={handleSubmit} className="relative group">
+        <form onSubmit={handleSubmit} className="relative">
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your design intent..."
-            className="w-full bg-white border-[3px] border-black rounded-2xl px-6 py-5 text-sm font-black focus:outline-none focus:ring-4 focus:ring-[#b8f724]/30 shadow-[6px_6px_0_rgba(0,0,0,1)] pr-16 transition-all group-hover:shadow-[8px_8px_0_rgba(184,247,36,1)]"
+            placeholder="Initialize intent..."
+            className="w-full bg-[#0a0a0b] border-2 border-white/5 rounded-[1.8rem] px-10 py-7 text-lg font-bold text-white placeholder:text-zinc-700 focus:outline-none focus:border-[#BAFF29]/40 focus:ring-0 transition-all shadow-inner"
           />
           <button 
             type="submit"
             disabled={isStreaming || !input.trim()}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#b8f724] border-2 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0_rgba(0,0,0,1)] hover:-translate-y-[calc(50%+2px)] active:translate-y-[calc(50%-0px)] active:shadow-none transition-all disabled:opacity-30"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-16 h-16 bg-[#BAFF29] rounded-2xl flex items-center justify-center shadow-[0_10px_30px_rgba(186,255,41,0.2)] hover:scale-105 active:scale-95 transition-all disabled:opacity-20 disabled:grayscale"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            <Send className="w-6 h-6 text-black" />
           </button>
         </form>
       </div>
