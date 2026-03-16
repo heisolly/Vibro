@@ -18,7 +18,7 @@ const TABS = [
 ];
 
 const MOCK_COMPONENTS = [
-  { name: "Primary Button", category: "Buttons", color: "bg-[#BAFF29]" },
+  { name: "Primary Button", category: "Buttons", color: "bg-[#C6FF3D]" },
   { name: "Stat Card",      category: "Cards",   color: "bg-zinc-800" },
   { name: "Top Navigation", category: "Navbars", color: "bg-black" },
   { name: "Dark Hero",      category: "Heroes",  color: "bg-gradient-to-br from-zinc-900 to-black" },
@@ -27,42 +27,46 @@ const MOCK_COMPONENTS = [
 ];
 
 const MOCK_COLORS = [
-  { name: "Primary", value: "#BAFF29" },
-  { name: "Background", value: "#0a0a0b" },
-  { name: "Surface", value: "#0e0e0f" },
+  { name: "Primary", value: "#C6FF3D" },
+  { name: "Background", value: "#050506" },
+  { name: "Surface", value: "#0d0d0f" },
   { name: "Text", value: "#ffffff" },
   { name: "Muted", value: "#71717a" },
 ];
 
 const EXPORT_MODES = [
-  { id: "prompt", title: "AI Prompt", tag: "AI-Ready", accent: "#BAFF29" },
-  { id: "json",   title: "JSON Context", tag: "JSON Export", accent: "#ffffff" },
-  { id: "cli",    title: "CLI Install",  tag: "Direct Deploy", accent: "#BAFF29" },
+  { id: "prompt", title: "AI Prompt", tag: "AI-Ready", accent: "#C6FF3D" },
+  { id: "json",   title: "JSON Context", tag: "JSON Export", accent: "#818cf8" },
+  { id: "cli",    title: "CLI Install",  tag: "Direct Deploy", accent: "#34d399" },
 ];
 
 function LibraryTab() {
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center gap-3 p-4 border-b border-white/5">
+      <div className="flex items-center gap-3 p-4 border-b border-[#ffffff08]">
         <div className="relative flex-1 max-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-zinc-600" />
-          <div className="w-full bg-[#0a0a0b] border border-white/10 pl-8 pr-3 py-2 text-[10px] text-zinc-600 rounded-lg">Search architecture...</div>
+          <div className="w-full bg-[#080809] border border-[#ffffff0a] pl-8 pr-3 py-2 text-[10px] text-zinc-600">Search components...</div>
         </div>
         <div className="flex gap-1">
-          {["All","Atomic","Molecule"].map(c => (
-            <div key={c} className={`px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-full ${c === "All" ? "bg-[#BAFF29] text-black" : "border border-white/10 text-zinc-600"}`}>{c}</div>
+          {["All","Buttons","Cards"].map(c => (
+            <div key={c} className={`px-2 py-1 text-[8px] font-black uppercase tracking-widest ${c === "All" ? "bg-[#C6FF3D] text-black" : "border border-[#ffffff0a] text-zinc-600"}`}>{c}</div>
           ))}
         </div>
       </div>
-      <div className="flex-1 p-4 grid grid-cols-3 gap-3 overflow-hidden">
+      <div className="flex-1 p-4 grid grid-cols-3 gap-2 overflow-hidden">
         {MOCK_COMPONENTS.map((c, i) => (
-          <div key={i} className="border border-white/5 bg-[#0a0a0b] group hover:border-[#BAFF29]/40 transition-all cursor-pointer rounded-xl overflow-hidden">
-            <div className={`h-16 ${c.color} flex items-center justify-center opacity-40 group-hover:opacity-100 transition-opacity`}>
-              <span className="text-[8px] font-black text-black/30 uppercase tracking-widest">{c.name}</span>
+          <div key={i} className="border border-[#ffffff06] bg-[#080809] group hover:border-[#ffffff15] transition-all cursor-pointer">
+            <div className={`h-16 ${c.color} flex items-center justify-center`}>
+              <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">{c.name}</span>
             </div>
-            <div className="p-3">
+            <div className="p-2">
               <p className="text-[9px] font-black text-white uppercase tracking-widest truncate">{c.name}</p>
-              <p className="text-[7px] text-zinc-700 uppercase tracking-widest mt-1">{c.category}</p>
+              <p className="text-[7px] text-zinc-700 uppercase tracking-widest">{c.category}</p>
+              <div className="mt-1 flex items-center justify-between h-5 px-2 bg-transparent border border-[#ffffff06] text-zinc-700 group-hover:bg-[#C6FF3D] group-hover:text-black group-hover:border-[#C6FF3D] transition-all">
+                <span className="text-[7px] font-black uppercase tracking-widest">Open</span>
+                <ArrowRight className="w-2 h-2" />
+              </div>
             </div>
           </div>
         ))}
@@ -74,22 +78,22 @@ function LibraryTab() {
 function StudioTab() {
   return (
     <div className="h-full flex">
-      <div className="w-[120px] border-r border-white/5 p-4">
-        <p className="text-[7px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-4">Design Tokens</p>
+      <div className="w-[120px] border-r border-[#ffffff08] p-3">
+        <p className="text-[7px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-3">Design Tokens</p>
         {["Colors","Typography","Spacing","Radius"].map((cat, i) => (
-          <div key={cat} className={`flex items-center gap-2 px-3 py-2 mb-2 text-[8px] font-black uppercase tracking-widest cursor-pointer rounded-lg ${i === 0 ? "bg-[#BAFF29] text-black" : "text-zinc-600 hover:text-white"}`}>
+          <div key={cat} className={`flex items-center gap-2 px-2 py-1.5 mb-1 text-[8px] font-black uppercase tracking-widest cursor-pointer ${i === 0 ? "bg-[#C6FF3D]/10 border border-[#C6FF3D]/20 text-white" : "text-zinc-600 hover:text-white"}`}>
             {cat}
           </div>
         ))}
       </div>
-      <div className="flex-1 p-6">
-        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-4">Core Palette</p>
-        <div className="grid grid-cols-2 gap-3">
+      <div className="flex-1 p-4">
+        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-3">Color Tokens</p>
+        <div className="grid grid-cols-3 gap-2">
           {MOCK_COLORS.map((col) => (
-            <div key={col.name} className="border border-white/5 bg-[#0a0a0b] p-3 cursor-pointer hover:border-white/20 transition-all rounded-xl">
-              <div className="w-full h-10 mb-2 rounded-lg" style={{ backgroundColor: col.value }} />
-              <p className="text-[9px] font-black text-white uppercase tracking-widest">{col.name}</p>
-              <p className="text-[7px] text-zinc-700 font-mono mt-1">{col.value}</p>
+            <div key={col.name} className="border border-[#ffffff08] bg-[#080809] p-2 cursor-pointer hover:border-[#ffffff15] transition-all">
+              <div className="w-full h-8 mb-1.5 rounded-sm" style={{ backgroundColor: col.value }} />
+              <p className="text-[8px] font-black text-white uppercase tracking-widest">{col.name}</p>
+              <p className="text-[7px] text-zinc-700 font-mono">{col.value}</p>
             </div>
           ))}
         </div>
@@ -101,42 +105,52 @@ function StudioTab() {
 function EditorTab() {
   return (
     <div className="h-full flex">
-      <div className="flex-1 border-r border-white/5 flex flex-col">
-        <div className="flex items-center justify-between px-6 py-3 border-b border-white/5">
-          <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest">Workspace</p>
-          <div className="flex items-center gap-2">
+      <div className="flex-1 border-r border-[#ffffff08] flex flex-col">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-[#ffffff08]">
+          <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest">Canvas</p>
+          <div className="flex items-center gap-1">
             {[Monitor, Tablet, Smartphone].map((Icon, i) => (
-              <div key={i} className={`w-8 h-8 flex items-center justify-center rounded-lg ${i === 0 ? "bg-[#BAFF29]/10 text-[#BAFF29]" : "text-zinc-700"}`}>
-                <Icon className="w-4 h-4" />
+              <div key={i} className={`w-6 h-6 flex items-center justify-center ${i === 0 ? "bg-[#C6FF3D]/10 text-[#C6FF3D]" : "text-zinc-700"}`}>
+                <Icon className="w-3 h-3" />
               </div>
             ))}
           </div>
         </div>
-        <div className="flex-1 bg-[#0a0a0b] flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:30px_30px]" />
-          <button className="bg-[#BAFF29] text-black font-black px-8 py-4 text-sm uppercase tracking-widest z-10 rounded-2xl shadow-[0_20px_40px_rgba(186,255,41,0.2)]">
-            Primary_Call_Action
+        <div className="flex-1 bg-[#080808] flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808006_1px,transparent_1px),linear-gradient(to_bottom,#80808006_1px,transparent_1px)] bg-[size:20px_20px]" />
+          <button className="bg-[#C6FF3D] text-black font-black px-6 py-3 text-sm uppercase tracking-widest z-10">
+            Primary Button
           </button>
         </div>
+        <div className="flex items-center gap-1 px-4 py-2 border-t border-[#ffffff08]">
+          <p className="text-[7px] font-black text-zinc-700 uppercase tracking-widest mr-2">State:</p>
+          {["Default","Hover","Active"].map((v, i) => (
+            <div key={v} className={`px-2 py-1 text-[7px] font-black uppercase tracking-widest ${i === 0 ? "bg-[#C6FF3D] text-black" : "border border-[#ffffff08] text-zinc-700"}`}>{v}</div>
+          ))}
+        </div>
       </div>
-      <div className="w-[160px] p-4 bg-[#0e0e0f]">
-        <p className="text-[7px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-4">Style Parameters</p>
-        <div className="space-y-4">
+      <div className="w-[140px] p-3">
+        <p className="text-[7px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-3">Style Controls</p>
+        <div className="space-y-3">
           <div>
-            <p className="text-[7px] font-black text-zinc-600 uppercase tracking-widest mb-2">Accent_Hex</p>
-            <div className="flex items-center gap-3 bg-[#0a0a0b] border border-white/10 px-3 py-2 rounded-lg">
-              <div className="w-4 h-4 bg-[#BAFF29] rounded-sm" />
-              <span className="text-[9px] font-mono text-zinc-400">#BAFF29</span>
+            <p className="text-[7px] font-black text-zinc-600 uppercase tracking-widest mb-1">BG Color</p>
+            <div className="flex items-center gap-2 bg-[#080809] border border-[#ffffff0a] px-2 py-1">
+              <div className="w-3 h-3 bg-[#C6FF3D]" />
+              <span className="text-[8px] font-mono text-zinc-400">#C6FF3D</span>
             </div>
           </div>
           <div>
-            <p className="text-[7px] font-black text-zinc-600 uppercase tracking-widest mb-2">Structural_Radius</p>
-            <div className="w-full bg-[#0a0a0b] border border-white/10 h-2 rounded-full relative">
-              <div className="absolute left-0 top-0 h-full w-[60%] bg-[#BAFF29] rounded-full" />
+            <p className="text-[7px] font-black text-zinc-600 uppercase tracking-widest mb-1">Radius</p>
+            <div className="w-full bg-[#090909] border border-[#ffffff0a] h-1.5 relative">
+              <div className="absolute left-0 top-0 h-full w-[40%] bg-[#C6FF3D]" />
             </div>
+          </div>
+          <div>
+            <p className="text-[7px] font-black text-zinc-600 uppercase tracking-widest mb-1">Font Weight</p>
+            <div className="bg-[#080809] border border-[#ffffff0a] px-2 py-1 text-[8px] font-mono text-zinc-400">800</div>
           </div>
         </div>
-        <button className="mt-8 w-full py-3 bg-white text-black font-black text-[8px] uppercase tracking-widest rounded-xl hover:bg-[#BAFF29] transition-colors">Commit_Changes</button>
+        <button className="mt-4 w-full py-2 bg-[#C6FF3D] text-black font-black text-[7px] uppercase tracking-widest">Save</button>
       </div>
     </div>
   );
@@ -144,27 +158,28 @@ function EditorTab() {
 
 function ExportTab() {
   return (
-    <div className="h-full p-6">
-      <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-6">Ship Protocol</p>
-      <div className="grid grid-cols-3 gap-4 mb-6">
+    <div className="h-full p-4">
+      <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-4">Export Mode</p>
+      <div className="grid grid-cols-3 gap-2 mb-4">
         {EXPORT_MODES.map((m) => (
-          <div key={m.id} className="border border-white/5 bg-[#0e0e0f] p-4 hover:border-[#BAFF29]/40 transition-all cursor-pointer group rounded-2xl">
-            <div className="w-8 h-8 mb-3 border rounded-lg flex items-center justify-center" style={{ borderColor: m.accent + "40", backgroundColor: m.accent + "10" }}>
-              <Zap className="w-4 h-4" style={{ color: m.accent }} />
+          <div key={m.id} className="border border-[#ffffff08] bg-[#080809] p-3 hover:border-[#ffffff15] transition-all cursor-pointer group">
+            <div className="w-6 h-6 mb-2 border flex items-center justify-center" style={{ borderColor: m.accent + "40", backgroundColor: m.accent + "10" }}>
+              <Zap className="w-3 h-3" style={{ color: m.accent }} />
             </div>
-            <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">{m.title}</p>
-            <span className="text-[7px] font-black uppercase tracking-widest px-2 py-0.5 border rounded-full" style={{ color: m.accent, borderColor: m.accent + "30" }}>{m.tag}</span>
+            <p className="text-[8px] font-black text-white uppercase tracking-widest mb-1">{m.title}</p>
+            <span className="text-[7px] font-black uppercase tracking-widest px-1 py-0.5 border" style={{ color: m.accent, borderColor: m.accent + "30" }}>{m.tag}</span>
           </div>
         ))}
       </div>
-      <div className="border border-white/5 bg-[#0a0a0b] p-6 font-mono text-[9px] text-zinc-500 rounded-2xl leading-relaxed">
-        <div className="text-[#BAFF29] mb-2 font-black">// PROTOCOL_SYNTHESIS_EXPORT</div>
-        <div>system.brand.primary: <span className="text-white">#BAFF29</span></div>
-        <div>system.layout.grid: <span className="text-white">8px atomic</span></div>
-        <div>system.vibe: <span className="text-white">brutalist_dark</span></div>
+      <div className="border border-[#ffffff06] bg-[#080809] p-3 font-mono text-[8px] text-zinc-600">
+        <div className="text-[#C6FF3D] mb-1"># VIBRO DESIGN SYSTEM</div>
+        <div>colors.primary: #C6FF3D</div>
+        <div>colors.bg: #050506</div>
+        <div>typography.display: 48px/900</div>
+        <div>spacing.base: 4px...</div>
       </div>
-      <button className="mt-6 w-full py-4 bg-[#BAFF29] text-black font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 rounded-2xl shadow-[0_20px_40px_rgba(186,255,41,0.1)]">
-        <Check className="w-4 h-4" /> Copy_Ship_Protocol
+      <button className="mt-3 w-full py-2.5 bg-[#C6FF3D] text-black font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2">
+        <Check className="w-3 h-3" /> Copy Export
       </button>
     </div>
   );
@@ -197,77 +212,86 @@ export default function DashboardPreviewSection() {
   };
 
   return (
-    <section ref={sectionRef} className="py-40 bg-[#0a0a0b] relative z-10 overflow-hidden border-y border-white/5">
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#BAFF29]/5 blur-[200px] rounded-full pointer-events-none" />
-
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-24 items-center">
+    <section ref={sectionRef} className="scroll-section py-32 sm:py-48 bg-[#FAFAF8] border-y-[3.5px] border-black relative z-10 overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
 
           {/* Left: Text */}
           <div className="dash-preview-heading">
-            <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-2 mb-10">
-              <Code2 className="w-4 h-4 text-[#BAFF29]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Full_Stack_Node</span>
+            <div className="inline-flex items-center gap-3 bg-black px-5 py-2 mb-8 shadow-[6px_6px_0_#C6FF3D]">
+              <Code2 className="w-4 h-4 text-[#C6FF3D]" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF3D]">Full_Stack_Engine</span>
             </div>
-            <h2 className="text-6xl sm:text-[8rem] font-[1000] text-white tracking-[-0.06em] uppercase leading-[0.85] mb-12 italic">
-              Unified <br /><span className="text-[#0a0a0b]" style={{ WebkitTextStroke: "2px white" }}>Orchestration.</span>
+            <h2 className="text-5xl sm:text-7xl font-[1000] text-black tracking-[-0.04em] uppercase leading-none mb-8">
+              One Platform. <br /><span className="text-white [-webkit-text-stroke:2px_black]">Total Control.</span>
             </h2>
-            <p className="text-zinc-500 font-bold italic text-xl leading-relaxed mb-16 max-w-lg">
-               Automate your architectural decisions. The entire design engineering loop from extraction to deployment, contained in one engine.
+            <p className="text-zinc-500 font-bold italic text-xl leading-relaxed mb-14 max-w-lg">
+              &ldquo;From component library to AI synthesis, token studio, live editor, and instant export — the entire design engineering workflow lives inside Vibro.&rdquo;
             </p>
 
-            <ul className="dash-feature-list space-y-6">
+            <ul className="dash-feature-list space-y-5">
               {[
-                { icon: Layers,    label: "Component Engine",    desc: "Autonomous component generation with verified patterns." },
-                { icon: Paintbrush,label: "Token Orchestrator",  desc: "Real-time design token synthesis and global mapping." },
-                { icon: Code2,     label: "Protocal Editor",    desc: "Live workspace for architectural fine-tuning." },
+                { icon: Layers,    label: "Component Library",    desc: "Browse, search and deploy pre-built UI nodes instantly." },
+                { icon: Paintbrush,label: "Design System Studio", desc: "Customize colors, type, spacing, and radius tokens live." },
+                { icon: Code2,     label: "Live Component Editor",desc: "Edit any component with real-time canvas and state controls." },
+                { icon: FileText,  label: "Export Center",        desc: "One-click prompt, JSON, or CLI export for any stack." },
               ].map((f, i) => (
-                <li key={i} className="dash-feature-item flex items-start gap-6 p-6 border border-white/5 bg-[#0e0e0f] hover:border-[#BAFF29]/40 transition-all group cursor-pointer rounded-2xl">
-                  <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#BAFF29] transition-all duration-500 rounded-xl">
-                    <f.icon className="w-5 h-5 text-[#BAFF29] group-hover:text-black transition-all" />
+                <li key={i} className="dash-feature-item flex items-start gap-5 p-5 border border-black/5 bg-white hover:border-black hover:shadow-[5px_5px_0_#C6FF3D] transition-all group cursor-pointer">
+                  <div className="w-10 h-10 bg-black flex items-center justify-center shrink-0 group-hover:bg-[#C6FF3D] transition-colors">
+                    <f.icon className="w-5 h-5 text-[#C6FF3D] group-hover:text-black transition-colors" />
                   </div>
-                  <div className="flex-1">
-                    <p className="font-black text-white text-sm uppercase tracking-widest">{f.label}</p>
-                    <p className="text-zinc-500 text-xs font-bold mt-1 italic">{f.desc}</p>
+                  <div>
+                    <p className="font-black text-black text-sm uppercase tracking-widest">{f.label}</p>
+                    <p className="text-zinc-500 text-sm font-bold mt-1 italic">{f.desc}</p>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-zinc-700 mt-1 group-hover:text-[#BAFF29] group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-4 h-4 text-zinc-300 ml-auto self-center group-hover:text-black group-hover:translate-x-1 transition-all" />
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Right: Dashboard Window */}
-          <div className="dash-preview-window" style={{ perspective: "1500px" }}>
-            <div className="border-[3px] border-white/10 bg-[#0a0a0b] shadow-[0_40px_100px_rgba(0,0,0,0.8)] overflow-hidden rounded-[3rem]">
+          <div className="dash-preview-window" style={{ perspective: "1200px" }}>
+            <div className="border-[4px] border-black bg-[#050506] shadow-[20px_20px_0_#C6FF3D] overflow-hidden">
               {/* Window chrome */}
-              <div className="flex items-center gap-2 px-6 py-4 border-b border-white/5 bg-[#0e0e0f]">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                </div>
-                <div className="flex-1 mx-6 bg-white/5 px-4 py-1.5 text-[9px] font-mono text-zinc-600 rounded-lg">app.vibro.engine/synthesis</div>
-                <div className="w-2 h-2 rounded-full bg-[#BAFF29] animate-pulse" />
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-[#ffffff08] bg-[#080809]">
+                <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+                <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+                <div className="flex-1 mx-4 bg-[#ffffff08] px-3 py-1 text-[9px] font-mono text-zinc-600">app.vibro.dev/dashboard</div>
+                <div className="w-2 h-2 rounded-full bg-[#C6FF3D] animate-pulse" />
               </div>
 
               {/* Sidebar + Content */}
-              <div className="flex" style={{ height: "450px" }}>
+              <div className="flex" style={{ height: "400px" }}>
                 {/* Mini sidebar */}
-                <div className="w-16 border-r border-white/5 flex flex-col items-center py-6 gap-6 shrink-0 bg-[#0e0e0f]">
+                <div className="w-12 border-r border-[#ffffff08] flex flex-col items-center py-4 gap-4 shrink-0">
                   {TABS.map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all ${activeTab === tab.id ? "bg-[#BAFF29] text-black shadow-[0_0_20px_rgba(186,255,41,0.2)]" : "text-zinc-600 hover:text-white"}`}
+                      className={`w-8 h-8 flex items-center justify-center border transition-all ${activeTab === tab.id ? "border-[#C6FF3D]/30 bg-[#C6FF3D]/5 text-[#C6FF3D]" : "border-transparent text-zinc-700 hover:text-zinc-400"}`}
                     >
-                      <tab.icon className="w-5 h-5" />
+                      <tab.icon className="w-4 h-4" />
                     </button>
                   ))}
                 </div>
 
                 {/* Tab content area */}
-                <div className="flex-1 overflow-hidden">
+                <div className="flex-1 overflow-hidden text-white">
+                  {/* Tab bar */}
+                  <div className="flex border-b border-[#ffffff08]">
+                    {TABS.map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-1.5 px-3 py-2 text-[9px] font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === tab.id ? "border-[#C6FF3D] text-[#C6FF3D] bg-[#C6FF3D]/5" : "border-transparent text-zinc-700 hover:text-zinc-400"}`}
+                      >
+                        <tab.icon className="w-3 h-3" />
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
                   {/* Content */}
                   <div className="h-full overflow-hidden">
                     {tabContent[activeTab]}
@@ -276,9 +300,9 @@ export default function DashboardPreviewSection() {
               </div>
             </div>
 
-            {/* Floating indicator */}
-            <div className="absolute -bottom-6 right-10 bg-[#BAFF29] text-black px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(186,255,41,0.3)] border-2 border-black">
-              LIVE_ENGINE_STREAM
+            {/* Floating badge */}
+            <div className="absolute -bottom-4 -right-4 bg-[#C6FF3D] border-[3px] border-black px-4 py-2 shadow-[5px_5px_0_#000]">
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">LIVE PREVIEW</span>
             </div>
           </div>
         </div>
