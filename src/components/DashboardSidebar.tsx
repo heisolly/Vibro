@@ -26,7 +26,7 @@ export function DashboardSidebar() {
   const navItems = [
     { icon: Hexagon, label: "New Project", href: "/dashboard" },
     { icon: Layers, label: "Library", href: "/dashboard/library" },
-    { icon: Paintbrush, label: "Studio", href: "/dashboard/studio" },
+    { icon: Paintbrush, label: "Workstation", href: "/dashboard/studio" },
     { icon: Code2, label: "Export", href: "/dashboard/export" },
     { icon: CreditCard, label: "Pricing", href: "/dashboard/pricing" },
     { icon: Settings2, label: "Settings", href: "/dashboard/settings" },

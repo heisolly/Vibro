@@ -2,143 +2,162 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { Shield, Lock, ArrowRight, Loader2, Sparkles, ChevronRight, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ShieldAlert, Cpu, Lock, Activity, ArrowLeft, KeyRound, Boxes } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const [passcode, setPasscode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "verifying" | "error" | "success">("idle");
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
+  const scannerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    gsap.from(".shield-node", {
-      scale: 0.9,
-      opacity: 0,
-      duration: 1.4,
-      ease: "expo.out"
-    });
-    
-    gsap.to(".scanner-line", {
-      y: "350%",
-      duration: 2.5,
-      repeat: -1,
-      ease: "power2.inOut",
-      yoyo: true
-    });
-  }, { scope: containerRef });
+    if (status === "verifying") {
+      gsap.fromTo(scannerRef.current, 
+        { top: "0%" }, 
+        { top: "100%", duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" }
+      );
+    }
+  }, { dependencies: [status], scope: containerRef });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setStatus("verifying");
 
-    // Simple passcode check
-    if (passcode === "242424") {
-      document.cookie = `vibro_admin_access=true; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-      router.push("/admin");
-    } else {
-      setTimeout(() => {
-        setError("AUTH_FAILURE: ACCESS_KEY_REJECTED");
-        setLoading(false);
-        
-        // Shake feedback
-        gsap.to(".auth-card", {
-          x: 12,
-          yoyo: true,
-          repeat: 7,
-          duration: 0.04,
-          onComplete: () => { gsap.set(".auth-card", { x: 0 }); }
-        });
-      }, 600);
-    }
+    // Simulate verification
+    setTimeout(() => {
+      if (passcode === "2504") {
+        document.cookie = "vibro_admin_access=true; path=/; max-age=86400";
+        setStatus("success");
+        setTimeout(() => router.push("/admin"), 1000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 2000);
+      }
+    }, 2000);
   };
 
   return (
-    <div ref={containerRef} className="relative min-h-screen flex items-center justify-center p-6 bg-[#09090B] font-poppins selection:bg-[#C1FF00] selection:text-black overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#C1FF00]/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white/[0.02] blur-[150px] rounded-full" />
+    <div ref={containerRef} className="min-h-screen relative flex items-center justify-center overflow-hidden bg-[#FFFCF2] font-space-grotesk selection:bg-black selection:text-[#C6FF3D]">
+      {/* Background - Homepage Style */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute inset-0 opacity-[0.05] animate-grid-flow"
+          style={{ 
+            backgroundImage: `linear-gradient(black 1px, transparent 1px), linear-gradient(90deg, black 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, transparent 0%, #FFFCF2 95%)' }} />
+        
+        {/* Glows */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl max-h-4xl bg-[#C6FF3D]/10 blur-[150px] rounded-full" />
       </div>
 
-      <div className="relative w-full max-w-[440px] z-10 space-y-12">
-        <div className="shield-node flex flex-col items-center text-center">
-           <Link href="/" className="group mb-10 flex items-center gap-3 px-6 py-2.5 rounded-full border border-white/10 hover:border-[#C1FF00] transition-all text-zinc-500 hover:text-[#C1FF00]">
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Exit_Security_Zone</span>
-           </Link>
+      <div className="w-full max-w-[520px] px-6 relative z-10">
+        {/* Shield Icon Node */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex justify-center mb-12"
+        >
+          <div className="relative group">
+            <div className="w-24 h-24 bg-black border-[4px] border-black flex items-center justify-center shadow-[10px_10px_0_#C6FF3D] group-hover:shadow-[14px_14px_0_#C6FF3D] transition-all group-hover:-translate-x-1 group-hover:-translate-y-1 relative z-10">
+              <Shield className="w-12 h-12 text-[#C6FF3D]" />
+            </div>
+            <div className="absolute -top-4 -right-4 w-10 h-10 bg-[#C6FF3D] border-[3px] border-black flex items-center justify-center font-black animate-bounce">
+              <Zap className="w-5 h-5" />
+            </div>
+          </div>
+        </motion.div>
 
-           <div className="relative w-28 h-28 rounded-[2.5rem] border-[4px] border-[#C1FF00] bg-black flex items-center justify-center shadow-[15px_15px_0_rgba(193,255,0,0.15)] overflow-hidden">
-              <ShieldAlert className="w-12 h-12 text-[#C1FF00] animate-pulse" />
-              <div className="scanner-line absolute top-[-100%] left-0 w-full h-[8px] bg-[#C1FF00]/50 blur-md pointer-events-none" />
-           </div>
-
-           <div className="mt-8 space-y-3">
-              <h1 className="text-4xl font-black text-white uppercase italic tracking-tighter">
-                Admin <span className="text-black [-webkit-text-stroke:1.5px_#fff]">Shield.</span>
-              </h1>
-              <div className="flex items-center justify-center gap-3">
-                 <Boxes className="w-3.5 h-3.5 text-[#C1FF00]" />
-                 <p className="text-[11px] font-black text-[#C1FF00] uppercase tracking-[0.5em] italic">Authorized_Access_Only</p>
-              </div>
-           </div>
+        {/* Title Block */}
+        <div className="text-center mb-12 space-y-3">
+          <h1 className="text-6xl font-black tracking-tighter text-black uppercase leading-none italic">
+            Shield <span className="text-white [-webkit-text-stroke:2.5px_black]">Node.</span>
+          </h1>
+          <p className="text-[12px] font-[900] text-zinc-400 uppercase tracking-[0.6em]">Authorized_Personnel_Only</p>
         </div>
 
-        <motion.div 
-          className="auth-card relative bg-white border-[4px] border-black rounded-[3.5rem] p-12 shadow-[30px_30px_0_rgba(0,0,0,1)]"
+        {/* Auth Module */}
+        <motion.div
+           initial={{ opacity: 0, y: 30 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <form onSubmit={handleLogin} className="space-y-8">
-            <div className="space-y-4">
-              <label className="flex items-center gap-2 text-[11px] font-black text-black uppercase tracking-[0.3em] ml-1" htmlFor="passcode">
-                <KeyRound className="w-4 h-4 text-zinc-400 font-bold" />
-                Master_Protocol_Code
-              </label>
-              <input
-                id="passcode"
-                type="password"
-                required
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                className="w-full text-center tracking-[1.2em] rounded-[1.5rem] border-[3px] border-zinc-100 bg-[#F8F9FA] px-6 py-6 text-3xl font-black text-black outline-none transition-all focus:bg-white focus:border-black focus:shadow-[10px_10px_0_#F8F9FA]"
-                placeholder="••••••"
-                maxLength={6}
-              />
-            </div>
+          <div className="bg-white border-[4px] border-black p-10 sm:p-14 shadow-[25px_25px_0_#000] relative overflow-hidden">
+            {/* Verification Overlay */}
+            <AnimatePresence>
+              {status === "verifying" && (
+                <motion.div 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-50 bg-[#FFFCF2]/95 flex flex-col items-center justify-center"
+                >
+                  <div ref={scannerRef} className="absolute left-0 w-full h-1 bg-[#C6FF3D] shadow-[0_0_20px_#C6FF3D] z-10" />
+                  <Loader2 className="w-16 h-16 animate-spin text-black mb-6" />
+                  <p className="text-xl font-black uppercase tracking-[0.3em] text-black italic">Verifying_Key...</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-red-50 border-[3px] border-red-500 p-5 rounded-3xl flex items-center gap-4 shadow-[8px_8px_0_#EF4444]"
+            <form onSubmit={handleLogin} className="space-y-10 relative z-10">
+              <div className="space-y-5 text-center">
+                <label className="text-[14px] font-[1000] text-black uppercase tracking-[0.3em] block">
+                  # Input_Security_Key
+                </label>
+                <input
+                  type="password"
+                  required
+                  autoFocus
+                  value={passcode}
+                  maxLength={4}
+                  onChange={(e) => setPasscode(e.target.value)}
+                  className="w-full h-24 text-center text-7xl font-black tracking-[0.5em] border-[4px] border-black bg-[#F3F3F3] focus:bg-[#C6FF3D] focus:shadow-[8px_8px_0_black] transition-all outline-none"
+                  placeholder="----"
+                />
+                <div className="flex justify-center gap-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className={`w-3 h-3 border-2 border-black ${passcode.length >= i ? 'bg-black' : 'bg-transparent'}`} />
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="group relative w-full h-20 bg-black text-[#C6FF3D] border-[4px] border-black font-black uppercase text-xl tracking-widest flex items-center justify-center gap-4 transition-all hover:bg-[#C6FF3D] hover:text-black hover:shadow-[10px_10px_0_black] hover:-translate-y-1 active:translate-y-0"
               >
-                <Activity className="w-5 h-5 text-red-600 shrink-0" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-red-600 leading-tight italic">{error}</span>
-              </motion.div>
-            )}
+                EXECUTE OVERRIDE
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform stroke-[4]" />
+              </button>
+            </form>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="group w-full h-20 bg-black text-white rounded-[2rem] border-[4px] border-black font-black text-base uppercase tracking-[0.3em] hover:bg-[#C1FF00] hover:text-black hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4 overflow-hidden"
-            >
-              <Cpu className="w-6 h-6 rotate-180" />
-              Authorize_Master
-              {/* Internal glow effect */}
-              <div className="absolute inset-x-0 h-1/2 bottom-0 bg-white/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-          </form>
+            <AnimatePresence>
+              {status === "error" && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-8 p-6 bg-red-50 border-[3px] border-black flex items-center gap-5 shadow-[8px_8px_0_#ef4444]"
+                >
+                  <div className="w-10 h-10 bg-red-500 border-2 border-black flex items-center justify-center font-black italic shadow-[3px_3px_0_#000]">!</div>
+                  <p className="text-sm font-black text-red-600 uppercase tracking-tight italic">Access_Denied: Invalid_Sequence</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
-        
-        <div className="flex flex-col items-center gap-5 opacity-40">
-           <div className="h-[2px] w-20 bg-white/20" />
-           <p className="text-[10px] font-black uppercase tracking-[0.8em] text-white text-center">
-             ENCRYPTION_V5.0_OVERRIDE
-           </p>
+
+        {/* Console Meta */}
+        <div className="mt-16 text-center space-y-2 opacity-40">
+           <div className="inline-flex items-center gap-4 px-6 py-2 border-2 border-black bg-black text-white text-[10px] font-black uppercase tracking-[0.4em]">
+             ◈ MASTER_SHIELD_ACTIVE ◈
+           </div>
+           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black">Encryption Level: Quantum-Standard</p>
         </div>
       </div>
     </div>

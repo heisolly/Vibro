@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, ArrowRight, Loader2, Sparkles, ShieldCheck, Cpu } from "lucide-react";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -36,135 +36,169 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FBFBFA] p-6 font-poppins selection:bg-[#C6FF3D] selection:text-black">
-      {/* Background decoration - Vibro Accent */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#C6FF3D]/10 blur-[140px] rounded-full opacity-60" />
-        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-black/[0.02] blur-[100px] rounded-full" />
+    <div className="min-h-screen relative flex items-center justify-center overflow-hidden bg-[#FFFCF2] font-space-grotesk selection:bg-black selection:text-[#C6FF3D]">
+      {/* Background Grid System - Matching Homepage */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute inset-0 opacity-[0.05] animate-grid-flow"
+          style={{ 
+            backgroundImage: `linear-gradient(black 1px, transparent 1px), linear-gradient(90deg, black 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        <div 
+          className="absolute inset-0" 
+          style={{ background: 'radial-gradient(circle at center, transparent 0%, #FFFCF2 90%)' }}
+        />
+        
+        {/* Large Decorative Accent Circles */}
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#C6FF3D]/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/5 blur-[100px] rounded-full" />
       </div>
 
-      <div className="w-full max-w-[460px] relative z-10">
-        {/* Logo and Header */}
-        <div className="flex flex-col items-center mb-10">
-          <Link href="/" className="mb-8 block transition-all hover:scale-105 active:scale-95 group">
-            <div className="w-16 h-16 bg-black rounded-[1.5rem] border-[3px] border-black flex items-center justify-center p-3 shadow-[8px_8px_0_#C6FF3D] group-hover:shadow-[12px_12px_0_#C6FF3D] transition-all">
-              <Image 
-                src="/logo.png" 
-                alt="Vibro" 
-                width={48} 
-                height={48} 
-                className="object-contain"
-              />
-            </div>
-          </Link>
-          <h1 className="text-4xl font-black tracking-tight text-black mb-3 uppercase italic">
-            User <span className="text-white [-webkit-text-stroke:1.5px_black]">Auth.</span>
-          </h1>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#C6FF3D] animate-pulse" />
-            <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest">Protocol: Synthesis_Login</p>
-          </div>
-        </div>
-
-        {/* Main Card */}
+      <div className="w-full max-w-[480px] px-6 relative z-10">
+        {/* Header Section */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-white border-[3px] border-black rounded-[3rem] p-10 shadow-[16px_16px_0_rgba(0,0,0,1)] overflow-hidden relative"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center mb-12"
         >
-          {/* Subtle line decoration */}
-          <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-50 -mr-12 -mt-12 rounded-full border border-zinc-100" />
+          <Link href="/" className="group mb-8 relative">
+             <div className="w-16 h-16 bg-black border-[3px] border-black flex items-center justify-center p-3 shadow-[8px_8px_0_#C6FF3D] group-hover:shadow-[12px_12px_0_#C6FF3D] transition-all group-hover:-translate-x-1 group-hover:-translate-y-1">
+                <Image 
+                  src="/logo.png" 
+                  alt="Vibro" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain"
+                />
+             </div>
+          </Link>
           
-          <form onSubmit={handleSignIn} className="space-y-8 relative z-10">
-            <div className="space-y-3">
-              <label className="text-[11px] font-black text-black uppercase tracking-widest ml-1 flex items-center gap-2" htmlFor="email">
-                <Mail className="w-3.5 h-3.5" />
-                Email_Address
-              </label>
-              <div className="relative group">
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-16 px-6 rounded-2xl border-[2.5px] border-zinc-100 bg-zinc-50/50 font-bold text-black outline-none transition-all focus:bg-white focus:border-black placeholder:text-zinc-300"
-                  placeholder="agent@vibro.io"
-                />
-              </div>
+          <div className="text-center space-y-2">
+            <h1 className="text-5xl font-black tracking-tight text-black uppercase italic leading-none">
+              Client <span className="text-white [-webkit-text-stroke:2px_black]">Auth.</span>
+            </h1>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-[#C6FF3D] border border-black animate-pulse" />
+              <p className="text-[11px] font-[900] text-zinc-400 uppercase tracking-[0.4em]">Protocol: Synthesis_Login</p>
             </div>
+          </div>
+        </motion.div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between ml-1">
-                <label className="text-[11px] font-black text-black uppercase tracking-widest flex items-center gap-2" htmlFor="password">
-                  <Lock className="w-3.5 h-3.5" />
-                  Access_Key
+        {/* Auth Module - Neo-Brutalist Card */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative"
+        >
+          {/* Main Card */}
+          <div className="bg-white border-[4px] border-black p-8 sm:p-12 shadow-[20px_20px_0_rgba(0,0,0,1)] overflow-hidden relative">
+            <form onSubmit={handleSignIn} className="space-y-8 relative z-10">
+              <div className="space-y-4">
+                <label className="text-[12px] font-[900] text-black uppercase tracking-[0.2em] ml-1 flex items-center gap-2" htmlFor="email">
+                  <Mail className="w-4 h-4" />
+                  Operator_ID
                 </label>
-                <Link href="#" className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">Forgot_Pass?</Link>
+                <div className="relative">
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-16 px-6 border-[3px] border-black bg-[#F3F3F3] font-[800] text-black outline-none transition-all focus:bg-white focus:shadow-[6px_6px_0_#C6FF3D] placeholder:text-zinc-400 uppercase text-xs tracking-wider"
+                    placeholder="agent@vibro.io"
+                  />
+                </div>
               </div>
-              <div className="relative group">
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-16 px-6 rounded-2xl border-[2.5px] border-zinc-100 bg-zinc-50/50 font-bold text-black outline-none transition-all focus:bg-white focus:border-black placeholder:text-zinc-300"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
 
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="p-5 rounded-2xl border-[2px] border-red-100 bg-red-50/50 flex items-center gap-4"
+              <div className="space-y-4">
+                <div className="flex items-center justify-between ml-1">
+                  <label className="text-[12px] font-[900] text-black uppercase tracking-[0.2em] flex items-center gap-2" htmlFor="password">
+                    <Lock className="w-4 h-4" />
+                    Access_Key
+                  </label>
+                  <Link href="#" className="text-[10px] font-black text-zinc-400 hover:text-black uppercase tracking-widest transition-colors mb-2">Forgot_Key?</Link>
+                </div>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-16 px-6 border-[3px] border-black bg-[#F3F3F3] font-[800] text-black outline-none transition-all focus:bg-white focus:shadow-[6px_6px_0_#C6FF3D] placeholder:text-zinc-400 uppercase text-xs tracking-wider"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-5 border-[3px] border-black bg-red-50 flex items-center gap-4 shadow-[6px_6px_0_#ef4444]">
+                      <div className="w-6 h-6 bg-red-500 text-white border-[2px] border-black flex items-center justify-center text-[10px] shrink-0 font-[1000] italic">ERR</div>
+                      <p className="text-[11px] font-[1000] text-red-600 uppercase tracking-tight leading-tight italic">Status: {error}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full h-20 bg-[#C6FF3D] border-[4px] border-black text-black font-[1000] uppercase text-lg tracking-[0.1em] flex items-center justify-center gap-3 transition-all hover:shadow-[10px_10px_0_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 active:shadow-none disabled:opacity-50"
               >
-                <div className="w-6 h-6 rounded-lg bg-red-500 text-white flex items-center justify-center text-xs shrink-0 font-black">!</div>
-                <p className="text-xs font-bold text-red-600 uppercase tracking-tight leading-tight">{error}</p>
-              </motion.div>
-            )}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    DECRYPTING...
+                  </>
+                ) : (
+                  <>
+                    AUTHORIZE ENTRY
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform stroke-[3]" />
+                  </>
+                )}
+              </button>
+            </form>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="group w-full h-16 bg-[#C1FF00] text-black border-[3px] border-black rounded-2xl font-black uppercase text-sm tracking-widest flex items-center justify-center gap-3 transition-all hover:shadow-[8px_8px_0_rgba(0,0,0,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none disabled:opacity-70 disabled:hover:shadow-none disabled:hover:translate-y-0"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Verifying...
-                </>
-              ) : (
-                <>
-                  Authorize
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="mt-10 pt-10 border-t-[2.5px] border-zinc-50 text-center">
-            <p className="text-zinc-400 font-bold text-xs uppercase tracking-widest">
-              New to the engine?{" "}
-              <Link href="/sign-up" className="text-black font-black hover:text-[#C1FF00] transition-colors decoration-[3px] decoration-[#C1FF00] underline underline-offset-[6px]">
-                Create_Account
+            <div className="mt-12 pt-8 border-t-[3px] border-black text-center space-y-4">
+              <p className="text-zinc-500 font-bold text-[11px] uppercase tracking-widest italic">
+                New Identity Required?
+              </p>
+              <Link href="/sign-up" className="inline-flex items-center gap-3 bg-black text-[#C6FF3D] px-10 py-4 font-[900] text-xs uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.1)] hover:shadow-[8px_8px_0_rgba(0,0,0,0.2)] hover:-translate-y-0.5 transition-all">
+                Provision_Access
               </Link>
-            </p>
+            </div>
           </div>
         </motion.div>
 
         {/* Footer Meta */}
-        <div className="mt-12 flex items-center justify-center gap-6 opacity-30">
-          <Sparkles className="w-4 h-4 text-black" />
-          <p className="text-black text-[9px] font-black uppercase tracking-[0.4em]">
-            Vibro_Security_Core_v5.0
+        <div className="mt-14 flex items-center justify-between px-2 opacity-50">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-black rounded-full" />
+            <span className="text-black text-[9px] font-[1000] uppercase tracking-[0.2em]">SSL_SECURED</span>
+          </div>
+          <p className="text-black text-[9px] font-[1000] uppercase tracking-[0.4em] italic text-center">
+            Vibro_Core_v5.2
           </p>
-          <Sparkles className="w-4 h-4 text-black" />
+          <div className="flex items-center gap-2">
+            <span className="text-black text-[9px] font-[1000] uppercase tracking-[0.2em]">NODE: S-01</span>
+            <div className="w-1.5 h-1.5 bg-black rounded-full" />
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+
