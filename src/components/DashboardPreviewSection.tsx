@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, ReactNode } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -199,7 +199,7 @@ export default function DashboardPreviewSection() {
     );
   }, { scope: sectionRef });
 
-  const tabContent: Record<string, JSX.Element> = {
+  const tabContent: Record<string, ReactNode> = {
     library: <LibraryTab />,
     studio:  <StudioTab />,
     editor:  <EditorTab />,
