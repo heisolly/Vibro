@@ -20,26 +20,30 @@ export function applyVibroTheme(system: VibroDesignSystem): void {
   const root = document.documentElement;
   const { colors, radius, typography, spacing, shadows } = system;
 
-  // ── COLORS (shadcn/ui CSS variable names) ─────────────────────────
-  root.style.setProperty("--background",            colors.background);
-  root.style.setProperty("--foreground",            colors.foreground);
-  root.style.setProperty("--card",                  colors.card ?? colors.background);
-  root.style.setProperty("--card-foreground",       colors.cardForeground ?? colors.foreground);
-  root.style.setProperty("--primary",               colors.primary);
-  root.style.setProperty("--primary-foreground",    colors.primaryForeground);
-  root.style.setProperty("--secondary",             colors.secondary);
-  root.style.setProperty("--secondary-foreground",  colors.secondaryForeground ?? colors.foreground);
-  root.style.setProperty("--accent",                colors.accent);
-  root.style.setProperty("--accent-foreground",     colors.accentForeground ?? colors.foreground);
-  root.style.setProperty("--muted",                 colors.muted);
-  root.style.setProperty("--muted-foreground",      colors.mutedForeground);
-  root.style.setProperty("--border",                colors.border);
-  root.style.setProperty("--input",                 colors.input ?? colors.border);
-  root.style.setProperty("--ring",                  colors.ring ?? colors.primary);
-  root.style.setProperty("--destructive",           colors.destructive);
+  if (colors) {
+    // ── COLORS (shadcn/ui CSS variable names) ─────────────────────────
+    root.style.setProperty("--background",            colors.background);
+    root.style.setProperty("--foreground",            colors.foreground);
+    root.style.setProperty("--card",                  colors.card ?? colors.background);
+    root.style.setProperty("--card-foreground",       colors.cardForeground ?? colors.foreground);
+    root.style.setProperty("--primary",               colors.primary);
+    root.style.setProperty("--primary-foreground",    colors.primaryForeground);
+    root.style.setProperty("--secondary",             colors.secondary);
+    root.style.setProperty("--secondary-foreground",  colors.secondaryForeground ?? colors.foreground);
+    root.style.setProperty("--accent",                colors.accent);
+    root.style.setProperty("--accent-foreground",     colors.accentForeground ?? colors.foreground);
+    root.style.setProperty("--muted",                 colors.muted);
+    root.style.setProperty("--muted-foreground",      colors.mutedForeground);
+    root.style.setProperty("--border",                colors.border);
+    root.style.setProperty("--input",                 colors.input ?? colors.border);
+    root.style.setProperty("--ring",                  colors.ring ?? colors.primary);
+    root.style.setProperty("--destructive",           colors.destructive);
+  }
 
   // ── RADIUS ─────────────────────────────────────────────────────────
-  root.style.setProperty("--radius", radius);
+  if (radius) {
+    root.style.setProperty("--radius", radius);
+  }
 
   // ── SHADOWS ────────────────────────────────────────────────────────
   if (shadows) {
@@ -55,23 +59,27 @@ export function applyVibroTheme(system: VibroDesignSystem): void {
   }
 
   // ── FONTS ──────────────────────────────────────────────────────────
-  if (typography) {
-    loadGoogleFont(typography.headingFont);
-    loadGoogleFont(typography.bodyFont);
+  if (system.fonts) {
+    loadGoogleFont(system.fonts.heading);
+    loadGoogleFont(system.fonts.body);
 
-    root.style.setProperty("--font-heading", `"${typography.headingFont}", sans-serif`);
-    root.style.setProperty("--font-body",    `"${typography.bodyFont}", sans-serif`);
-    if (typography.monoFont) {
-      loadGoogleFont(typography.monoFont);
-      root.style.setProperty("--font-mono", `"${typography.monoFont}", monospace`);
+    root.style.setProperty("--font-heading", `"${system.fonts.heading}", sans-serif`);
+    root.style.setProperty("--font-body",    `"${system.fonts.body}", sans-serif`);
+    if (system.fonts.mono) {
+      loadGoogleFont(system.fonts.mono);
+      root.style.setProperty("--font-mono", `"${system.fonts.mono}", monospace`);
     }
   }
 
   // ── LIGHT / DARK MODE ──────────────────────────────────────────────
-  root.setAttribute("data-theme", system.theme);
-  root.setAttribute("data-vibro-system", system.themeName);
+  if (system.theme) {
+    root.setAttribute("data-theme", system.theme);
+  }
+  if (system.themeName) {
+    root.setAttribute("data-vibro-system", system.themeName);
+  }
 
-  console.log(`✓ Vibro Protocol: "${system.themeName}" applied — ${system.uiStyle}`);
+  console.log(`✓ Vibro Protocol: "${system.themeName || 'custom'}" applied — ${system.uiStyle || 'auto'}`);
 }
 
 /**
@@ -107,6 +115,8 @@ export function serializeToJSON(system: VibroDesignSystem): string {
  */
 export function serializeToCSSVars(system: VibroDesignSystem): string {
   const { colors, radius } = system;
+  if (!colors) return `:root {\n}`;
+
   return `:root {
   --background: ${colors.background};
   --foreground: ${colors.foreground};
@@ -117,7 +127,7 @@ export function serializeToCSSVars(system: VibroDesignSystem): string {
   --muted: ${colors.muted};
   --muted-foreground: ${colors.mutedForeground};
   --border: ${colors.border};
-  --radius: ${radius};
+  --radius: ${radius ?? "0.5rem"};
 }`;
 }
 
