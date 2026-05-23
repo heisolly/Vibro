@@ -1,0 +1,106 @@
+/* ─────────────────────────────────────────────────────
+   VIBRO DESIGN TOKENS — DUAL THEME SYSTEM
+   Light Mode (default) · Dark Mode (.dark on <html>)
+   ───────────────────────────────────────────────────── */
+
+/* ── Light Mode (Primary) ───────────────────────────── */
+:root {
+  /* Backgrounds */
+  --primary-bg:        #F8FAFC;
+  --primary-bg-end:    #EFF6FF;
+  --primary-bg-gradient: linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 100%);
+  --secondary-bg:      #F1F5F9;
+
+  /* Accent */
+  --accent:            #3B82F6;
+  --accent-hover:      #2563EB;
+  --accent-subtle:     rgba(59, 130, 246, 0.08);
+  --accent-border:     rgba(59, 130, 246, 0.20);
+  --cta-gradient:      linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+
+  /* Text */
+  --text-primary:      #0F172A;
+  --text-secondary:    #475569;
+
+  /* UI Elements */
+  --card-bg:           rgba(255, 255, 255, 0.75);
+  --card-border:       rgba(15, 23, 42, 0.06);
+  --rail-hover-bg:     rgba(59, 130, 246, 0.05);
+  --rail-active-bg:    rgba(59, 130, 246, 0.10);
+  --badge-bg:          rgba(241, 245, 249, 0.80);
+  --input-bg:          rgba(255, 255, 255, 0.85);
+  --upgrade-bg:        linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%);
+  --upgrade-text:      #1D4ED8;
+  --upgrade-border:    rgba(59, 130, 246, 0.15);
+
+  /* Aurora Glow */
+  --aurora:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.06) 50%, transparent 80%),
+    radial-gradient(ellipse 55% 45% at 15% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 60%, rgba(244, 63, 94, 0.04) 0%, transparent 55%);
+
+  /* Semantic States */
+  --success:           #10B981;
+  --success-subtle:    rgba(16, 185, 129, 0.08);
+  --warning:           #F59E0B;
+  --warning-subtle:    rgba(245, 158, 11, 0.08);
+  --error:             #EF4444;
+  --error-subtle:      rgba(239, 68, 68, 0.06);
+
+  /* Shadows */
+  --shadow-sm:         0 1px 2px rgba(15, 23, 42, 0.03), 0 1px 1px rgba(15, 23, 42, 0.02);
+  --shadow-md:         0 8px 24px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.02);
+  --shadow-focus:      0 0 0 3px rgba(59, 130, 246, 0.15);
+  --shadow-hover:      0 16px 40px rgba(59, 130, 246, 0.08), 0 4px 12px rgba(59, 130, 246, 0.03);
+}
+
+/* ── Dark Mode (Secondary — Cursor Style) ───────────── */
+html.dark {
+  /* Backgrounds */
+  --primary-bg:        #030712;
+  --primary-bg-end:    #090D16;
+  --primary-bg-gradient: linear-gradient(180deg, #030712 0%, #090D16 100%);
+  --secondary-bg:      #0E131F;
+
+  /* Accent */
+  --accent:            #3B82F6;
+  --accent-hover:      #60A5FA;
+  --accent-subtle:     rgba(59, 130, 246, 0.12);
+  --accent-border:     rgba(59, 130, 246, 0.22);
+  --cta-gradient:      linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+
+  /* Text */
+  --text-primary:      #F9FAFB;
+  --text-secondary:    #9CA3AF;
+
+  /* UI Elements */
+  --card-bg:           rgba(17, 24, 39, 0.65);
+  --card-border:       rgba(255, 255, 255, 0.06);
+  --rail-hover-bg:     rgba(59, 130, 246, 0.08);
+  --rail-active-bg:    rgba(59, 130, 246, 0.16);
+  --badge-bg:          rgba(31, 41, 55, 0.70);
+  --input-bg:          rgba(17, 24, 39, 0.85);
+  --upgrade-bg:        rgba(59, 130, 246, 0.14);
+  --upgrade-text:      #60A5FA;
+  --upgrade-border:    rgba(59, 130, 246, 0.25);
+
+  /* Aurora Glow */
+  --aurora:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59, 130, 246, 0.16) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 80%),
+    radial-gradient(ellipse 55% 45% at 10% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 60%, rgba(244, 63, 94, 0.04) 0%, transparent 55%);
+
+  /* Semantic States */
+  --success:           #10B981;
+  --success-subtle:    rgba(16, 185, 129, 0.12);
+  --warning:           #F59E0B;
+  --warning-subtle:    rgba(245, 158, 11, 0.12);
+  --error:             #EF4444;
+  --error-subtle:      rgba(239, 68, 68, 0.10);
+
+  /* Shadows */
+  --shadow-sm:         0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
+  --shadow-md:         0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-focus:      0 0 0 3px rgba(59, 130, 246, 0.28);
+  --shadow-hover:      0 16px 40px rgba(59, 130, 246, 0.18), 0 4px 12px rgba(59, 130, 246, 0.08);
+}

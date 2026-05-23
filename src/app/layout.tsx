@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import VibroBackground from "@/components/VibroBackground";
-import LayoutContent from "@/components/LayoutContent";
 
-const inter = { variable: "--font-geist-sans" };
-const interMono = { variable: "--font-geist-mono" };
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+});
 
 export const metadata: Metadata = {
-  title: "Vibro — The Website-First Component Workflow",
+  title: "Vibro — AI-Powered Design-to-Code Workflow",
   description:
-    "Browse, customize, and install production-ready UI components directly via CLI. The modern workflow for vibe coders.",
+    "Transform your design ideas into production-ready code with AI. Manage architecture, design systems, and context bundles in one place.",
   metadataBase: new URL("https://vibro.com"),
   icons: {
     icon: "/logo.png",
@@ -17,8 +25,8 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Vibro — The Website-First Component Workflow",
-    description: "Browse, customize, and install production-ready UI components directly via CLI.",
+    title: "Vibro — AI-Powered Design-to-Code Workflow",
+    description: "Transform design ideas into production-ready code with AI.",
     type: "website",
   },
 };
@@ -29,14 +37,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${interMono.variable} antialiased selection:bg-vibro-primary/30 selection:text-vibro-primary-light`}
-      >
-          <VibroBackground />
-          <LayoutContent>{children}</LayoutContent>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable}`}>
+      <head>
+        {/* Material Symbols Rounded — loaded as link tag for reliable Next.js Turbopack support */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
+      <body className="antialiased">
+        {children}
       </body>
     </html>
   );
-}
-
+}
