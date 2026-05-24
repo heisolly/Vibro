@@ -8,17 +8,15 @@ import { createClient } from "@/utils/supabase/client";
 import { demoUser, userStorageKey } from "@/lib/vibro";
 import { MaterialIcon } from "@/components/vibro/ui";
 
-export default function SignUpPage() {
+export default function SignInPage() {
   const router = useRouter();
   const supabase = createClient();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const continueDemo = () => {
     localStorage.setItem(userStorageKey, JSON.stringify({
       ...demoUser,
-      name: name.trim() || demoUser.name,
       email: email.trim() || demoUser.email,
     }));
     router.push("/workspace/new");
@@ -58,13 +56,13 @@ export default function SignUpPage() {
 
   return (
     <AuthShell
-      title="Create your account"
-      subtitle="Bring your repo, we'll bring the memory."
+      title="Welcome back"
+      subtitle="Sign in to your Vibro workspace."
       footer={
         <>
-          Already have an account?{" "}
-          <Link href="/signin" className="font-medium text-foreground hover:underline">
-            Sign in
+          New here?{" "}
+          <Link href="/signup" className="font-medium text-foreground hover:underline">
+            Create an account
           </Link>
         </>
       }
@@ -76,28 +74,15 @@ export default function SignUpPage() {
 
       <form className="space-y-3" onSubmit={submit}>
         <div>
-          <FieldLabel htmlFor="name">Full name</FieldLabel>
-          <TextField id="name" value={name} onChange={(event) => setName(event.target.value)} placeholder="Ada Lovelace" autoComplete="name" />
-        </div>
-        <div>
-          <FieldLabel htmlFor="email">Work email</FieldLabel>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
           <TextField id="email" value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@studio.dev" autoComplete="email" />
         </div>
-
-        <label className="flex items-start gap-2 pt-1 text-xs text-muted-foreground">
-          <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-border bg-background text-primary focus:ring-primary/30" />
-          <span>
-            I agree to the <a href="#" className="text-foreground hover:underline">Terms</a> and{" "}
-            <a href="#" className="text-foreground hover:underline">Privacy Policy</a>.
-          </span>
-        </label>
-
         <button
           type="submit"
           disabled={loading || !email.trim()}
           className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-primary to-[oklch(0.48_0.18_258)] px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-glow transition hover:brightness-110 disabled:opacity-60"
         >
-          Create account
+          Send sign-in link
           <MaterialIcon name="arrow_forward" size={16} />
         </button>
       </form>

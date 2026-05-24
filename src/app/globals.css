@@ -2,16 +2,33 @@
 @import "tailwindcss";
 
 :root {
-  --font-geist: "Geist", "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-instrument-serif: "Instrument Serif", "Georgia", "Times New Roman", serif;
+  --font-geist: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-instrument-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-ai: "Average Sans", "Inter", system-ui, sans-serif;
   --background: oklch(99.5% .003 240);
   --foreground: oklch(18% .02 260);
   --card: oklch(100% 0 0);
   --border: oklch(92% .012 250);
   --secondary: oklch(96% .012 250);
   --primary: oklch(55% .18 255);
+  --primary-foreground: oklch(99% .003 240);
   --primary-glow: oklch(78% .13 240);
   --muted-foreground: oklch(52% .025 258);
+  --shadow-soft-value: 0 1px 2px oklch(20% .02 260 / .04), 0 8px 24px -8px oklch(20% .02 260 / .08);
+}
+
+html.dark {
+  --background: oklch(14% .032 260);
+  --foreground: oklch(97% .006 250);
+  --card: oklch(19% .032 260);
+  --border: oklch(100% 0 0 / 12%);
+  --secondary: oklch(24% .035 260);
+  --primary: oklch(64% .18 252);
+  --primary-foreground: oklch(99% .003 240);
+  --primary-glow: oklch(70% .14 242);
+  --muted-foreground: oklch(76% .03 255);
+  --shadow-soft-value: 0 1px 2px oklch(0% 0 0 / .24), 0 14px 40px -20px oklch(60% .18 250 / .22);
 }
 
 /* ── Reset & Base ───────────────────────────────────── */
@@ -38,8 +55,29 @@ body {
 
 /* ── Typography ─────────────────────────────────────── */
 .font-display {
-  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-display), ui-serif, Georgia, serif;
   letter-spacing: 0;
+}
+
+.font-ai {
+  font-family: var(--font-ai), ui-sans-serif, system-ui, sans-serif;
+}
+
+.vibro-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.26) 1px, transparent 0);
+  background-size: 3px 3px;
+}
+
+.dark .vibro-grain {
+  opacity: 0.11;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.32) 1px, transparent 0);
 }
 
 .msr {
@@ -64,8 +102,10 @@ body {
   --color-border: var(--border);
   --color-secondary: var(--secondary);
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-primary-glow: var(--primary-glow);
   --shadow-glow: 0 20px 80px rgba(66, 165, 245, 0.22), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-soft: var(--shadow-soft-value);
 }
 
 .vibro-aurora {
