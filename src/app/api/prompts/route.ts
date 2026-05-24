@@ -1,10 +1,32 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
 
-async function verifyPasscode() {
-  const cookieStore = await cookies();
-  return cookieStore.get("vibro_admin_access")?.value === "true";
+async function verifyAdmin() {
+  const adminEmails = new Set(
+    (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  );
+  const adminUserIds = new Set(
+    (process.env.ADMIN_USER_IDS || "")
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean)
+  );
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) return false;
+
+  const email = user.email?.toLowerCase();
+  return Boolean(
+    adminUserIds.has(user.id) || (email && adminEmails.has(email))
+  );
 }
 
 // GET /api/prompts — return all prompts (Public)
@@ -38,7 +60,7 @@ export async function GET() {
 
 // POST /api/prompts — create a new prompt (Admin Only)
 export async function POST(request: Request) {
-  if (!(await verifyPasscode())) {
+  if (!(await verifyAdmin())) {
     return NextResponse.json({ error: "Unauthorized access protocol" }, { status: 401 });
   }
 

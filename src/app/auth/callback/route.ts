@@ -12,6 +12,5 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // Once signed in, redirect directly to the workspaces project management screen
-  return NextResponse.redirect(`${origin}/?screen=projects`);
+  return NextResponse.redirect(`${origin}/workspace/new`);
 }

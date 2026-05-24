@@ -16,7 +16,7 @@ export function LiveblocksWrapperProvider({
 
   return (
     <LiveblocksProvider
-      publicApiKey={process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY!}
+      authEndpoint="/api/liveblocks-auth"
       throttle={16}
       resolveUsers={({ userIds }) =>
         userIds.map((id) => ({

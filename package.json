@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@gsap/react": "^2.1.2",
     "@liveblocks/client": "^3.19.2",
     "@liveblocks/node": "^3.19.2",
@@ -30,6 +31,7 @@
     "postprocessing": "^6.38.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "shaders": "^2.5.128",
     "tailwind-merge": "^3.5.0",
     "three": "^0.183.2"
   },

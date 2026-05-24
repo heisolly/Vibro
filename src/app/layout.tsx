@@ -1,23 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-});
-
 export const metadata: Metadata = {
-  title: "Vibro — AI-Powered Design-to-Code Workflow",
+  title: "Vibro - Context OS for AI-Assisted Development",
   description:
-    "Transform your design ideas into production-ready code with AI. Manage architecture, design systems, and context bundles in one place.",
+    "Plan architecture, design systems, inspiration boards, and context bundles for AI-assisted development.",
   metadataBase: new URL("https://vibro.com"),
   icons: {
     icon: "/logo.png",
@@ -25,8 +12,8 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Vibro — AI-Powered Design-to-Code Workflow",
-    description: "Transform design ideas into production-ready code with AI.",
+    title: "Vibro - Context OS for AI-Assisted Development",
+    description: "Everything but code lives here.",
     type: "website",
   },
 };
@@ -37,26 +24,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Material Symbols Rounded — loaded as link tag for reliable Next.js Turbopack support */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        {/* Material Symbols Rounded loaded as a stylesheet for icon ligatures. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
       </head>
-      <body className="antialiased">
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
-}
+}

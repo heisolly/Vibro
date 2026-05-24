@@ -1,6 +1,19 @@
 @import "./theme.css";
 @import "tailwindcss";
 
+:root {
+  --font-geist: "Geist", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-instrument-serif: "Instrument Serif", "Georgia", "Times New Roman", serif;
+  --background: oklch(99.5% .003 240);
+  --foreground: oklch(18% .02 260);
+  --card: oklch(100% 0 0);
+  --border: oklch(92% .012 250);
+  --secondary: oklch(96% .012 250);
+  --primary: oklch(55% .18 255);
+  --primary-glow: oklch(78% .13 240);
+  --muted-foreground: oklch(52% .025 258);
+}
+
 /* ── Reset & Base ───────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -12,7 +25,7 @@ html {
 }
 
 body {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -25,8 +38,53 @@ body {
 
 /* ── Typography ─────────────────────────────────────── */
 .font-display {
-  font-family: var(--font-instrument-serif), ui-serif, Georgia, serif;
-  letter-spacing: -0.01em;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+.msr {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'liga';
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: color-mix(in oklch, var(--card) 92%, transparent);
+  --color-border: var(--border);
+  --color-secondary: var(--secondary);
+  --color-primary: var(--primary);
+  --color-primary-glow: var(--primary-glow);
+  --shadow-glow: 0 20px 80px rgba(66, 165, 245, 0.22), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.vibro-aurora {
+  background:
+    radial-gradient(circle at 50% 48%, rgba(127, 211, 255, 0.66), rgba(127, 211, 255, 0.18) 28%, transparent 52%),
+    radial-gradient(circle at 30% 28%, rgba(219, 234, 254, 0.88), transparent 34%),
+    radial-gradient(circle at 74% 24%, rgba(232, 240, 254, 0.95), transparent 36%),
+    linear-gradient(180deg, #fbfdff 0%, #f8fbff 48%, #ffffff 100%);
+}
+
+.vibro-aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 76%, rgba(29, 78, 216, 0.08), transparent 28%),
+    radial-gradient(circle at 82% 70%, rgba(14, 165, 233, 0.09), transparent 30%);
+  animation: aurora-drift 14s ease-in-out infinite alternate;
 }
 
 /* ── Selection ──────────────────────────────────────── */
@@ -116,6 +174,11 @@ body {
 }
 .animate-float-in {
   animation: float-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes aurora-drift {
+  from { transform: translate3d(-1.5%, 1%, 0) scale(1); opacity: 0.72; }
+  to { transform: translate3d(1.5%, -1%, 0) scale(1.04); opacity: 1; }
 }
 
 @keyframes fade-in {
