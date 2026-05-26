@@ -17,9 +17,8 @@ export async function GET() {
     return NextResponse.redirect(new URL("/workspace/onboard?error=no_client_id", origin));
   }
 
-  const redirectUri = process.env.GITHUB_REDIRECT_URI || `${origin}/api/github/oauth/callback`;
   const scope = "repo,user";
-  const githubUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${state}`;
+  const githubUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=${encodeURIComponent(scope)}&state=${state}`;
 
   const response = NextResponse.redirect(githubUrl);
   response.cookies.set("github_oauth_state", state, {

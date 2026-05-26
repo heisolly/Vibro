@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
 
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-  const redirectUri = process.env.GITHUB_REDIRECT_URI || `${origin}/api/github/oauth/callback`;
 
   if (!clientId || !clientSecret) {
     return NextResponse.redirect(new URL("/workspace/onboard?error=no_client_config", origin));
@@ -42,7 +41,6 @@ export async function GET(req: NextRequest) {
         client_id: clientId,
         client_secret: clientSecret,
         code,
-        redirect_uri: redirectUri,
       }),
     });
 
