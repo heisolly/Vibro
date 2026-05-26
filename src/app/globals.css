@@ -108,23 +108,10 @@ body {
   --shadow-soft: var(--shadow-soft-value);
 }
 
-.vibro-aurora {
-  background:
-    radial-gradient(circle at 50% 48%, rgba(127, 211, 255, 0.66), rgba(127, 211, 255, 0.18) 28%, transparent 52%),
-    radial-gradient(circle at 30% 28%, rgba(219, 234, 254, 0.88), transparent 34%),
-    radial-gradient(circle at 74% 24%, rgba(232, 240, 254, 0.95), transparent 36%),
-    linear-gradient(180deg, #fbfdff 0%, #f8fbff 48%, #ffffff 100%);
-}
-
-.vibro-aurora::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 18% 76%, rgba(29, 78, 216, 0.08), transparent 28%),
-    radial-gradient(circle at 82% 70%, rgba(14, 165, 233, 0.09), transparent 30%);
-  animation: aurora-drift 14s ease-in-out infinite alternate;
+.canvas-bg {
+  background-color: #EAEAEA;
+  background-image: radial-gradient(circle, #C8C8C8 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 /* ── Selection ──────────────────────────────────────── */
@@ -149,21 +136,6 @@ body {
 }
 
 /* ── Aurora — Dark Mode ─────────────────────────────── */
-.aurora-bg {
-  background-image:
-    radial-gradient(ellipse 90% 70% at 50% 40%, rgba(59, 130, 246, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 45% at 25% 65%, rgba(30, 64, 175, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 75% 25%, rgba(59, 130, 246, 0.10) 0%, transparent 50%);
-  background-repeat: no-repeat;
-}
-
-/* ── Aurora — Light Mode ────────────────────────────── */
-.dark-mode .aurora-bg {
-  background-image:
-    radial-gradient(ellipse 90% 70% at 50% 40%, rgba(59, 130, 246, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 45% at 25% 65%, rgba(30, 64, 175, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 75% 25%, rgba(59, 130, 246, 0.10) 0%, transparent 50%);
-}
 
 /* ── Utilities ──────────────────────────────────────── */
 .dot-grid {
@@ -259,4 +231,35 @@ button, a, input {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-feature-settings: 'liga';
+}
+
+.brutal-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: #000;
+  color: #fff;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 3px solid #000;
+  box-shadow: 8px 8px 0 rgba(0,0,0,1);
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.brutal-btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 rgba(0,0,0,1);
+}
+
+.brutal-btn-primary:active {
+  transform: translate(4px, 4px);
+  box-shadow: 4px 4px 0 rgba(0,0,0,1);
+}
+
+.bg-grid-pattern {
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
 }

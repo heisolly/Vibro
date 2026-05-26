@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { demoUser, projectStorageKey, userStorageKey, type VibroProject, type VibroUser } from "@/lib/vibro";
+import type { ContextBundle } from "@/lib/github-types";
 import WorkspaceEditor from "@/components/workspace/WorkspaceEditor";
 
 type Provider = "gemini" | "mistral" | "groq";
@@ -34,6 +35,7 @@ export default function WorkspacePage() {
   const [provider, setProvider] = useState<Provider>("groq");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isThinking, setIsThinking] = useState(false);
+  const [bundles, setBundles] = useState<ContextBundle[]>([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem(userStorageKey);
@@ -58,6 +60,14 @@ export default function WorkspacePage() {
     if (storedMessages) setMessages(JSON.parse(storedMessages));
 
     const supabase = createClient();
+
+    fetch("/api/github/bundle/latest")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.bundles) setBundles(data.bundles);
+      })
+      .catch(() => {});
+
     supabase.auth
       .getUser()
       .then(({ data }) => {
@@ -197,5 +207,5 @@ export default function WorkspacePage() {
     }
   }
 
-  return <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} />;
+  return <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} bundles={bundles} />;
 }

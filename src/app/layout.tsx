@@ -1,5 +1,19 @@
 import type { Metadata } from "next";
+import { Inter, Average_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const averageSans = Average_Sans({ 
+  weight: "400", 
+  subsets: ["latin"], 
+  variable: "--font-average" 
+});
+const instrumentSerif = Instrument_Serif({ 
+  weight: "400", 
+  subsets: ["latin"], 
+  variable: "--font-instrument",
+  style: ["normal", "italic"]
+});
 
 export const metadata: Metadata = {
   title: "Vibro - Context OS for AI-Assisted Development",
@@ -24,15 +38,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${averageSans.variable} ${instrumentSerif.variable}`}>
       <head>
-        {/* Material Symbols Rounded loaded as a stylesheet for icon ligatures. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Average+Sans&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        />
+        {/* Material Symbols still requires a link if not using a local font file */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       </head>
       <body className="antialiased">{children}</body>
     </html>

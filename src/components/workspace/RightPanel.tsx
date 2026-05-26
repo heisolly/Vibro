@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
+import type { ContextBundle } from "@/lib/github-types";
+import ContextSnapshot from "./ContextSnapshot";
 
 const threadLabels = ["Design System feedback", "Architecture review"];
 
@@ -22,9 +24,11 @@ const avatars = [
 export default function RightPanel({
   open,
   onToggle,
+  bundles,
 }: {
   open: boolean;
   onToggle: () => void;
+  bundles: ContextBundle[];
 }) {
   const [chatInput, setChatInput] = useState("");
 
@@ -40,16 +44,7 @@ export default function RightPanel({
         </button>
       </div>
 
-      <div className="mx-3 mt-3 p-[10px_12px] bg-[#F9F9FB] rounded-[8px] border border-[#EBEBEB] shrink-0">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[12px] font-medium text-[#333]">Bundle v2.4.1</span>
-          <span className="flex items-center gap-1 text-[11px] text-[#888]">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-            Synced 2m ago
-          </span>
-        </div>
-        <button className="text-[11px] text-[#6366F1] underline">Rollback</button>
-      </div>
+      <ContextSnapshot bundle={bundles[0]} />
 
       <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#E5E5E5] shrink-0">
         {avatars.map((a, i) => (

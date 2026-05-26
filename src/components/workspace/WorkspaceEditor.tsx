@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { VibroBoard, VibroUser } from "@/lib/vibro";
+import type { ContextBundle } from "@/lib/github-types";
 import { MaterialIcon } from "@/components/vibro/ui";
 import WorkspaceHeader from "./WorkspaceHeader";
 import SidebarTools from "./SidebarTools";
@@ -22,12 +23,14 @@ export default function WorkspaceEditor({
   messages,
   isThinking,
   onSendToAI,
+  bundles,
 }: {
   slug: string;
   user: VibroUser | null;
   messages: Message[];
   isThinking: boolean;
   onSendToAI: (text: string) => void;
+  bundles: ContextBundle[];
 }) {
   const [activeBoard, setActiveBoard] = useState<VibroBoard>("architecture");
   const [rightOpen, setRightOpen] = useState(true);
@@ -62,7 +65,7 @@ export default function WorkspaceEditor({
           bottom: 0,
         }}
       >
-        <BoardCanvas activeBoard={activeBoard} />
+        <BoardCanvas activeBoard={activeBoard} bundles={bundles} />
 
         {!chatOpen && messages.length === 0 && (
           <button
@@ -87,7 +90,7 @@ export default function WorkspaceEditor({
         <AIInputBar onSend={handleSend} disabled={isThinking} rightOpen={rightOpen} />
       </div>
 
-      <RightPanel open={rightOpen} onToggle={() => setRightOpen((o) => !o)} />
+      <RightPanel open={rightOpen} onToggle={() => setRightOpen((o) => !o)} bundles={bundles} />
     </div>
   );
 }

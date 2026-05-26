@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { GitHubConnection, GitHubRepoListItem, CodeScan, ContextBundle } from "@/lib/github-types";
 
-type Step = "idle" | "selecting" | "scanning" | "bundling" | "done";
+type Collaborator = {
+  login: string;
+  avatar_url: string;
+  id: number;
+  role: string;
+};
+
+type Step = "idle" | "selecting" | "scanning" | "bundling" | "done" | "collaborators";
 
 const errorMessages: Record<string, string> = {
   no_code: "GitHub did not return an authorization code.",
-  state_mismatch: "Session verification failed. Try connecting again.",
-  token_exchange_failed: "Failed to get GitHub access token. Try again.",
-  no_client_id: "GitHub OAuth is not configured.",
-  no_client_config: "GitHub OAuth credentials missing.",
-  github_denied: "GitHub authorization was denied.",
+  auth_failed: "Authentication with GitHub failed.",
+  no_provider_token: "Could not get GitHub access token from Supabase.",
   no_user: "Session expired. Please sign in again.",
   user_fetch_failed: "Failed to fetch GitHub user info.",
   db_error: "Failed to save connection. Try again.",
@@ -27,6 +31,7 @@ export default function GitHubConnect() {
   const [bundle, setBundle] = useState<ContextBundle | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -169,13 +174,23 @@ export default function GitHubConnect() {
       const bundleData = await bundleRes.json();
 
       setBundle(bundleData.bundle);
-      setStep("done");
+      setStep("collaborators");
 
       await fetch("/api/github/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ repo_id: repo.id }),
       });
+
+      const collabRes = await fetch("/api/github/collaborators");
+      if (collabRes.ok) {
+        const collabData = await collabRes.json();
+        if (collabData.collaborators?.length > 0) {
+          setCollaborators(collabData.collaborators);
+          return;
+        }
+      }
+      setStep("done");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Scan failed");
       setStep("selecting");
@@ -301,6 +316,61 @@ export default function GitHubConnect() {
         >
           {loading ? "Processing..." : `Connect ${selectedRepos.size} repo${selectedRepos.size !== 1 ? "s" : ""}`}
         </button>
+      </div>
+    );
+  }
+
+  if (step === "collaborators") {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-500 text-white">
+            <MaterialIcon name="check" size={16} />
+          </span>
+          <div>
+            <div className="text-sm font-semibold">GitHub Repository Connected</div>
+            <div className="text-xs text-muted-foreground">
+              {bundle?.bundle_data?.projectName} — Context bundle v{bundle?.version || 1}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#E5E5E5] bg-[#F9F9FB] p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <MaterialIcon name="people" size={18} />
+            <span className="text-sm font-semibold">Found {collaborators.length} collaborator{collaborators.length > 1 ? "s" : ""}</span>
+          </div>
+          <div className="space-y-2">
+            {collaborators.map((c) => (
+              <div key={c.id} className="flex items-center gap-3 rounded-xl border border-[#E5E5E5] bg-white px-3 py-2">
+                <img src={c.avatar_url} alt={c.login} className="h-7 w-7 rounded-full" />
+                <span className="text-sm font-medium">{c.login}</span>
+                <span className="ml-auto rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-medium text-[#6366F1]">{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#EEF2FF] bg-[#F5F5FF] p-4">
+          <p className="text-sm leading-6 text-[#444]">
+            Add these collaborators to your Vibro workspace so they can see boards, context bundles, and sync status?
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setStep("done")}
+            className="flex-1 rounded-full border border-[#E5E5E5] bg-white px-5 py-3 text-sm font-medium text-[#555] transition hover:bg-[#F5F5F5]"
+          >
+            Skip
+          </button>
+          <button
+            onClick={() => setStep("done")}
+            className="flex-1 rounded-full bg-[#101418] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:scale-[1.02]"
+          >
+            Add {collaborators.length} collaborator{collaborators.length > 1 ? "s" : ""}
+          </button>
+        </div>
       </div>
     );
   }

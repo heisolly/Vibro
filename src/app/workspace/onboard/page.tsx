@@ -30,7 +30,10 @@ export default function WorkspaceOnboardPage() {
   const [toggles, setToggles] = useState([true, true, false]);
 
   useEffect(() => {
-    setSlug(new URLSearchParams(window.location.search).get("slug") || "vibro");
+    const params = new URLSearchParams(window.location.search);
+    setSlug(params.get("slug") || "vibro");
+    const stepParam = params.get("step");
+    if (stepParam) setStep(Number(stepParam));
     const stored = localStorage.getItem(userStorageKey);
     if (!stored) return;
     const parsed = JSON.parse(stored) as VibroUser;
