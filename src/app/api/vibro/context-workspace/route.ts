@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tasks } from "@trigger.dev/sdk/v3";
-import { GEMINI_MODEL, getGeminiModel, getMistralConfig } from "@/lib/ai-providers";
+import { GEMINI_MODEL, getGeminiModel, getMistralConfig, getGroqConfig } from "@/lib/ai-providers";
 import { fallbackContextWorkspace, parseContextWorkspace } from "@/lib/context-workspace";
 import type { generateContextWorkspaceTask } from "@/trigger/context-workspace";
 
 export const runtime = "nodejs";
 
-type Provider = "gemini" | "mistral";
+type Provider = "gemini" | "mistral" | "groq";
 
 const SYSTEM_PROMPT = `You are Vibro, a Context OS for AI-assisted development.
 You do not write application code. You convert a user's project description into planning artifacts:
@@ -71,6 +71,34 @@ async function runMistral(projectName: string, prompt: string) {
   return parseContextWorkspace(text, projectName, prompt, config.model);
 }
 
+async function runGroq(projectName: string, prompt: string) {
+  const config = getGroqConfig();
+  const response = await fetch(config.endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${config.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: config.model,
+      temperature: 0.35,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: `Project name: ${projectName}\nUser description: ${prompt}` },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  const data = await response.json();
+  const text = data?.choices?.[0]?.message?.content || "{}";
+  return parseContextWorkspace(text, projectName, prompt, config.model);
+}
+
 async function triggerGeneration(projectName: string, prompt: string, provider: Provider) {
   try {
     const handle = await tasks.trigger<typeof generateContextWorkspaceTask>(
@@ -95,7 +123,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const projectName = String(body.projectName || "Vibro").trim();
     const prompt = String(body.prompt || "").trim();
-    const provider: Provider = body.provider === "mistral" ? "mistral" : "gemini";
+    const provider: Provider = body.provider === "groq" ? "groq" : body.provider === "mistral" ? "mistral" : "gemini";
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
@@ -104,7 +132,9 @@ export async function POST(req: NextRequest) {
     const trigger = await triggerGeneration(projectName, prompt, provider);
 
     try {
-      const workspace = provider === "mistral"
+      const workspace = provider === "groq"
+        ? await runGroq(projectName, prompt)
+        : provider === "mistral"
         ? await runMistral(projectName, prompt)
         : await runGemini(projectName, prompt);
 

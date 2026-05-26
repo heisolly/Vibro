@@ -13,7 +13,7 @@ export type VibroProject = {
   createdAt: string;
 };
 
-export type VibroBoard = "home" | "design" | "architecture" | "inspiration" | "bundle" | "handoff";
+export type VibroBoard = "design" | "architecture" | "inspiration" | "progress";
 
 export const demoUser: VibroUser = {
   id: "demo-user",

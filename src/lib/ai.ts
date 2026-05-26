@@ -6,6 +6,7 @@
 
 export interface ChatOptions {
   model?: string;
+  provider?: string;
   temperature?: number;
   max_tokens?: number;
 }
@@ -16,7 +17,7 @@ export const streamAIChat = async (
   options: ChatOptions = {}
 ) => {
   const { 
-    model = "openrouter/free",
+    provider = "groq",
     temperature = 0.7,
     max_tokens = 500
   } = options;
@@ -29,7 +30,7 @@ export const streamAIChat = async (
       },
       body: JSON.stringify({
         messages,
-        model,
+        provider,
         temperature,
         max_tokens,
       }),

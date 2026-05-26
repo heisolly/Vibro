@@ -124,13 +124,11 @@ export function WorkspaceRail({
   activeBoard: VibroBoard;
   user: VibroUser | null;
 }) {
-  const items: { id: VibroBoard; icon: string; label: string }[] = [
-    { id: "home", icon: "grid_view", label: "Overview" },
-    { id: "design", icon: "palette", label: "Design" },
+  const items: { id: string; icon: string; label: string }[] = [
+    { id: "design", icon: "palette", label: "Design System" },
     { id: "architecture", icon: "schema", label: "Architecture" },
     { id: "inspiration", icon: "auto_stories", label: "Inspiration" },
-    { id: "bundle", icon: "inventory_2", label: "Bundle" },
-    { id: "handoff", icon: "hub", label: "Handoff" },
+    { id: "progress", icon: "progress_activity", label: "Progress" },
   ];
 
   return (

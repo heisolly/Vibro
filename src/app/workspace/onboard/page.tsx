@@ -4,7 +4,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userStorageKey, type VibroUser } from "@/lib/vibro";
-import { MaterialIcon, StepDots, spring } from "@/components/vibro/ui";
+import { MaterialIcon, VibroMark, spring } from "@/components/vibro/ui";
+import GitHubConnect from "@/components/GitHubConnect";
+
+const updateItems = [
+  ["Context digest", "Weekly summary of decisions and handoff changes."],
+  ["Onboarding emails", "Short guidance while the workspace is getting shaped."],
+  ["Product updates", "New Vibro features for context, boards, and AI handoff."],
+];
+
+const steps = [
+  { eyebrow: "01", title: "Set up your profile", subtitle: "Choose how you appear when shaping context with your team." },
+  { eyebrow: "02", title: "Invite teammates", subtitle: "Bring in the people who own the product, design, architecture, and decisions." },
+  { eyebrow: "03", title: "Connect sources", subtitle: "Optional references Vibro can use when it prepares the project memory." },
+  { eyebrow: "04", title: "Subscribe to updates", subtitle: "Pick what Vibro should send while your context workspace evolves." },
+];
 
 export default function WorkspaceOnboardPage() {
   const router = useRouter();
@@ -13,6 +27,7 @@ export default function WorkspaceOnboardPage() {
   const [profileName, setProfileName] = useState("Micheal Oluwayanmi");
   const [profileTitle, setProfileTitle] = useState("Software engineer");
   const [inviteEmails, setInviteEmails] = useState("");
+  const [toggles, setToggles] = useState([true, true, false]);
 
   useEffect(() => {
     setSlug(new URLSearchParams(window.location.search).get("slug") || "vibro");
@@ -23,114 +38,151 @@ export default function WorkspaceOnboardPage() {
   }, []);
 
   const finish = () => router.push(`/workspace/${slug}`);
+  const projectName = slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
   return (
-    <div className="grid min-h-screen grid-cols-1 bg-black text-white lg:grid-cols-2">
-      <main className="relative flex min-h-screen items-center justify-center px-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 22, filter: "blur(8px)" }}
-            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, x: -22, filter: "blur(8px)" }}
-            transition={spring}
-            className="w-full max-w-[400px]"
-          >
-            {step === 0 && (
-              <div>
-                <h1 className="text-2xl font-semibold">Set up your profile</h1>
-                <p className="mt-2 text-sm text-neutral-400">Choose how you will appear in Vibro</p>
-                <div className="mt-9 space-y-6">
-                  <label className="block">
-                    <span className="mb-3 block text-xs text-neutral-500">Name and picture</span>
-                    <div className="flex items-center gap-3">
-                      <div className="grid h-11 w-11 place-items-center rounded-full border border-neutral-800 bg-neutral-950">
-                        <MaterialIcon name="person" size={20} />
-                      </div>
-                      <input value={profileName} onChange={(event) => setProfileName(event.target.value)} className="h-11 flex-1 rounded-lg border border-neutral-800 bg-neutral-950 px-4 text-sm outline-none focus:border-indigo-500" />
-                    </div>
-                  </label>
-                  <label className="block">
-                    <span className="mb-3 block text-xs text-neutral-500">Title</span>
-                    <input value={profileTitle} onChange={(event) => setProfileTitle(event.target.value)} className="h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 text-sm outline-none focus:border-indigo-500" />
-                  </label>
-                </div>
-              </div>
-            )}
-            {step === 1 && (
-              <div>
-                <h1 className="text-2xl font-semibold">Invite teammates</h1>
-                <p className="mt-2 text-sm text-neutral-400">Bring the people who shape the project context</p>
-                <div className="mt-9">
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-xs text-neutral-500">Invitations</span>
-                    <button className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-300">
-                      <MaterialIcon name="link" size={14} />
-                      Copy invite link
-                    </button>
-                  </div>
-                  <textarea value={inviteEmails} onChange={(event) => setInviteEmails(event.target.value)} placeholder="email@gmail.com, email2@gmail.com" rows={4} className="w-full resize-none rounded-lg border border-indigo-500 bg-neutral-950 px-4 py-4 text-sm outline-none" />
-                </div>
-              </div>
-            )}
-            {step === 2 && (
-              <div>
-                <h1 className="text-2xl font-semibold">Connect sources</h1>
-                <p className="mt-2 text-sm text-neutral-400">Optional references Vibro can use for context</p>
-                <div className="mt-9 divide-y divide-neutral-900 border-y border-neutral-900">
-                  {["GitHub repository", "Product docs", "Design references"].map((item) => (
-                    <div key={item} className="flex items-center justify-between py-5">
-                      <div>
-                        <div className="text-sm font-semibold">{item}</div>
-                        <div className="mt-1 text-sm text-neutral-500">Add signal to the project memory</div>
-                      </div>
-                      <button className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold hover:bg-neutral-800">Add</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {step === 3 && (
-              <div>
-                <h1 className="text-2xl font-semibold">Subscribe to updates</h1>
-                <p className="mt-2 text-sm text-neutral-400">Stay in the loop as Vibro evolves</p>
-                <div className="mt-9 divide-y divide-neutral-900 border-y border-neutral-900">
-                  {["Changelog", "Onboarding emails", "Follow @vibro"].map((item) => (
-                    <div key={item} className="flex items-center justify-between py-5">
-                      <div>
-                        <div className="text-sm font-semibold">{item}</div>
-                        <div className="mt-1 text-sm text-neutral-500">Helpful product notes for new workspaces</div>
-                      </div>
-                      <span className="h-5 w-9 rounded-full bg-neutral-700 p-0.5">
-                        <span className="block h-4 w-4 rounded-full bg-white" />
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 aurora-bg animate-pulse-slow" />
+      <div className="pointer-events-none absolute inset-0 vibro-grain" />
 
-        <div className="absolute bottom-7 flex items-center gap-10">
-          <StepDots current={step} total={4} />
-          <div className="flex items-center gap-4 text-sm">
-            <button className="text-neutral-500 hover:text-white" onClick={() => (step === 0 ? finish() : setStep(step - 1))}>Skip</button>
-            <button onClick={() => (step === 3 ? finish() : setStep(step + 1))} className="rounded-full bg-neutral-900 px-5 py-3 font-semibold hover:bg-neutral-800">
-              {step === 3 ? "Finish" : "Continue"}
-            </button>
+      <header className="relative z-20 mx-auto flex max-w-5xl items-center justify-between px-8 py-6">
+        <button onClick={finish} className="inline-flex items-center gap-3">
+          <VibroMark size={32} />
+          <span className="font-display text-xl">Vibro</span>
+        </button>
+        <button onClick={finish} className="rounded-full border border-border bg-card/80 px-5 py-2 text-sm font-medium text-muted-foreground shadow-soft backdrop-blur transition hover:text-foreground">
+          Skip setup
+        </button>
+      </header>
+
+      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-88px)] w-full max-w-3xl items-center px-8 pb-16">
+        <div className="w-full">
+          <div className="mb-12 flex items-center gap-3 font-ai text-sm text-muted-foreground">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-semibold">{steps[step].eyebrow}</span>
+            <span>Setting up <span className="font-semibold text-foreground">{projectName}</span></span>
+            <span className="text-muted-foreground/40">—</span>
+            <span className="text-muted-foreground/60">Step {step + 1} of 4</span>
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -20, filter: "blur(4px)" }}
+              transition={spring}
+            >
+              {step === 0 && (
+                <div>
+                  <h1 className="font-display text-6xl leading-[1.04] sm:text-7xl md:text-[80px]">{steps[0].title}</h1>
+                  <p className="mt-4 text-lg leading-7 text-muted-foreground max-w-xl">{steps[0].subtitle}</p>
+                  <div className="mt-10 space-y-8">
+                    <div>
+                      <span className="mb-3 block text-sm font-medium text-muted-foreground">Name and picture</span>
+                      <div className="flex items-center gap-5">
+                        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-[oklch(0.48_0.18_258)] text-white shadow-lg">
+                          <MaterialIcon name="person" size={28} />
+                        </div>
+                        <input value={profileName} onChange={(event) => setProfileName(event.target.value)} className="h-14 w-full rounded-2xl border border-border bg-secondary/60 px-5 text-base outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10" />
+                      </div>
+                    </div>
+                    <div>
+                      <span className="mb-3 block text-sm font-medium text-muted-foreground">Title</span>
+                      <input value={profileTitle} onChange={(event) => setProfileTitle(event.target.value)} placeholder="Software engineer" className="h-14 w-full rounded-2xl border border-border bg-secondary/60 px-5 text-base outline-none transition placeholder:text-muted-foreground/70 focus:border-primary focus:ring-4 focus:ring-primary/10" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step === 1 && (
+                <div>
+                  <h1 className="font-display text-6xl leading-[1.04] sm:text-7xl md:text-[80px]">{steps[1].title}</h1>
+                  <p className="mt-4 text-lg leading-7 text-muted-foreground max-w-xl">{steps[1].subtitle}</p>
+                  <div className="mt-10 space-y-5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground">Invitations</span>
+                      <button className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/70 px-4 py-2 text-sm font-semibold text-foreground/75 transition hover:bg-secondary hover:text-foreground">
+                        <MaterialIcon name="link" size={16} />
+                        Copy invite link
+                      </button>
+                    </div>
+                    <textarea
+                      value={inviteEmails}
+                      onChange={(event) => setInviteEmails(event.target.value)}
+                      placeholder="email@gmail.com, email2@gmail.com"
+                      rows={4}
+                      className="w-full resize-none rounded-2xl border border-border bg-secondary/60 px-5 py-5 text-base leading-6 outline-none transition placeholder:text-muted-foreground/70 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div>
+                  <h1 className="font-display text-6xl leading-[1.04] sm:text-7xl md:text-[80px]">{steps[2].title}</h1>
+                  <p className="mt-4 text-lg leading-7 text-muted-foreground max-w-xl">{steps[2].subtitle}</p>
+                  <div className="mt-10">
+                    <GitHubConnect />
+                  </div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div>
+                  <h1 className="font-display text-6xl leading-[1.04] sm:text-7xl md:text-[80px]">{steps[3].title}</h1>
+                  <p className="mt-4 text-lg leading-7 text-muted-foreground max-w-xl">{steps[3].subtitle}</p>
+                  <div className="mt-10 space-y-4">
+                    {updateItems.map(([title, description], index) => (
+                      <button
+                        key={title}
+                        onClick={() => setToggles((current) => current.map((value, itemIndex) => itemIndex === index ? !value : value))}
+                        className="flex w-full items-center justify-between gap-4 rounded-2xl border border-border bg-secondary/45 p-5 text-left transition hover:bg-secondary/75"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="text-base font-semibold">{title}</div>
+                          <div className="mt-1 text-sm leading-5 text-muted-foreground">{description}</div>
+                        </div>
+                        <span className={`flex h-8 w-14 shrink-0 rounded-full p-1 transition ${toggles[index] ? "bg-primary" : "bg-border"}`}>
+                          <motion.span layout className="h-6 w-6 rounded-full bg-white shadow-md" animate={{ x: toggles[index] ? 26 : 0 }} transition={spring} />
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="mt-14 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {[0, 1, 2, 3].map((index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => setStep(index)}
+                  animate={{
+                    width: index === step ? 40 : 10,
+                    backgroundColor: index === step ? "var(--primary, #3b82f6)" : "var(--border, oklch(92% .012 250))",
+                  }}
+                  className="h-2.5 rounded-full"
+                  transition={spring}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="text-sm text-muted-foreground transition hover:text-foreground" onClick={() => (step === 0 ? finish() : setStep(step - 1))}>
+                {step === 0 ? "Skip" : "Back"}
+              </button>
+              <button
+                onClick={() => (step === 3 ? finish() : setStep(step + 1))}
+                className="inline-flex items-center gap-2.5 rounded-full bg-[#101418] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {step === 3 ? "Finish setup" : "Continue"}
+                <MaterialIcon name={step === 3 ? "check" : "arrow_forward"} size={18} />
+              </button>
+            </div>
           </div>
         </div>
-      </main>
-      <aside className="relative hidden overflow-hidden border-l border-neutral-900 bg-[#050505] lg:block">
-        <motion.div animate={{ y: [0, -16, 0], rotate: [0, 1, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }} className="absolute inset-20 rounded-[48px] border border-neutral-800 bg-neutral-950/60 shadow-2xl blur-[1px]">
-          <div className="absolute left-24 top-20 text-5xl font-semibold text-white/10">Vibro</div>
-          <div className="absolute left-44 top-52 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-5 py-3 text-emerald-400/30">Context ready</div>
-          <div className="absolute right-28 top-72 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-5 py-3 text-indigo-300/30">Architecture</div>
-          <div className="absolute bottom-36 left-36 rounded-full border border-amber-500/20 bg-amber-500/10 px-5 py-3 text-amber-300/30">Design system</div>
-        </motion.div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_35%,transparent,rgba(0,0,0,0.75)_52%,#050505_82%)]" />
-      </aside>
-    </div>
+      </section>
+    </main>
   );
 }

@@ -34,7 +34,7 @@ export default function DesignBot() {
     try {
       await streamAIChat(messages, (text) => {
         setResponse((prev) => prev + text);
-      }, { model: "openrouter/free", max_tokens: 400 });
+      }, { provider: "groq", max_tokens: 400 });
     } catch (error) {
       console.error("DesignBot Synthesis Error:", error);
       setResponse(`Sorry, I encountered a synthesis error. This usually indicates a network issue or missing API keys. Check your console for details.`);

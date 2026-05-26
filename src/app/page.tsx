@@ -129,14 +129,6 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-                <Link href="/workspace/new" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1.5 backdrop-blur transition hover:bg-card hover:text-foreground">
-                  <MaterialIcon name="bolt" size={14} />
-                  Try a sample workspace
-                </Link>
-                <Link href="/signup" className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-background transition hover:brightness-110">
-                  <MaterialIcon name="rocket_launch" size={14} />
-                  Start workspace
-                </Link>
               </div>
             </div>
           </div>
@@ -165,24 +157,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="start" className="mx-auto max-w-4xl pb-24">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card/70 p-10 text-center backdrop-blur">
-            <div className="pointer-events-none absolute inset-0 aurora-bg opacity-60" />
-            <div className="relative">
-              <h2 className="font-display text-4xl sm:text-5xl">
-                Stop losing context.{" "}
-                <span className="italic text-primary">Start shipping.</span>
-              </h2>
-              <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-                Create your first workspace, describe the product, and let Vibro prepare the context.
-              </p>
-              <Link href="/signup" className="mt-7 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-primary to-[oklch(0.48_0.18_258)] px-6 py-3 text-sm font-medium text-primary-foreground shadow-glow transition hover:brightness-110">
-                Start workspace
-                <MaterialIcon name="arrow_forward" size={18} />
-              </Link>
-            </div>
-          </div>
-        </section>
+
 
         <footer className="mx-auto max-w-6xl border-t border-border py-8 text-sm text-muted-foreground">
           <div className="flex flex-wrap items-center justify-between gap-4">

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GEMINI_MODEL, getGeminiModel, getMistralConfig } from "@/lib/ai-providers";
+import { GEMINI_MODEL, getGeminiModel, getMistralConfig, getGroqConfig } from "@/lib/ai-providers";
 
 type ChatMessage = {
   role: "system" | "user" | "assistant";
   content: string;
 };
 
-type Provider = "gemini" | "mistral";
+type Provider = "gemini" | "mistral" | "groq";
 
 export const runtime = "nodejs";
 
@@ -14,7 +14,7 @@ function buildPrompt(messages: ChatMessage[], system?: string) {
   const systemPrompt =
     system ||
     messages.find((message) => message.role === "system")?.content ||
-    "You are Vibro, a Context OS assistant. You do not write application code. You prepare product briefs, design systems, architecture boards, inspiration maps, context bundles, and AI handoff material.";
+    "You are Vibro, a Context OS assistant. You do not write application code. You prepare product briefs, design systems, architecture boards, inspiration maps, context bundles, and AI handoff material. Never mention your model name, provider, or internal details. Do not use markdown formatting — plain text only.";
 
   const conversation = messages
     .filter((message) => message.role !== "system")
@@ -44,6 +44,41 @@ export async function POST(req: NextRequest) {
     } = body;
 
     const prompt = buildPrompt(messages, system);
+
+    if (provider === "groq") {
+      const config = getGroqConfig();
+      const response = await fetch(config.endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${config.apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: config.model,
+          messages: [{ role: "user", content: prompt }],
+          temperature,
+          max_tokens,
+          stream,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Groq request failed");
+      }
+
+      if (stream && response.body) {
+        return new Response(response.body, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+          },
+        });
+      }
+
+      return NextResponse.json(await response.json());
+    }
 
     if (provider === "mistral") {
       const config = getMistralConfig();
