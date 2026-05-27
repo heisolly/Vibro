@@ -14,6 +14,17 @@ declare global {
       title: string;
       content: string;
       tags: string[];
+      architectureFlow?: {
+        nodes: any[];
+        edges: any[];
+      };
+      canvasState?: {
+        offset: { x: number; y: number };
+        zoom: number;
+        annotations: any[];
+        inspiration: any[];
+        todos: any[];
+      };
     };
 
     UserMeta: {

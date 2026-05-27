@@ -1,5 +1,6 @@
 @import "./theme.css";
 @import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
 
 :root {
   --font-geist: "Inter", "Segoe UI", system-ui, sans-serif;

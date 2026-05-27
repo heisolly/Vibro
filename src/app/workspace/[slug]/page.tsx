@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { demoUser, projectStorageKey, userStorageKey, type VibroProject, type VibroUser } from "@/lib/vibro";
 import type { ContextBundle } from "@/lib/github-types";
 import WorkspaceEditor from "@/components/workspace/WorkspaceEditor";
+import { LiveblocksRoomProvider, LiveblocksWrapperProvider } from "@/components/LiveblocksProvider";
 
 type Provider = "gemini" | "mistral" | "groq";
 type Message = {
@@ -15,14 +16,24 @@ type Message = {
 };
 
 const systemPrompt =
-  "You are Vibro, a Context OS for AI-assisted development. Do not write application code. Reason clearly and help the user shape product intent, design systems, architecture boards, inspiration maps, context bundles, and MCP handoff material. Keep replies practical, fast, and structured. Never mention your model name, provider, or internal details. Do not use markdown formatting — plain text only.";
+  "You are Vibro, a Context OS for AI-assisted development. Do not write application code. Reason clearly and help the user shape product intent, design systems, architecture boards, inspiration maps, context bundles, and MCP handoff material. Keep replies practical, fast, and structured. Never mention your model name, provider, or internal details. Do not use markdown formatting - plain text only.";
 
-function parseStreamChunk(raw: string) {
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("data: "))
-    .map((line) => line.slice(6));
+function parseSseEvents(buffer: string) {
+  const normalized = buffer.replace(/\r\n/g, "\n");
+  const events = normalized.split("\n\n");
+  const rest = events.pop() || "";
+  return {
+    events: events
+      .flatMap((event) =>
+        event
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.startsWith("data:"))
+          .map((line) => line.slice(5).trim())
+      )
+      .filter(Boolean),
+    rest,
+  };
 }
 
 export default function WorkspacePage() {
@@ -134,16 +145,25 @@ export default function WorkspacePage() {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let assistantText = "";
+    let eventBuffer = "";
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      for (const payload of parseStreamChunk(chunk)) {
+      eventBuffer += decoder.decode(value, { stream: true });
+      const parsedEvents = parseSseEvents(eventBuffer);
+      eventBuffer = parsedEvents.rest;
+
+      for (const payload of parsedEvents.events) {
         if (payload === "[DONE]") continue;
         try {
           const parsed = JSON.parse(payload);
-          const delta = parsed.choices?.[0]?.delta?.content || "";
+          const delta =
+            parsed.choices?.[0]?.delta?.content ||
+            parsed.candidates?.[0]?.content?.parts?.[0]?.text ||
+            parsed.delta ||
+            "";
+          if (!delta) continue;
           assistantText += delta;
           setMessages((current) =>
             current.map((message) =>
@@ -151,9 +171,19 @@ export default function WorkspacePage() {
             )
           );
         } catch {
-          assistantText += payload;
+          // Ignore partial provider payloads. They will be completed in the next SSE frame.
         }
       }
+    }
+
+    if (!assistantText) {
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === assistantId
+            ? { ...message, content: "I could not read a clean streamed reply. Try again and I will rerun the context pass." }
+            : message
+        )
+      );
     }
   }
 
@@ -207,5 +237,13 @@ export default function WorkspacePage() {
     }
   }
 
-  return <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} bundles={bundles} />;
+  const roomId = `project-${slug}`;
+
+  return (
+    <LiveblocksWrapperProvider>
+      <LiveblocksRoomProvider roomId={roomId}>
+        <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} bundles={bundles} />
+      </LiveblocksRoomProvider>
+    </LiveblocksWrapperProvider>
+  );
 }

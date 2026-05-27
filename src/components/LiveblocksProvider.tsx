@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import {
   LiveblocksProvider,
   RoomProvider,
-  ClientSideSuspense,
 } from "@liveblocks/react";
 
 
@@ -13,7 +12,6 @@ export function LiveblocksWrapperProvider({
 }: {
   children: ReactNode;
 }) {
-
   return (
     <LiveblocksProvider
       authEndpoint="/api/liveblocks-auth"
@@ -26,9 +24,7 @@ export function LiveblocksWrapperProvider({
         }))
       }
     >
-      <ClientSideSuspense fallback={<div>Loading Liveblocks...</div>}>
-        {children}
-      </ClientSideSuspense>
+      {children}
     </LiveblocksProvider>
   );
 }
@@ -54,9 +50,7 @@ export function LiveblocksRoomProvider({
         tags: [],
       }}
     >
-      <ClientSideSuspense fallback={<div>Joining room...</div>}>
-        {children}
-      </ClientSideSuspense>
+      {children}
     </RoomProvider>
   );
 }
