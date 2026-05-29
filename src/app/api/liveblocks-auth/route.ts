@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
   }
 
   const allowedPrefix = `user-${user.id}-`;
-  if (!room.startsWith(allowedPrefix)) {
+  const isWorkspaceRoom = room.startsWith("workspace:");
+  if (!room.startsWith(allowedPrefix) && !isWorkspaceRoom) {
     return new Response("Forbidden", { status: 403 });
   }
 

@@ -3,16 +3,24 @@
 import { useState } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { ContextBundle } from "@/lib/github-types";
+import type { VibroBoard } from "@/lib/vibro";
 import ContextSnapshot from "./ContextSnapshot";
 
 const threadLabels = ["Design System feedback", "Architecture review"];
+const inspirationThreadLabels = ["Pinned inspiration", "Card discussion", "AI suggestions"];
 
 const messages = [
   { name: "Micheal", text: "Pushed new auth tokens to the design system branch", time: "2m ago", color: "#14B8A6", thread: 0 },
   { name: "Vibro AI", text: "Generated color palette from the uploaded screenshot. 6 new tokens added.", time: "8m ago", color: "#6366F1", ai: true, thread: 0 },
   { name: "Tunde", text: "Let me review and merge before the standup", time: "12m ago", color: "#F43F5E", thread: 0 },
-  { name: "Sade", text: "Architecture map needs updating — the auth service was split", time: "20m ago", color: "#8B5CF6", thread: 1 },
+  { name: "Sade", text: "Architecture map needs updating - the auth service was split", time: "20m ago", color: "#8B5CF6", thread: 1 },
   { name: "Vibro AI", text: "Drift detected in API routes. Suggested merge path in the Architecture board.", time: "28m ago", color: "#6366F1", ai: true, thread: 1 },
+];
+
+const inspirationMessages = [
+  { name: "Vibro AI", text: "Pinned references are influencing color contrast, compact spacing, and reusable dashboard card patterns.", time: "now", color: "#6366F1", ai: true, thread: 0 },
+  { name: "Micheal", text: "Use the strongest landing page examples for typography only, not layout.", time: "4m ago", color: "#14B8A6", thread: 1 },
+  { name: "Vibro AI", text: "This design direction matches the current palette. Suggested token candidates are ready for the Design System board.", time: "8m ago", color: "#6366F1", ai: true, thread: 2 },
 ];
 
 const avatars = [
@@ -25,12 +33,17 @@ export default function RightPanel({
   open,
   onToggle,
   bundles,
+  activeBoard,
 }: {
   open: boolean;
   onToggle: () => void;
   bundles: ContextBundle[];
+  activeBoard: VibroBoard;
 }) {
   const [chatInput, setChatInput] = useState("");
+  const isInspiration = activeBoard === "inspiration";
+  const visibleThreadLabels = isInspiration ? inspirationThreadLabels : threadLabels;
+  const visibleMessages = isInspiration ? inspirationMessages : messages;
 
   return (
     <aside
@@ -38,13 +51,30 @@ export default function RightPanel({
       style={{ transform: open ? "translateX(0)" : "translateX(300px)" }}
     >
       <div className="flex items-center justify-between h-12 px-4 border-b border-[#E5E5E5] shrink-0">
-        <span className="text-[14px] font-medium text-[#333]">Team Chat</span>
+        <span className="text-[14px] font-medium text-[#333]">{isInspiration ? "Inspiration Context" : "Team Chat"}</span>
         <button onClick={onToggle} className="text-[#888] hover:text-[#333] transition">
           <MaterialIcon name="close" size={18} />
         </button>
       </div>
 
       <ContextSnapshot bundle={bundles[0]} />
+
+      {isInspiration && (
+        <div className="border-b border-[#E5E5E5] px-4 py-3">
+          <div className="flex items-center gap-2 text-[12px] font-semibold text-[#333]">
+            <MaterialIcon name="auto_awesome" size={15} />
+            AI context snapshot
+          </div>
+          <p className="mt-2 text-[12px] leading-5 text-[#666]">
+            Selected and pinned inspirations feed color, typography, layout density, and UI pattern hints into the Design System and Architecture boards.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-1">
+            {["Color tokens", "Typography", "UI patterns", "Reusable cards"].map((tag) => (
+              <span key={tag} className="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-medium text-[#6366F1]">{tag}</span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#E5E5E5] shrink-0">
         {avatars.map((a, i) => (
@@ -62,13 +92,13 @@ export default function RightPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
-        {[0, 1].map((threadIdx) => (
+        {visibleThreadLabels.map((label, threadIdx) => (
           <div key={threadIdx}>
             <span className="inline-block bg-[#EEF2FF] text-[#6366F1] text-[11px] rounded-full px-[10px] py-[2px] mb-2">
-              {threadLabels[threadIdx]}
+              {label}
             </span>
             <div className="space-y-3">
-              {messages
+              {visibleMessages
                 .filter((m) => m.thread === threadIdx)
                 .map((m, i) => (
                   <div key={i} className="flex items-start gap-2">
@@ -102,7 +132,7 @@ export default function RightPanel({
         <input
           value={chatInput}
           onChange={(e) => setChatInput(e.target.value)}
-          placeholder="Message the team…"
+          placeholder={isInspiration ? "Discuss this inspiration..." : "Message the team..."}
           className="flex-1 h-full border-none outline-none text-[13px] placeholder:text-[#AAA] bg-transparent"
         />
         <button

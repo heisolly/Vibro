@@ -2,6 +2,7 @@
 
 import { useState, useRef, type KeyboardEvent } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
+import type { VibroBoard } from "@/lib/vibro";
 
 const chips = [
   { icon: "image", label: "Image" },
@@ -12,14 +13,24 @@ const chips = [
   { icon: "travel_explore", label: "Reference" },
 ];
 
+const inspirationChips = [
+  { icon: "travel_explore", label: "Find landing page inspiration for this product" },
+  { icon: "dashboard", label: "Find more like these dashboards" },
+  { icon: "dashboard_customize", label: "Organize these into a moodboard" },
+  { icon: "palette", label: "Suggest color tokens from these references" },
+  { icon: "summarize", label: "Summarize common patterns" },
+];
+
 export default function AIInputBar({
   onSend,
   disabled = false,
   rightOpen,
+  activeBoard,
 }: {
   onSend: (text: string) => void;
   disabled?: boolean;
   rightOpen?: boolean;
+  activeBoard: VibroBoard;
 }) {
   const [input, setInput] = useState("");
   const textRef = useRef<HTMLTextAreaElement>(null);
@@ -27,6 +38,9 @@ export default function AIInputBar({
   function handleSend() {
     const text = input.trim();
     if (!text || disabled) return;
+    if (activeBoard === "inspiration") {
+      window.dispatchEvent(new CustomEvent("vibro:inspiration-prompt", { detail: text }));
+    }
     onSend(text);
     setInput("");
     if (textRef.current) textRef.current.style.height = "auto";
@@ -47,6 +61,7 @@ export default function AIInputBar({
   }
 
   const maxWidth = rightOpen ? "calc(100% - 96px - 320px)" : "calc(100% - 96px)";
+  const visibleChips = activeBoard === "inspiration" ? inspirationChips : chips;
 
   return (
     <div
@@ -73,9 +88,12 @@ export default function AIInputBar({
         </div>
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {chips.map((chip) => (
+            {visibleChips.map((chip) => (
               <button
                 key={chip.label}
+                onClick={() => {
+                  setInput(chip.label);
+                }}
                 className="inline-flex items-center gap-1 px-[10px] py-[4px] rounded-full border border-[#E5E5E5] bg-[#F5F5F5] text-[12px] text-[#555] hover:bg-[#EBEBEB] transition"
               >
                 <MaterialIcon name={chip.icon} size={13} />

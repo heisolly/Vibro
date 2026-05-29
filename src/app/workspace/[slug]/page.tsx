@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { demoUser, projectStorageKey, userStorageKey, type VibroProject, type VibroUser } from "@/lib/vibro";
 import type { ContextBundle } from "@/lib/github-types";
 import WorkspaceEditor from "@/components/workspace/WorkspaceEditor";
+import { LiveblocksRoomProvider, LiveblocksWrapperProvider } from "@/components/LiveblocksProvider";
 
 type Provider = "gemini" | "mistral" | "groq";
 type Message = {
@@ -207,5 +208,19 @@ export default function WorkspacePage() {
     }
   }
 
-  return <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} bundles={bundles} />;
+  return (
+    <LiveblocksWrapperProvider>
+      <LiveblocksRoomProvider roomId={`workspace:${slug}`}>
+        <WorkspaceEditor
+          slug={slug}
+          project={project}
+          user={user}
+          messages={messages}
+          isThinking={isThinking}
+          onSendToAI={sendMessage}
+          bundles={bundles}
+        />
+      </LiveblocksRoomProvider>
+    </LiveblocksWrapperProvider>
+  );
 }

@@ -1,8 +1,10 @@
 "use client";
 
 import type { VibroBoard } from "@/lib/vibro";
+import type { VibroProject, VibroUser } from "@/lib/vibro";
 import type { ContextBundle } from "@/lib/github-types";
 import { MaterialIcon } from "@/components/vibro/ui";
+import InspirationBoard from "./InspirationBoard";
 
 function DesignBoard({ bundle }: { bundle?: ContextBundle }) {
   const ds = bundle?.bundle_data?.designSystem;
@@ -125,20 +127,6 @@ function ArchitectureBoard({ bundle }: { bundle?: ContextBundle }) {
   );
 }
 
-function InspirationBoard() {
-  return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 text-center px-8">
-      <span className="grid h-16 w-16 place-items-center rounded-2xl bg-white/60 text-[#6366F1] shadow-sm border border-[#E5E5E5]">
-        <MaterialIcon name="collections" size={32} />
-      </span>
-      <h2 className="font-display text-2xl text-[#333]">Inspiration</h2>
-      <p className="max-w-md text-sm leading-relaxed text-[#888]">
-        Screenshots, URLs, moodboards. Collect references and Vibro will extract patterns, color palettes, and layout ideas.
-      </p>
-    </div>
-  );
-}
-
 function ProgressBoard({ bundle }: { bundle?: ContextBundle }) {
   const decisions = bundle?.bundle_data?.decisionLog;
 
@@ -178,7 +166,19 @@ function ProgressBoard({ bundle }: { bundle?: ContextBundle }) {
   );
 }
 
-export default function BoardCanvas({ activeBoard, bundles }: { activeBoard: VibroBoard; bundles: ContextBundle[] }) {
+export default function BoardCanvas({
+  activeBoard,
+  bundles,
+  slug,
+  project,
+  user,
+}: {
+  activeBoard: VibroBoard;
+  bundles: ContextBundle[];
+  slug: string;
+  project: VibroProject | null;
+  user: VibroUser | null;
+}) {
   const bundle = bundles[0];
 
   return (
@@ -193,7 +193,7 @@ export default function BoardCanvas({ activeBoard, bundles }: { activeBoard: Vib
       <div className="relative h-full w-full p-6">
         {activeBoard === "design" && <DesignBoard bundle={bundle} />}
         {activeBoard === "architecture" && <ArchitectureBoard bundle={bundle} />}
-        {activeBoard === "inspiration" && <InspirationBoard />}
+        {activeBoard === "inspiration" && <InspirationBoard slug={slug} project={project} user={user} />}
         {activeBoard === "progress" && <ProgressBoard bundle={bundle} />}
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { LiveList } from "@liveblocks/client";
 import {
   LiveblocksProvider,
   RoomProvider,
@@ -13,6 +14,11 @@ export function LiveblocksWrapperProvider({
 }: {
   children: ReactNode;
 }) {
+  const liveblocksConfigured = Boolean(process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY);
+
+  if (!liveblocksConfigured) {
+    return <>{children}</>;
+  }
 
   return (
     <LiveblocksProvider
@@ -40,6 +46,12 @@ export function LiveblocksRoomProvider({
   roomId: string;
   children: ReactNode;
 }) {
+  const liveblocksConfigured = Boolean(process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY);
+
+  if (!liveblocksConfigured) {
+    return <>{children}</>;
+  }
+
   return (
     <RoomProvider
       id={roomId}
@@ -47,11 +59,17 @@ export function LiveblocksRoomProvider({
         cursor: null,
         selectedColor: "#000000",
         isTyping: false,
+        selectedInspirationItemIds: [],
+        activeInspirationTool: "select",
       }}
       initialStorage={{
         title: "",
         content: "",
         tags: [],
+        inspirationItems: new LiveList([]),
+        inspirationGroups: new LiveList([]),
+        inspirationTabs: new LiveList([]),
+        activeInspirationTab: "landing",
       }}
     >
       <ClientSideSuspense fallback={<div>Joining room...</div>}>

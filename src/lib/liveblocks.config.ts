@@ -1,4 +1,45 @@
-import { LiveList, LiveObject, LiveMap } from "@liveblocks/client";
+import { LiveList, LiveObject } from "@liveblocks/client";
+import type { InspirationAnalysis } from "@/lib/inspiration";
+
+type LiveInspirationItem = LiveObject<{
+  id: string;
+  type: "image" | "url" | "note" | "web";
+  title: string;
+  description: string;
+  url: string;
+  sourceDomain: string;
+  thumbnailUrl: string;
+  storagePath: string;
+  tags: string[];
+  tab: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  pinned: boolean;
+  groupId: string | null;
+  votes: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  analysis: InspirationAnalysis | null;
+}>;
+
+type LiveInspirationGroup = LiveObject<{
+  id: string;
+  title: string;
+  itemIds: string[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}>;
+
+type LiveInspirationTab = LiveObject<{
+  id: string;
+  label: string;
+  order: number;
+}>;
 
 declare global {
   interface Liveblocks {
@@ -7,6 +48,8 @@ declare global {
       cursor: { x: number; y: number } | null;
       selectedColor: string;
       isTyping: boolean;
+      selectedInspirationItemIds: string[];
+      activeInspirationTool: string;
     };
 
     // The Storage tree for the room
@@ -14,6 +57,10 @@ declare global {
       title: string;
       content: string;
       tags: string[];
+      inspirationItems: LiveList<LiveInspirationItem>;
+      inspirationGroups: LiveList<LiveInspirationGroup>;
+      inspirationTabs: LiveList<LiveInspirationTab>;
+      activeInspirationTab: string;
     };
 
     UserMeta: {
@@ -28,7 +75,15 @@ declare global {
     RoomEvent: { type: "REACTION"; emoji: string };
 
     // Custom metadata set on threads
-    ThreadMetadata: Record<string, string | number | boolean>;
+    ThreadMetadata: {
+      cardId?: string;
+      boardTab?: string;
+      workspaceSlug?: string;
+      board?: string;
+      x?: number;
+      y?: number;
+      resolved?: boolean;
+    };
 
     // Custom metadata set on comments
     CommentMetadata: Record<string, string | number | boolean>;
