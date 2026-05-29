@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useRef, type KeyboardEvent } from "react";
+import { useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { VibroBoard } from "@/lib/vibro";
 
 const chips = [
-  { icon: "image", label: "Image" },
-  { icon: "smart_toy", label: "Model" },
-  { icon: "brush", label: "Style" },
-  { icon: "aspect_ratio", label: "Ratio" },
-  { icon: "grid_view", label: "Count" },
-  { icon: "travel_explore", label: "Reference" },
+  { icon: "account_tree", label: "Architecture", prompt: "Map the architecture and suggest the next service to add" },
+  { icon: "auto_fix_high", label: "Refine", prompt: "Refine this workspace and improve the current board" },
+  { icon: "schema", label: "Auto layout", prompt: "Auto layout the architecture canvas and explain the flow" },
+  { icon: "palette", label: "Design system", prompt: "Generate editable design system tokens for this project" },
+  { icon: "inventory_2", label: "Bundle", prompt: "Prepare the context bundle for AI handoff" },
 ];
 
 const inspirationChips = [
@@ -20,6 +19,10 @@ const inspirationChips = [
   { icon: "palette", label: "Suggest color tokens from these references" },
   { icon: "summarize", label: "Summarize common patterns" },
 ];
+
+function chipPrompt(chip: (typeof chips)[number] | (typeof inspirationChips)[number]) {
+  return "prompt" in chip ? chip.prompt : chip.label;
+}
 
 export default function AIInputBar({
   onSend,
@@ -40,24 +43,37 @@ export default function AIInputBar({
     if (!text || disabled) return;
     if (activeBoard === "inspiration") {
       window.dispatchEvent(new CustomEvent("vibro:inspiration-prompt", { detail: text }));
+    } else {
+      window.dispatchEvent(new CustomEvent("vibro:architecture-command", { detail: { text } }));
     }
     onSend(text);
     setInput("");
     if (textRef.current) textRef.current.style.height = "auto";
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSend();
     }
   }
 
-  function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setInput(e.target.value);
-    const el = e.target;
-    el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 72) + "px";
+  function handleInput(event: ChangeEvent<HTMLTextAreaElement>) {
+    setInput(event.target.value);
+    const element = event.target;
+    element.style.height = "auto";
+    element.style.height = `${Math.min(element.scrollHeight, 84)}px`;
+  }
+
+  function insertPrompt(prompt: string) {
+    setInput((current) => (current ? `${current}\n${prompt}` : prompt));
+    requestAnimationFrame(() => {
+      textRef.current?.focus();
+      if (textRef.current) {
+        textRef.current.style.height = "auto";
+        textRef.current.style.height = `${Math.min(textRef.current.scrollHeight, 96)}px`;
+      }
+    });
   }
 
   const maxWidth = rightOpen ? "calc(100% - 96px - 320px)" : "calc(100% - 96px)";
@@ -65,55 +81,70 @@ export default function AIInputBar({
 
   return (
     <div
-      className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30"
-      style={{ width: `min(600px, ${maxWidth})` }}
+      className="absolute bottom-8 left-1/2 z-30 -translate-x-1/2"
+      style={{ width: `min(720px, ${maxWidth})` }}
     >
-      <div className="bg-white rounded-[14px] border border-[#E0E0E0] shadow-[0_4px_24px_rgba(0,0,0,0.10)] px-4 pt-3 pb-[10px]">
-        <div className="flex items-start gap-2">
+      <div className="overflow-hidden rounded-[22px] border border-[#dcdcdc] bg-white/95 shadow-[0_18px_55px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+        <div className="flex items-center justify-between border-b border-[#eeeeee] px-4 py-2.5">
+          <div className="flex items-center gap-2">
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-[#111] text-white">
+              <MaterialIcon name="auto_awesome" size={15} />
+            </span>
+            <div>
+              <div className="text-xs font-semibold text-[#222]">Vibro command</div>
+              <div className="text-[11px] text-[#888]">Ask it to edit boards, generate context, or plan next steps</div>
+            </div>
+          </div>
+          {disabled && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
+              Thinking
+            </span>
+          )}
+        </div>
+        <div className="flex items-start gap-2 px-4 py-3">
           <textarea
             ref={textRef}
             value={input}
             onChange={handleInput}
             onKeyDown={onKeyDown}
-            placeholder="Describe what you want to generate"
+            placeholder="Tell Vibro what to build: add a database node, connect gateway to AI, auto layout, create design tokens..."
             rows={1}
-            className="flex-1 resize-none bg-transparent text-[14px] text-[#333] outline-none placeholder:text-[#AAA] leading-6 min-h-[24px] max-h-[72px]"
+            className="font-ai min-h-7 flex-1 resize-none bg-transparent text-[14px] leading-7 text-[#222] outline-none placeholder:text-[#8a8a8a]"
           />
-          <button
-            className="shrink-0 mt-0.5 text-[#AAA] hover:text-[#555] transition"
-            title="Prompt history"
-          >
-            <MaterialIcon name="list" size={16} />
+          <button className="mt-1 grid h-7 w-7 place-items-center rounded-md text-[#999] transition hover:bg-[#f4f4f4] hover:text-[#444]" title="Prompt options">
+            <MaterialIcon name="tune" size={16} />
           </button>
         </div>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center justify-between border-t border-[#eeeeee] px-4 py-2.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             {visibleChips.map((chip) => (
               <button
                 key={chip.label}
-                onClick={() => {
-                  setInput(chip.label);
-                }}
-                className="inline-flex items-center gap-1 px-[10px] py-[4px] rounded-full border border-[#E5E5E5] bg-[#F5F5F5] text-[12px] text-[#555] hover:bg-[#EBEBEB] transition"
+                onClick={() => insertPrompt(chipPrompt(chip))}
+                className="inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-medium text-[#555] transition hover:bg-[#f5f5f5] hover:text-[#222]"
               >
-                <MaterialIcon name={chip.icon} size={13} />
+                <MaterialIcon name={chip.icon} size={14} />
                 {chip.label}
               </button>
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button className="text-[#AAA] hover:text-[#555] transition" title="Attach">
+            <button className="grid h-8 w-8 place-items-center rounded-full text-[#777] transition hover:bg-[#f5f5f5] hover:text-[#222]" title="Attach">
               <MaterialIcon name="attach_file" size={18} />
             </button>
             <button
               onClick={handleSend}
               disabled={!input.trim() || disabled}
-              className="w-8 h-8 rounded-full bg-[#6366F1] text-white flex items-center justify-center hover:bg-[#4F46E5] transition disabled:bg-[#E5E5E5] disabled:text-[#AAA]"
+              className="grid h-9 w-9 place-items-center rounded-full bg-[#111] text-white transition hover:scale-105 disabled:bg-[#e5e5e5] disabled:text-[#aaa]"
             >
-              <MaterialIcon name="arrow_upward" size={16} />
+              <MaterialIcon name={disabled ? "hourglass_top" : "arrow_upward"} size={17} />
             </button>
           </div>
         </div>
+      </div>
+      <div className="mt-2 text-center text-[12px] text-[#8a8a8a]">
+        Vibro can make mistakes. Check important context before handoff.
       </div>
     </div>
   );

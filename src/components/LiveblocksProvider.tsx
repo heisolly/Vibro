@@ -5,7 +5,6 @@ import { LiveList } from "@liveblocks/client";
 import {
   LiveblocksProvider,
   RoomProvider,
-  ClientSideSuspense,
 } from "@liveblocks/react";
 
 
@@ -32,9 +31,7 @@ export function LiveblocksWrapperProvider({
         }))
       }
     >
-      <ClientSideSuspense fallback={<div>Loading Liveblocks...</div>}>
-        {children}
-      </ClientSideSuspense>
+      {children}
     </LiveblocksProvider>
   );
 }
@@ -72,9 +69,7 @@ export function LiveblocksRoomProvider({
         activeInspirationTab: "landing",
       }}
     >
-      <ClientSideSuspense fallback={<div>Joining room...</div>}>
-        {children}
-      </ClientSideSuspense>
+      {children}
     </RoomProvider>
   );
 }

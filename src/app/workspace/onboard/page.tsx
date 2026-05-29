@@ -125,7 +125,7 @@ export default function WorkspaceOnboardPage() {
                   <h1 className="font-display text-6xl leading-[1.04] sm:text-7xl md:text-[80px]">{steps[2].title}</h1>
                   <p className="mt-4 text-lg leading-7 text-muted-foreground max-w-xl">{steps[2].subtitle}</p>
                   <div className="mt-10">
-                    <GitHubConnect />
+                    <GitHubConnect slug={slug} />
                   </div>
                 </div>
               )}

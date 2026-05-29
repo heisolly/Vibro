@@ -9,6 +9,7 @@ type Collaborator = {
   avatar_url: string;
   id: number;
   role: string;
+  email?: string;
 };
 
 type Step = "idle" | "selecting" | "scanning" | "bundling" | "done" | "collaborators";
@@ -22,7 +23,7 @@ const errorMessages: Record<string, string> = {
   db_error: "Failed to save connection. Try again.",
 };
 
-export default function GitHubConnect() {
+export default function GitHubConnect({ slug }: { slug?: string }) {
   const [step, setStep] = useState<Step>("idle");
   const [connection, setConnection] = useState<GitHubConnection | null>(null);
   const [repos, setRepos] = useState<GitHubRepoListItem[]>([]);
@@ -200,6 +201,22 @@ export default function GitHubConnect() {
     }
   }
 
+  async function handleAddCollaborators() {
+    setLoading(true);
+    try {
+      await fetch("/api/workspace/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace_slug: slug || "vibro", collaborators }),
+      });
+      setStep("done");
+    } catch {
+      setStep("done");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleDisconnect() {
     setLoading(true);
     try {
@@ -365,10 +382,11 @@ export default function GitHubConnect() {
             Skip
           </button>
           <button
-            onClick={() => setStep("done")}
-            className="flex-1 rounded-full bg-[#101418] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:scale-[1.02]"
+            onClick={handleAddCollaborators}
+            disabled={loading}
+            className="flex-1 rounded-full bg-[#101418] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:scale-[1.02] disabled:opacity-50"
           >
-            Add {collaborators.length} collaborator{collaborators.length > 1 ? "s" : ""}
+            {loading ? "Inviting..." : `Add ${collaborators.length} collaborator${collaborators.length > 1 ? "s" : ""}`}
           </button>
         </div>
       </div>

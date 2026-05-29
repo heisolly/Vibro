@@ -1,32 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useOthers } from "@liveblocks/react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { ContextBundle } from "@/lib/github-types";
 import type { VibroBoard } from "@/lib/vibro";
 import ContextSnapshot from "./ContextSnapshot";
 
-const threadLabels = ["Design System feedback", "Architecture review"];
-const inspirationThreadLabels = ["Pinned inspiration", "Card discussion", "AI suggestions"];
+type PanelTab = "activity" | "chat" | "context";
 
-const messages = [
-  { name: "Micheal", text: "Pushed new auth tokens to the design system branch", time: "2m ago", color: "#14B8A6", thread: 0 },
-  { name: "Vibro AI", text: "Generated color palette from the uploaded screenshot. 6 new tokens added.", time: "8m ago", color: "#6366F1", ai: true, thread: 0 },
-  { name: "Tunde", text: "Let me review and merge before the standup", time: "12m ago", color: "#F43F5E", thread: 0 },
-  { name: "Sade", text: "Architecture map needs updating - the auth service was split", time: "20m ago", color: "#8B5CF6", thread: 1 },
-  { name: "Vibro AI", text: "Drift detected in API routes. Suggested merge path in the Architecture board.", time: "28m ago", color: "#6366F1", ai: true, thread: 1 },
-];
-
-const inspirationMessages = [
-  { name: "Vibro AI", text: "Pinned references are influencing color contrast, compact spacing, and reusable dashboard card patterns.", time: "now", color: "#6366F1", ai: true, thread: 0 },
-  { name: "Micheal", text: "Use the strongest landing page examples for typography only, not layout.", time: "4m ago", color: "#14B8A6", thread: 1 },
-  { name: "Vibro AI", text: "This design direction matches the current palette. Suggested token candidates are ready for the Design System board.", time: "8m ago", color: "#6366F1", ai: true, thread: 2 },
-];
-
-const avatars = [
-  { initials: "MO", color: "#14B8A6" },
-  { initials: "TK", color: "#F43F5E" },
-  { initials: "SA", color: "#8B5CF6" },
+const aiSteps = [
+  { label: "Reading project intent", status: "done" },
+  { label: "Mapping architecture graph", status: "active" },
+  { label: "Preparing context bundle", status: "queued" },
 ];
 
 export default function RightPanel({
@@ -40,108 +26,195 @@ export default function RightPanel({
   bundles: ContextBundle[];
   activeBoard: VibroBoard;
 }) {
+  const [tab, setTab] = useState<PanelTab>("activity");
   const [chatInput, setChatInput] = useState("");
+  const others = useOthers();
   const isInspiration = activeBoard === "inspiration";
-  const visibleThreadLabels = isInspiration ? inspirationThreadLabels : threadLabels;
-  const visibleMessages = isInspiration ? inspirationMessages : messages;
+
+  const online = useMemo(() => others.map((other) => ({
+    id: other.connectionId,
+    name: other.info?.name || "Collaborator",
+    avatar: other.info?.avatar,
+  })), [others]);
 
   return (
     <aside
-      className="fixed top-12 right-0 h-[calc(100vh-48px)] w-[300px] bg-white border-l border-[#E5E5E5] z-90 flex flex-col transition-transform duration-250 ease-out"
-      style={{ transform: open ? "translateX(0)" : "translateX(300px)" }}
+      className="fixed right-0 top-12 z-[90] flex h-[calc(100vh-48px)] w-[320px] flex-col border-l border-[#dddddd] bg-white transition-transform duration-300 ease-out"
+      style={{ transform: open ? "translateX(0)" : "translateX(320px)" }}
     >
-      <div className="flex items-center justify-between h-12 px-4 border-b border-[#E5E5E5] shrink-0">
-        <span className="text-[14px] font-medium text-[#333]">{isInspiration ? "Inspiration Context" : "Team Chat"}</span>
-        <button onClick={onToggle} className="text-[#888] hover:text-[#333] transition">
-          <MaterialIcon name="close" size={18} />
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#eeeeee] px-4">
+        <div>
+          <div className="text-sm font-semibold text-[#111]">{isInspiration ? "Inspiration context" : "Workspace feed"}</div>
+          <div className="text-[11px] text-[#888]">{isInspiration ? "References, votes, and AI influence" : "Live context, people, and runs"}</div>
+        </div>
+        <button onClick={onToggle} className="grid h-8 w-8 place-items-center rounded-lg text-black transition hover:bg-[#f5f5f5]">
+          <MaterialIcon name="close" size={19} />
         </button>
       </div>
 
-      <ContextSnapshot bundle={bundles[0]} />
+      <div className="grid grid-cols-3 gap-1 border-b border-[#eeeeee] p-2">
+        {(["activity", "chat", "context"] as PanelTab[]).map((item) => (
+          <button
+            key={item}
+            onClick={() => setTab(item)}
+            className={`h-8 rounded-lg text-xs font-semibold capitalize transition ${tab === item ? "bg-[#111] text-white" : "text-[#555] hover:bg-[#f5f5f5]"}`}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
 
-      {isInspiration && (
-        <div className="border-b border-[#E5E5E5] px-4 py-3">
-          <div className="flex items-center gap-2 text-[12px] font-semibold text-[#333]">
-            <MaterialIcon name="auto_awesome" size={15} />
-            AI context snapshot
+      {tab === "activity" && (
+        <div className="flex min-h-0 flex-1 flex-col">
+          <PresenceSection online={online} />
+          <div className="border-t border-[#eeeeee] p-4">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-[#111]">
+                <img src="/light_logo.png" alt="Vibro" className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-sm font-semibold">Vibro is building</div>
+                <div className="text-[11px] text-[#888]">Trigger.dev execution activity</div>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {aiSteps.map((step) => (
+                <div key={step.label} className="flex items-center gap-3 rounded-xl border border-[#eeeeee] bg-[#fafafa] p-3">
+                  <span className={`h-2.5 w-2.5 rounded-full ${step.status === "done" ? "bg-emerald-500" : step.status === "active" ? "animate-pulse bg-blue-500" : "bg-[#cccccc]"}`} />
+                  <span className="text-xs font-medium text-[#444]">{step.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white">
+              <div className="h-2 animate-pulse bg-gradient-to-r from-blue-500 via-cyan-300 to-blue-500" />
+              <div className="space-y-2 p-4">
+                <div className="h-3 w-3/4 rounded-full bg-[#eeeeee]" />
+                <div className="h-3 w-1/2 rounded-full bg-[#eeeeee]" />
+                <div className="h-3 w-2/3 rounded-full bg-[#eeeeee]" />
+              </div>
+            </div>
           </div>
-          <p className="mt-2 text-[12px] leading-5 text-[#666]">
-            Selected and pinned inspirations feed color, typography, layout density, and UI pattern hints into the Design System and Architecture boards.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-1">
-            {["Color tokens", "Typography", "UI patterns", "Reusable cards"].map((tag) => (
-              <span key={tag} className="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-medium text-[#6366F1]">{tag}</span>
-            ))}
+          <Timeline />
+        </div>
+      )}
+
+      {tab === "chat" && (
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="flex-1 space-y-4 overflow-y-auto p-4">
+            <ChatMessage author="Vibro AI" text={isInspiration ? "Pinned references are feeding visual patterns, UI density, and architecture signals into the context bundle." : "I mapped the workspace into architecture, design, inspiration, and progress surfaces."} ai />
+            <ChatMessage author="Micheal" text="Make the architecture board editable and easy to understand." />
+            <ChatMessage author="Vibro AI" text={isInspiration ? "Use selected or pinned cards to generate a more grounded product architecture." : "Done. Nodes can be moved, new services added, and connection mode creates new flows."} ai />
+          </div>
+          <div className="border-t border-[#eeeeee] p-3">
+            <div className="flex items-center gap-2 rounded-2xl border border-[#dddddd] bg-[#fafafa] px-3 py-2">
+              <input
+                value={chatInput}
+                onChange={(event) => setChatInput(event.target.value)}
+                placeholder={isInspiration ? "Discuss this inspiration..." : "Message the team or Vibro..."}
+                className="h-8 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#999]"
+              />
+              <button disabled={!chatInput.trim()} className="grid h-8 w-8 place-items-center rounded-full bg-[#111] text-white disabled:bg-[#dddddd] disabled:text-[#999]">
+                <MaterialIcon name="arrow_upward" size={16} />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#E5E5E5] shrink-0">
-        {avatars.map((a, i) => (
-          <div key={i} className="relative" title={a.initials}>
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
-              style={{ backgroundColor: a.color }}
-            >
-              {a.initials}
+      {tab === "context" && (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <ContextSnapshot bundle={bundles[0]} />
+          {isInspiration && (
+            <div className="px-4 pt-4">
+              <div className="rounded-2xl border border-[#eeeeee] bg-[#f8faff] p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#111]">
+                  <MaterialIcon name="auto_awesome" size={16} />
+                  Inspiration influence
+                </div>
+                <p className="mt-2 text-xs leading-5 text-[#666]">
+                  Selected and pinned inspirations guide color, typography, layout density, component patterns, and architecture generation.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {["Color tokens", "Typography", "UI patterns", "Architecture signals"].map((tag) => (
+                    <span key={tag} className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#555]">{tag}</span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <span className="absolute -bottom-[1px] -right-[1px] w-[6px] h-[6px] rounded-full bg-green-500 border border-white" />
-          </div>
-        ))}
-        <span className="text-[11px] text-[#888] ml-1">3 online</span>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
-        {visibleThreadLabels.map((label, threadIdx) => (
-          <div key={threadIdx}>
-            <span className="inline-block bg-[#EEF2FF] text-[#6366F1] text-[11px] rounded-full px-[10px] py-[2px] mb-2">
-              {label}
-            </span>
-            <div className="space-y-3">
-              {visibleMessages
-                .filter((m) => m.thread === threadIdx)
-                .map((m, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <div
-                      className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold mt-0.5"
-                      style={{ backgroundColor: m.color }}
-                    >
-                      {m.name.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-[12px] font-bold text-[#333]">{m.name}</span>
-                        <span className="text-[11px] text-[#AAA]">{m.time}</span>
-                      </div>
-                      {m.ai ? (
-                        <div className="text-[13px] text-[#444] leading-5 border-l-2 border-[#6366F1] bg-[#F5F5FF] rounded-r-[6px] px-[10px] py-2 mt-0.5">
-                          {m.text}
-                        </div>
-                      ) : (
-                        <p className="text-[13px] text-[#444] leading-5 mt-0.5">{m.text}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
+          )}
+          <div className="p-4">
+            <div className="rounded-2xl border border-[#eeeeee] bg-[#fafafa] p-4">
+              <div className="text-sm font-semibold">MCP handoff</div>
+              <p className="mt-2 text-xs leading-5 text-[#666]">
+                Context bundle, architecture map, design tokens, and inspiration tags are staged for external AI tools.
+              </p>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="h-12 shrink-0 border-t border-[#E5E5E5] bg-white flex items-center px-3">
-        <input
-          value={chatInput}
-          onChange={(e) => setChatInput(e.target.value)}
-          placeholder={isInspiration ? "Discuss this inspiration..." : "Message the team..."}
-          className="flex-1 h-full border-none outline-none text-[13px] placeholder:text-[#AAA] bg-transparent"
-        />
-        <button
-          disabled={!chatInput.trim()}
-          className="w-8 h-8 flex items-center justify-center text-[#6366F1] disabled:text-[#CCC] transition"
-        >
-          <MaterialIcon name="arrow_upward" size={20} />
-        </button>
-      </div>
+        </div>
+      )}
     </aside>
+  );
+}
+
+function PresenceSection({ online }: { online: { id: number; name: string; avatar?: string }[] }) {
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase text-[#777]">Liveblocks presence</span>
+        <span className="text-xs text-[#888]">{online.length} online</span>
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        {online.length === 0 ? (
+          <span className="text-xs text-[#999]">No one else is online right now.</span>
+        ) : (
+          online.map((user) => (
+            <div key={user.id} className="grid h-9 w-9 place-items-center rounded-full bg-[#111] text-xs font-bold text-white" title={user.name}>
+              {user.avatar ? <img src={user.avatar} alt={user.name} className="h-full w-full rounded-full object-cover" /> : user.name.slice(0, 2).toUpperCase()}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Timeline() {
+  const items = [
+    ["sync", "Repo context synced", "5m ago"],
+    ["auto_awesome", "AI architecture draft updated", "12m ago"],
+    ["inventory_2", "Context bundle checkpoint saved", "24m ago"],
+  ];
+
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto border-t border-[#eeeeee] p-4">
+      <div className="mb-3 text-xs font-semibold uppercase text-[#777]">Activity</div>
+      <div className="space-y-3">
+        {items.map(([icon, text, time]) => (
+          <div key={text} className="flex gap-3">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#f1f1f1] text-black">
+              <MaterialIcon name={icon} size={16} />
+            </span>
+            <div>
+              <div className="text-sm font-medium text-[#333]">{text}</div>
+              <div className="text-[11px] text-[#999]">{time}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatMessage({ author, text, ai = false }: { author: string; text: string; ai?: boolean }) {
+  return (
+    <div className="flex gap-3">
+      <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold ${ai ? "bg-[#111] text-white" : "bg-[#e5e5e5] text-[#555]"}`}>
+        {ai ? <img src="/light_logo.png" alt="Vibro" className="h-5 w-5" /> : author.slice(0, 2).toUpperCase()}
+      </div>
+      <div>
+        <div className="text-xs font-semibold text-[#777]">{author}</div>
+        <p className={`mt-1 rounded-2xl px-3 py-2 text-sm leading-6 ${ai ? "bg-[#f5f7ff] text-[#333]" : "bg-[#f5f5f5] text-[#333]"}`}>{text}</p>
+      </div>
+    </div>
   );
 }

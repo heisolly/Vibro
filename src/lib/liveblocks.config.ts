@@ -57,6 +57,17 @@ declare global {
       title: string;
       content: string;
       tags: string[];
+      architectureFlow?: {
+        nodes: any[];
+        edges: any[];
+      };
+      canvasState?: {
+        offset: { x: number; y: number };
+        zoom: number;
+        annotations: any[];
+        inspiration: any[];
+        todos: any[];
+      };
       inspirationItems: LiveList<LiveInspirationItem>;
       inspirationGroups: LiveList<LiveInspirationGroup>;
       inspirationTabs: LiveList<LiveInspirationTab>;

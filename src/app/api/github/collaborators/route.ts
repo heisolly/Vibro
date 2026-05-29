@@ -7,6 +7,7 @@ type Collaborator = {
   avatar_url: string;
   id: number;
   role: string;
+  email?: string;
 };
 
 export async function GET() {
@@ -43,11 +44,23 @@ export async function GET() {
     for (const c of data) {
       if (!uniqueLogins.has(c.login) && c.login !== user.user_metadata?.user_name) {
         uniqueLogins.add(c.login);
+        let email: string | undefined;
+        try {
+          const userRes = await fetch(`${GITHUB_API}/users/${c.login}`, {
+            headers: getHeaders(token),
+          });
+          if (userRes.ok) {
+            const userData = await userRes.json();
+            email = userData.email || undefined;
+          }
+        } catch {}
+
         allCollaborators.push({
           login: c.login,
           avatar_url: c.avatar_url,
           id: c.id,
           role: c.role_name || "member",
+          email,
         });
       }
     }
