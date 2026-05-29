@@ -4,12 +4,12 @@ import { useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { VibroBoard } from "@/lib/vibro";
 
-const chips = [
+const architectureChips = [
   { icon: "account_tree", label: "Architecture", prompt: "Map the architecture and suggest the next service to add" },
-  { icon: "auto_fix_high", label: "Refine", prompt: "Refine this workspace and improve the current board" },
+  { icon: "dns", label: "Modules", prompt: "Generate the core modules, services, and responsibilities for this idea" },
   { icon: "schema", label: "Auto layout", prompt: "Auto layout the architecture canvas and explain the flow" },
-  { icon: "palette", label: "Design system", prompt: "Generate editable design system tokens for this project" },
-  { icon: "inventory_2", label: "Bundle", prompt: "Prepare the context bundle for AI handoff" },
+  { icon: "api", label: "API routes", prompt: "Suggest API routes, data entities, and external integrations" },
+  { icon: "warning", label: "Risks", prompt: "Review architecture risks, missing services, and implementation phases" },
 ];
 
 const inspirationChips = [
@@ -20,8 +20,38 @@ const inspirationChips = [
   { icon: "summarize", label: "Summarize common patterns" },
 ];
 
-function chipPrompt(chip: (typeof chips)[number] | (typeof inspirationChips)[number]) {
-  return "prompt" in chip ? chip.prompt : chip.label;
+const designChips = [
+  { icon: "palette", label: "Color tokens", prompt: "Suggest color tokens from the current inspiration and architecture context" },
+  { icon: "format_size", label: "Typography", prompt: "Generate typography scale, font roles, and hierarchy rules" },
+  { icon: "space_bar", label: "Spacing", prompt: "Create spacing, radius, elevation, and layout density tokens" },
+  { icon: "widgets", label: "Components", prompt: "Define reusable components and states for this product UI" },
+  { icon: "contrast", label: "Accessibility", prompt: "Review contrast, states, and accessibility rules for the design system" },
+];
+
+const progressChips = [
+  { icon: "route", label: "Phases", prompt: "Convert this plan into implementation phases and milestones" },
+  { icon: "task_alt", label: "Tasks", prompt: "Create a prioritized task list from the current architecture and design context" },
+  { icon: "block", label: "Blockers", prompt: "Identify blockers, dependencies, and decisions needed before build" },
+  { icon: "inventory_2", label: "Bundle", prompt: "Prepare the context bundle checkpoint for AI handoff" },
+  { icon: "summarize", label: "Status", prompt: "Summarize current progress, completed work, and next actions" },
+];
+
+const boardChips = {
+  inspiration: inspirationChips,
+  architecture: architectureChips,
+  design: designChips,
+  progress: progressChips,
+} satisfies Record<VibroBoard, { icon: string; label: string; prompt?: string }[]>;
+
+function chipPrompt(chip: { label: string; prompt?: string }) {
+  return chip.prompt || chip.label;
+}
+
+function boardPlaceholder(activeBoard: VibroBoard) {
+  if (activeBoard === "inspiration") return "Describe the product, style, audience, or references Vibro should search for...";
+  if (activeBoard === "architecture") return "Ask Vibro to generate screens, modules, data models, services, routes, or integrations...";
+  if (activeBoard === "design") return "Ask Vibro for colors, typography, spacing, components, or design-system rules...";
+  return "Ask Vibro to summarize progress, create tasks, identify blockers, or prepare the handoff bundle...";
 }
 
 export default function AIInputBar({
@@ -43,7 +73,8 @@ export default function AIInputBar({
     if (!text || disabled) return;
     if (activeBoard === "inspiration") {
       window.dispatchEvent(new CustomEvent("vibro:inspiration-prompt", { detail: text }));
-    } else {
+    }
+    if (activeBoard === "architecture") {
       window.dispatchEvent(new CustomEvent("vibro:architecture-command", { detail: { text } }));
     }
     onSend(text);
@@ -77,7 +108,7 @@ export default function AIInputBar({
   }
 
   const maxWidth = rightOpen ? "calc(100% - 96px - 320px)" : "calc(100% - 96px)";
-  const visibleChips = activeBoard === "inspiration" ? inspirationChips : chips;
+  const visibleChips = boardChips[activeBoard];
 
   return (
     <div
@@ -108,7 +139,7 @@ export default function AIInputBar({
             value={input}
             onChange={handleInput}
             onKeyDown={onKeyDown}
-            placeholder="Tell Vibro what to build: add a database node, connect gateway to AI, auto layout, create design tokens..."
+            placeholder={boardPlaceholder(activeBoard)}
             rows={1}
             className="font-ai min-h-7 flex-1 resize-none bg-transparent text-[14px] leading-7 text-[#222] outline-none placeholder:text-[#8a8a8a]"
           />

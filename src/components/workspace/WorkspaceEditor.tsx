@@ -33,7 +33,7 @@ export default function WorkspaceEditor({
   onSendToAI: (text: string) => void;
   bundles: ContextBundle[];
 }) {
-  const [activeBoard, setActiveBoard] = useState<VibroBoard>("architecture");
+  const [activeBoard, setActiveBoard] = useState<VibroBoard>("inspiration");
   const [rightOpen, setRightOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
