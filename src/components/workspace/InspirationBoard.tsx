@@ -139,10 +139,12 @@ export default function InspirationBoard({
   slug,
   project,
   user,
+  onApplyArchitecture,
 }: {
   slug: string;
   project: VibroProject | null;
   user: VibroUser | null;
+  onApplyArchitecture?: (plan: InspirationArchitecturePlan, mode: "replace" | "merge") => Promise<void> | void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const initialUserRef = useRef(user);
@@ -173,6 +175,8 @@ export default function InspirationBoard({
   const [researchRunning, setResearchRunning] = useState(false);
   const [architecturePlan, setArchitecturePlan] = useState<InspirationArchitecturePlan | null>(null);
   const [architectureRunning, setArchitectureRunning] = useState(false);
+  const [awaitingArchitectureApply, setAwaitingArchitectureApply] = useState(false);
+  const [applyingArchitecture, setApplyingArchitecture] = useState<"replace" | "merge" | null>(null);
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -589,8 +593,9 @@ export default function InspirationBoard({
       if (!response.ok) throw new Error(data.error || "Research failed");
       setResearchRun(data.run);
       setArchitecturePlan(data.run?.architecture || null);
+      setAwaitingArchitectureApply(Boolean(data.run?.architecture));
       setSearchResults(data.run?.searchResults || []);
-      setStatus(`Research complete: ${data.run?.analyses?.length || 0} links analyzed and architecture generated.`);
+      setStatus(`Research complete: ${data.run?.analyses?.length || 0} links analyzed. Choose how to apply the generated architecture.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Research failed.");
     } finally {
@@ -629,11 +634,28 @@ export default function InspirationBoard({
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Architecture generation failed");
       setArchitecturePlan(data.architecture);
-      setStatus("Architecture generated from selected inspiration.");
+      setAwaitingArchitectureApply(true);
+      setStatus("Architecture generated. Choose how to apply it to the Architecture tab.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Architecture generation failed.");
     } finally {
       setArchitectureRunning(false);
+    }
+  }
+
+  async function applyArchitectureToBoard(mode: "replace" | "merge") {
+    if (!architecturePlan || !onApplyArchitecture) return;
+    setApplyingArchitecture(mode);
+    setStatus(mode === "replace" ? "Replacing Architecture canvas..." : "Merging into Architecture canvas...");
+
+    try {
+      await onApplyArchitecture(architecturePlan, mode);
+      setAwaitingArchitectureApply(false);
+      setStatus(mode === "replace" ? "Architecture canvas replaced from inspiration analysis." : "Architecture merged from inspiration analysis.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not apply architecture to the Architecture tab.");
+    } finally {
+      setApplyingArchitecture(null);
     }
   }
 
@@ -1098,6 +1120,38 @@ export default function InspirationBoard({
                     </div>
                   ))}
                 </div>
+                {awaitingArchitectureApply && onApplyArchitecture && (
+                  <div className="mt-3 rounded-lg border border-[#D0D5DD] bg-white p-2">
+                    <p className="text-[10px] font-semibold text-[#333]">Apply to Architecture tab?</p>
+                    <p className="mt-1 text-[10px] leading-4 text-[#777]">Choose whether Vibro should replace the current graph or merge these nodes into it.</p>
+                    <div className="mt-2 grid grid-cols-3 gap-1.5">
+                      <button
+                        onClick={() => void applyArchitectureToBoard("replace")}
+                        disabled={Boolean(applyingArchitecture)}
+                        className="h-8 rounded-md bg-[#101418] px-2 text-[10px] font-semibold text-white disabled:opacity-60"
+                      >
+                        {applyingArchitecture === "replace" ? "Replacing..." : "Replace"}
+                      </button>
+                      <button
+                        onClick={() => void applyArchitectureToBoard("merge")}
+                        disabled={Boolean(applyingArchitecture)}
+                        className="h-8 rounded-md bg-[#EEF2FF] px-2 text-[10px] font-semibold text-[#6366F1] disabled:opacity-60"
+                      >
+                        {applyingArchitecture === "merge" ? "Merging..." : "Merge"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAwaitingArchitectureApply(false);
+                          setStatus("Generated architecture kept in Inspiration. Architecture tab was not changed.");
+                        }}
+                        disabled={Boolean(applyingArchitecture)}
+                        className="h-8 rounded-md border border-[#E5E5E5] bg-white px-2 text-[10px] font-semibold text-[#666] disabled:opacity-60"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

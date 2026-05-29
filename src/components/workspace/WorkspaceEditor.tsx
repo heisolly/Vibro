@@ -237,6 +237,7 @@ export default function WorkspaceEditor({
           slug={slug}
           project={project}
           user={user}
+          onBoardChange={setActiveBoard}
         />
 
         <AIInputBar onSend={handleSend} disabled={isThinking} rightOpen={rightOpen} activeBoard={activeBoard} />
