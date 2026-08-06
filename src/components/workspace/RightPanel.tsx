@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useOthers } from "@liveblocks/react";
 import { MaterialIcon } from "@/components/vibro/ui";
 import type { ContextBundle } from "@/lib/github-types";
+import type { VibroBoard } from "@/lib/vibro";
 import ContextSnapshot from "./ContextSnapshot";
 
 type PanelTab = "activity" | "chat" | "context";
@@ -18,14 +19,17 @@ export default function RightPanel({
   open,
   onToggle,
   bundles,
+  activeBoard,
 }: {
   open: boolean;
   onToggle: () => void;
   bundles: ContextBundle[];
+  activeBoard: VibroBoard;
 }) {
   const [tab, setTab] = useState<PanelTab>("activity");
   const [chatInput, setChatInput] = useState("");
   const others = useOthers();
+  const isInspiration = activeBoard === "inspiration";
 
   const online = useMemo(() => others.map((other) => ({
     id: other.connectionId,
@@ -40,8 +44,8 @@ export default function RightPanel({
     >
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#eeeeee] px-4">
         <div>
-          <div className="text-sm font-semibold text-[#111]">Workspace feed</div>
-          <div className="text-[11px] text-[#888]">Live context, people, and runs</div>
+          <div className="text-sm font-semibold text-[#111]">{isInspiration ? "Inspiration context" : "Workspace feed"}</div>
+          <div className="text-[11px] text-[#888]">{isInspiration ? "References, votes, and AI influence" : "Live context, people, and runs"}</div>
         </div>
         <button onClick={onToggle} className="grid h-8 w-8 place-items-center rounded-lg text-black transition hover:bg-[#f5f5f5]">
           <MaterialIcon name="close" size={19} />
@@ -97,16 +101,16 @@ export default function RightPanel({
       {tab === "chat" && (
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex-1 space-y-4 overflow-y-auto p-4">
-            <ChatMessage author="Vibro AI" text="I mapped the workspace into architecture, design, inspiration, and progress surfaces." ai />
+            <ChatMessage author="Vibro AI" text={isInspiration ? "Pinned references are feeding visual patterns, UI density, and architecture signals into the context bundle." : "I mapped the workspace into architecture, design, inspiration, and progress surfaces."} ai />
             <ChatMessage author="Micheal" text="Make the architecture board editable and easy to understand." />
-            <ChatMessage author="Vibro AI" text="Done. Nodes can be moved, new services added, and connection mode creates new flows." ai />
+            <ChatMessage author="Vibro AI" text={isInspiration ? "Use selected or pinned cards to generate a more grounded product architecture." : "Done. Nodes can be moved, new services added, and connection mode creates new flows."} ai />
           </div>
           <div className="border-t border-[#eeeeee] p-3">
             <div className="flex items-center gap-2 rounded-2xl border border-[#dddddd] bg-[#fafafa] px-3 py-2">
               <input
                 value={chatInput}
                 onChange={(event) => setChatInput(event.target.value)}
-                placeholder="Message the team or Vibro..."
+                placeholder={isInspiration ? "Discuss this inspiration..." : "Message the team or Vibro..."}
                 className="h-8 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#999]"
               />
               <button disabled={!chatInput.trim()} className="grid h-8 w-8 place-items-center rounded-full bg-[#111] text-white disabled:bg-[#dddddd] disabled:text-[#999]">
@@ -120,6 +124,24 @@ export default function RightPanel({
       {tab === "context" && (
         <div className="min-h-0 flex-1 overflow-y-auto">
           <ContextSnapshot bundle={bundles[0]} />
+          {isInspiration && (
+            <div className="px-4 pt-4">
+              <div className="rounded-2xl border border-[#eeeeee] bg-[#f8faff] p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#111]">
+                  <MaterialIcon name="auto_awesome" size={16} />
+                  Inspiration influence
+                </div>
+                <p className="mt-2 text-xs leading-5 text-[#666]">
+                  Selected and pinned inspirations guide color, typography, layout density, component patterns, and architecture generation.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {["Color tokens", "Typography", "UI patterns", "Architecture signals"].map((tag) => (
+                    <span key={tag} className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#555]">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
           <div className="p-4">
             <div className="rounded-2xl border border-[#eeeeee] bg-[#fafafa] p-4">
               <div className="text-sm font-semibold">MCP handoff</div>

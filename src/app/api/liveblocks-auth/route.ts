@@ -19,7 +19,11 @@ export async function POST(request: NextRequest) {
     return new Response("Missing room", { status: 400 });
   }
 
-  if ((error || !user) && process.env.NODE_ENV !== "production" && (room.startsWith("user-demo-user-") || room.startsWith("project-"))) {
+  if (
+    (error || !user) &&
+    process.env.NODE_ENV !== "production" &&
+    (room.startsWith("user-demo-user-") || room.startsWith("project-") || room.startsWith("workspace:"))
+  ) {
     const session = liveblocks.prepareSession("demo-user", {
       userInfo: {
         name: "Demo user",
@@ -37,7 +41,7 @@ export async function POST(request: NextRequest) {
   }
 
   const allowedPrefix = `user-${user.id}-`;
-  if (!room.startsWith(allowedPrefix) && !room.startsWith("project-")) {
+  if (!room.startsWith(allowedPrefix) && !room.startsWith("project-") && !room.startsWith("workspace:")) {
     return new Response("Forbidden", { status: 403 });
   }
 

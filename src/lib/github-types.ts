@@ -101,6 +101,19 @@ export type DecisionInfo = {
   file: string;
 };
 
+export type InspirationBundleInfo = {
+  snapshotVersion?: number;
+  selectedReferences: {
+    title: string;
+    url?: string;
+    tags: string[];
+    reason?: string;
+  }[];
+  extractedPatterns: string[];
+  designSystemInfluence: string[];
+  architectureInfluence: string[];
+};
+
 export type ContextBundle = {
   id: string;
   repo_id: string;
@@ -113,6 +126,7 @@ export type ContextBundle = {
     designSystem: DesignTokenInfo;
     endpoints: EndpointRegistry;
     decisionLog: DecisionInfo[];
+    inspiration?: InspirationBundleInfo;
   };
   architecture_map: ArchitectureMap | null;
   endpoint_registry: EndpointRegistry | null;

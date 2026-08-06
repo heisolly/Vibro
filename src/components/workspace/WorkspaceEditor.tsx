@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { VibroBoard, VibroUser } from "@/lib/vibro";
+import type { VibroBoard, VibroProject, VibroUser } from "@/lib/vibro";
 import type { ContextBundle } from "@/lib/github-types";
 import WorkspaceHeader from "./WorkspaceHeader";
 import SidebarTools from "./SidebarTools";
@@ -18,6 +18,7 @@ type Message = {
 
 export default function WorkspaceEditor({
   slug,
+  project,
   user,
   messages,
   isThinking,
@@ -25,13 +26,14 @@ export default function WorkspaceEditor({
   bundles,
 }: {
   slug: string;
+  project: VibroProject | null;
   user: VibroUser | null;
   messages: Message[];
   isThinking: boolean;
   onSendToAI: (text: string) => void;
   bundles: ContextBundle[];
 }) {
-  const [activeBoard, setActiveBoard] = useState<VibroBoard>("architecture");
+  const [activeBoard, setActiveBoard] = useState<VibroBoard>("inspiration");
   const [rightOpen, setRightOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
@@ -233,12 +235,15 @@ export default function WorkspaceEditor({
           messages={messages}
           isThinking={isThinking}
           slug={slug}
+          project={project}
+          user={user}
+          onBoardChange={setActiveBoard}
         />
 
-        <AIInputBar onSend={handleSend} disabled={isThinking} rightOpen={rightOpen} />
+        <AIInputBar onSend={handleSend} disabled={isThinking} rightOpen={rightOpen} activeBoard={activeBoard} />
       </div>
 
-      <RightPanel open={rightOpen} onToggle={() => setRightOpen((o) => !o)} bundles={bundles} />
+      <RightPanel open={rightOpen} onToggle={() => setRightOpen((o) => !o)} bundles={bundles} activeBoard={activeBoard} />
     </div>
   );
 }

@@ -237,12 +237,20 @@ export default function WorkspacePage() {
     }
   }
 
-  const roomId = `project-${slug}`;
+  const roomId = `workspace:${slug}`;
 
   return (
     <LiveblocksWrapperProvider>
       <LiveblocksRoomProvider roomId={roomId}>
-        <WorkspaceEditor slug={slug} user={user} messages={messages} isThinking={isThinking} onSendToAI={sendMessage} bundles={bundles} />
+        <WorkspaceEditor
+          slug={slug}
+          project={project}
+          user={user}
+          messages={messages}
+          isThinking={isThinking}
+          onSendToAI={sendMessage}
+          bundles={bundles}
+        />
       </LiveblocksRoomProvider>
     </LiveblocksWrapperProvider>
   );

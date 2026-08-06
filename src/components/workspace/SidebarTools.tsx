@@ -140,11 +140,35 @@ const boardTools: Record<VibroBoard, { id: ActiveTool; label: string; shortcut?:
         <path d="M6 13a2 2 0 0 0-2-2v5c0 4 3 7 7 7h2c4 0 7-3 7-7v-5.5a2 2 0 0 0-2-2v3.5" />
       </svg>
     )},
-    { id: "upload", label: "Upload", renderIcon: () => (
+    { id: "upload", label: "Upload screenshots", renderIcon: () => (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
     )},
-    { id: "shapes", label: "Add URL", renderIcon: () => (
+    { id: "url", label: "Add URL", renderIcon: () => (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    )},
+    { id: "search", label: "Search web", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg>
+    )},
+    { id: "moodboard", label: "Create moodboard", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    )},
+    { id: "tag", label: "Tag inspiration", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 10 14 4H5v9l6 6 9-9Z"/><circle cx="8" cy="8" r="1"/></svg>
+    )},
+    { id: "group", label: "Group", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/><path d="M11 7h3a3 3 0 0 1 3 3v3"/></svg>
+    )},
+    { id: "ungroup", label: "Ungroup", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/><path d="M14 7h3M17 7v3M7 14v3M7 17h3"/></svg>
+    )},
+    { id: "pin", label: "Pin", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m14 4 6 6-4 1-5 5-1 4-6-6 4-1 5-5 1-4Z"/><path d="m9 15-5 5"/></svg>
+    )},
+    { id: "note", label: "Add note", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M5 4h14v12l-5 5H5z"/><path d="M14 21v-5h5"/></svg>
+    )},
+    { id: "delete", label: "Delete selected", renderIcon: () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7l1-3h4l1 3"/></svg>
     )},
   ],
   progress: [
@@ -286,7 +310,12 @@ export default function SidebarTools({
               active={activeTool === tool.id}
               label={tool.label}
               shortcut={tool.shortcut}
-              onClick={() => onToolChange(tool.id)}
+              onClick={() => {
+                onToolChange(tool.id);
+                if (activeBoard === "inspiration") {
+                  window.dispatchEvent(new CustomEvent("vibro:inspiration-tool", { detail: tool.id }));
+                }
+              }}
               renderIcon={tool.renderIcon}
               draggable={isShape}
               onDragStart={isShape ? (e) => handleDragStart(e, tool.id) : undefined}

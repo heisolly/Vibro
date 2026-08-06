@@ -11,13 +11,16 @@ import {
   type PointerEvent,
 } from "react";
 import { motion } from "framer-motion";
-import type { VibroBoard } from "@/lib/vibro";
+import type { VibroBoard, VibroProject, VibroUser } from "@/lib/vibro";
 import type { ContextBundle } from "@/lib/github-types";
 import { MaterialIcon, spring } from "@/components/vibro/ui";
 import InlineAIResponse from "./InlineAIResponse";
 import ArchitectureFlow, { type ArchitectureFlowHandle } from "./ArchitectureFlow";
 import { type ActiveTool } from "./types";
 import { useWorkspaceState } from "@/hooks/useWorkspaceState";
+import FullInspirationBoard from "./InspirationBoard";
+import { architecturePlanToFlow } from "@/lib/architecture-flow-mapper";
+import type { InspirationArchitecturePlan } from "@/lib/inspiration";
 
 type Message = {
   id: string;
@@ -118,6 +121,9 @@ interface BoardCanvasProps {
   messages: Message[];
   isThinking: boolean;
   slug: string;
+  project: VibroProject | null;
+  user: VibroUser | null;
+  onBoardChange: (board: VibroBoard) => void;
 }
 
 const initialNodes: ArchNode[] = [
@@ -250,7 +256,7 @@ function bundleArchitectureText(bundle?: ContextBundle) {
 }
 
 const BoardCanvas = forwardRef<BoardCanvasHandle, BoardCanvasProps>(
-  function BoardCanvas({ activeBoard, bundles, activeTool, messages, isThinking, slug }, ref) {
+  function BoardCanvas({ activeBoard, bundles, activeTool, messages, isThinking, slug, project, user, onBoardChange }, ref) {
     const { data: canvasState, update: saveCanvas } = useWorkspaceState<CanvasState>(slug, "canvas", initialCanvas);
 
     const [inlineVisible, setInlineVisible] = useState(messages.length > 0);
@@ -332,6 +338,22 @@ const BoardCanvas = forwardRef<BoardCanvasHandle, BoardCanvasProps>(
     }));
 
     const detectedArchitecture = useMemo(() => bundleArchitectureText(bundle), [bundle]);
+
+    const applyGeneratedArchitecture = useCallback(async (plan: InspirationArchitecturePlan, mode: "replace" | "merge") => {
+      const generated = architecturePlanToFlow(plan);
+      const payload = {
+        id: `architecture-apply-${Date.now()}`,
+        mode,
+        flow: generated,
+      };
+      sessionStorage.setItem(`vibro-pending-architecture:${slug}`, JSON.stringify(payload));
+      onBoardChange("architecture");
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("vibro:apply-architecture-flow", { detail: payload }));
+        const btn = document.querySelector(".react-flow__controls-fitview") as HTMLButtonElement | null;
+        btn?.click();
+      }, 120);
+    }, [onBoardChange, slug]);
 
     function toCanvasPoint(event: PointerEvent<HTMLElement>) {
       const rect = canvasRef.current?.getBoundingClientRect();
@@ -421,12 +443,21 @@ const BoardCanvas = forwardRef<BoardCanvasHandle, BoardCanvasProps>(
           <ArchitectureFlow ref={architectureFlowRef} activeTool={activeTool} detected={detectedArchitecture} slug={slug} />
         )}
 
+        {activeBoard === "inspiration" && (
+          <FullInspirationBoard
+            slug={slug}
+            project={project}
+            user={user}
+            onApplyArchitecture={applyGeneratedArchitecture}
+          />
+        )}
+
         <div
           className="absolute left-0 top-0 h-[4200px] w-[6200px] origin-top-left"
           style={{ transform: `translate(${displayState.offset.x}px, ${displayState.offset.y}px) scale(${displayState.zoom})` }}
         >
           {activeBoard === "design" && <DesignSystemBoard bundle={bundle} />}
-          {activeBoard === "inspiration" && (
+          {false && activeBoard === "inspiration" && (
             <InspirationBoard
               items={displayState.inspiration}
               selectedTab={selectedTab}

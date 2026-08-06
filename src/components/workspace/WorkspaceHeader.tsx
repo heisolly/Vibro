@@ -6,9 +6,9 @@ import type { VibroBoard, VibroUser } from "@/lib/vibro";
 import ActivityDropdown from "./ActivityDropdown";
 
 const boards: { id: VibroBoard; label: string; icon: string }[] = [
+  { id: "inspiration", label: "Inspiration", icon: "collections" },
   { id: "architecture", label: "Architecture", icon: "account_tree" },
   { id: "design", label: "Design System", icon: "palette" },
-  { id: "inspiration", label: "Inspiration", icon: "collections" },
   { id: "progress", label: "Progress", icon: "assignment" },
 ];
 

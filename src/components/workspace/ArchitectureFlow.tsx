@@ -24,6 +24,7 @@ import ArchitectureContextMenu from "./ArchitectureContextMenu";
 import ShapeNode, { ShapeNodeData } from "./ShapeNode";
 import { useWorkspaceState } from "@/hooks/useWorkspaceState";
 import { type ActiveTool } from "./types";
+import { mergeArchitectureFlows } from "@/lib/architecture-flow-mapper";
 
 export type ArchitectureNode = Node<ShapeNodeData, "shape">;
 export type ArchitectureEdge = Edge<{ label?: string }>;
@@ -63,6 +64,11 @@ const initialEdges: ArchitectureEdge[] = [
   style: { stroke: "#8a8a8a", strokeWidth: 1.8 },
 }));
 
+export const defaultArchitectureFlow: FlowState = {
+  nodes: initialNodes,
+  edges: initialEdges,
+};
+
 const nodeTypes = {
   shape: ShapeNode,
 };
@@ -97,6 +103,12 @@ const shapeTypes = ["rectangle", "circle", "diamond", "database", "hexagon"] as 
 type ShapeType = typeof shapeTypes[number];
 const isShapeTool = (tool: ActiveTool): tool is ShapeType => shapeTypes.includes(tool as any);
 
+type ArchitectureApplyPayload = {
+  id: string;
+  mode: "replace" | "merge";
+  flow: FlowState;
+};
+
 const ArchitectureFlow = forwardRef<ArchitectureFlowHandle, ArchitectureFlowProps>(
   function ArchitectureFlow({ activeTool, detected, slug }, ref) {
     const [instance, setInstance] = useState<ReactFlowInstance<ArchitectureNode, ArchitectureEdge> | null>(null);
@@ -104,12 +116,13 @@ const ArchitectureFlow = forwardRef<ArchitectureFlowHandle, ArchitectureFlowProp
     const [contextMenu, setContextMenu] = useState<{ id: string; top: number; left: number } | null>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const { data: flow, update: saveFlow } = useWorkspaceState<FlowState>(slug, "architecture", { nodes: initialNodes, edges: initialEdges });
+    const { data: flow, update: saveFlow } = useWorkspaceState<FlowState>(slug, "architecture", defaultArchitectureFlow);
     const nodes = flow.nodes;
     const edges = flow.edges;
 
     const [past, setPast] = useState<FlowState[]>([]);
     const [future, setFuture] = useState<FlowState[]>([]);
+    const appliedPayloadIdsRef = useRef(new Set<string>());
 
     const takeSnapshot = useCallback((currentNodes: ArchitectureNode[], currentEdges: ArchitectureEdge[]) => {
       setPast((prev) => {
@@ -137,6 +150,34 @@ const ArchitectureFlow = forwardRef<ArchitectureFlowHandle, ArchitectureFlowProp
     };
 
     useImperativeHandle(ref, () => ({ undo, redo }));
+
+    const applyGeneratedFlow = useCallback((payload: ArchitectureApplyPayload) => {
+      if (!payload?.id || appliedPayloadIdsRef.current.has(payload.id)) return;
+      appliedPayloadIdsRef.current.add(payload.id);
+      sessionStorage.removeItem(`vibro-pending-architecture:${slug}`);
+      setPast((prev) => [...prev, { nodes, edges }]);
+      setFuture([]);
+      saveFlow((prev) => (payload.mode === "replace" ? payload.flow : mergeArchitectureFlows(prev || defaultArchitectureFlow, payload.flow)));
+    }, [edges, nodes, saveFlow, slug]);
+
+    useEffect(() => {
+      function onApply(event: Event) {
+        applyGeneratedFlow((event as CustomEvent<ArchitectureApplyPayload>).detail);
+      }
+
+      window.addEventListener("vibro:apply-architecture-flow", onApply);
+
+      const stored = sessionStorage.getItem(`vibro-pending-architecture:${slug}`);
+      if (stored) {
+        try {
+          applyGeneratedFlow(JSON.parse(stored) as ArchitectureApplyPayload);
+        } catch {
+          sessionStorage.removeItem(`vibro-pending-architecture:${slug}`);
+        }
+      }
+
+      return () => window.removeEventListener("vibro:apply-architecture-flow", onApply);
+    }, [applyGeneratedFlow, slug]);
 
     const dragStartStateRef = useRef<FlowState | null>(null);
     const resizeStartStateRef = useRef<FlowState | null>(null);

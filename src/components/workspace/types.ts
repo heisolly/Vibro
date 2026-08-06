@@ -10,4 +10,13 @@ export type ActiveTool =
   | "frame" 
   | "crop" 
   | "text" 
-  | "upload";
+  | "upload"
+  | "url"
+  | "search"
+  | "moodboard"
+  | "tag"
+  | "group"
+  | "ungroup"
+  | "pin"
+  | "note"
+  | "delete";
